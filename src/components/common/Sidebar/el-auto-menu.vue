@@ -1,0 +1,33 @@
+<template>
+    <el-menu
+        class="sidebar-el-menu"
+        :collapse="collapse"
+        :default-active="onRoutes"
+        background-color="#fff"
+        text-color="#000"
+        active-text-color="#2d72c9"
+        unique-opened
+        router
+    >
+        <el-auto-menu-item
+            v-for="(menuItem,index) in innerData"
+            :key="index"
+            :menu-item-data="menuItem"
+        ></el-auto-menu-item>
+    </el-menu>
+</template>
+<script>
+import ElAutoMenuItem from './el-auto-menu-item';
+import ITEM from './sidebar';
+export default {
+    components: {
+        ElAutoMenuItem
+    },
+    data() {
+        return {
+            innerData: ITEM
+        };
+    },
+    props: ['onRoutes', 'collapse']
+};
+</script>
