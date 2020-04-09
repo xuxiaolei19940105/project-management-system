@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import PLAN from '../views/plan/route';
+import PROJECT from '../views/plan/route';
 
 Vue.use(Router);
 
@@ -18,13 +18,21 @@ export default new Router({
                 title: ''
             },
             children: [
-                ...PLAN, //计划管理
+                ...PROJECT, //项目管理
                 {
                     path: 'tabs',
                     name: 'tabs',
                     component: () => import(/* webpackChunkName: "tabs" */ '../components/page/Tabs.vue'),
                     meta: {
                         title: '消息'
+                    }
+                },
+                {
+                    path: 'person',
+                    name: 'person',
+                    component: () => import(/* webpackChunkName: "tabs" */ '../views/plan/personInformation.vue'),
+                    meta: {
+                        title: '人员信息'
                     }
                 }
             ]

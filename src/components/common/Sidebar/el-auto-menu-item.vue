@@ -2,7 +2,7 @@
 <template>
     <el-submenu v-if="menuItemData.subs" :index="menuItemData.index">
         <template>
-            <span slot="title">{{ menuItemData.title }}000</span>
+            <span slot="title">{{ menuItemData.title }}</span>
         </template>
         <el-auto-menu-item
             v-for="(menuChildrenItem,index) in menuItemData.subs"

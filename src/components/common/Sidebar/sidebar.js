@@ -1,49 +1,28 @@
 const ITEM = [
     {
-        icon: 'el-icon-lx-home',
+        // icon: 'el-icon-lx-home',
         index: 'tabs',
-        title: '系统首页'
+        title: '消息'
     },
     {
-        icon: 'el-icon-lx-calendar',
+        // icon: 'el-icon-lx-calendar',
         index: '2',
-        title: '计划任务管理',
+        title: '项目管理',
         subs: [
             {
                 index: '2-1',
-                title: '计划管理',
-                subs: [
-                    {
-                        index: 'taskContext',
-                        title: '任务结构编制'
-                    },
-                    {
-                        index: 'annually',
-                        title: '部门年度计划'
-                    },
-                    {
-                        index: 'plan-mouth',
-                        title: '部门月度计划'
-                    },
-                    {
-                        index: 'company-plan-year',
-                        title: '公司年度计划汇总'
-                    },
-                    {
-                        index: 'company-plan-mouth',
-                        title: '公司月度计划汇总'
-                    },
-                    {
-                        index: 'year-cooperate',
-                        title: '部门年度配合任务'
-                    },
-                    {
-                        index: 'mouth-cooperate',
-                        title: '部门月度配合任务'
-                    }
-                ]
-            }
+                title: '项目一',
+            },
+            {
+                index: '2-2',
+                title: '项目二',
+            },
         ]
-    }
+    },
+    {
+        // icon: 'el-icon-lx-home',
+        index: 'person',
+        title: '人员信息'
+    },
 ];
 export default ITEM;
