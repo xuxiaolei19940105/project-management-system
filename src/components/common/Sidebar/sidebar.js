@@ -24,5 +24,10 @@ const ITEM = [
         index: 'person',
         title: '人员信息'
     },
+    {
+        // icon: 'el-icon-lx-home',
+        index: 'newproject',
+        title: '新建项目'
+    }
 ];
 export default ITEM;

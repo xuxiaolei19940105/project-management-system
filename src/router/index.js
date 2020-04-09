@@ -34,6 +34,14 @@ export default new Router({
                     meta: {
                         title: '人员信息'
                     }
+                },
+                {
+                    path:'newproject',
+                    name:'newproject',
+                    component:() => import(/* webpackChunkName: "tabs" */ '../views/plan/newProject.vue'),
+                    meta:{
+                        title:'新建项目'
+                    }
                 }
             ]
         },
