@@ -6,16 +6,12 @@ const ITEM = [
     },
     {
         // icon: 'el-icon-lx-calendar',
-        index: '2',
+        index: 'project',
         title: '项目管理',
         subs: [
             {
-                index: '2-1',
-                title: '项目一',
-            },
-            {
-                index: '2-2',
-                title: '项目二',
+                index: 'projectList',
+                title: '项目列表',
             },
         ]
     },
@@ -24,10 +20,5 @@ const ITEM = [
         index: 'person',
         title: '人员信息'
     },
-    {
-        // icon: 'el-icon-lx-home',
-        index: 'newproject',
-        title: '新建项目'
-    }
 ];
 export default ITEM;

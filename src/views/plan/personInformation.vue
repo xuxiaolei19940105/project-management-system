@@ -1,25 +1,6 @@
 <template>
     <div>
         <el-card class="box-card">
-            <el-form :model="PersonForm" class="form-inline" inline>
-                <el-form-item label="项目">
-                    <el-select v-model="PersonForm.project" placeholder="请选择">
-                        <el-option v-for="item in PresonOptions"
-                            :key="item.lable"
-                            :label="item.value"
-                            :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item class="fr">
-                    <el-button type="primary" @click="OnSearch">查询</el-button>
-                </el-form-item>
-            </el-form>
-        </el-card>
-        <el-card class="box-card">
-            <div slot="header" class="clearfix">
-                <span>搜索结果</span>
-            </div>
             <dytable
                 :columns="columns"
                 :table-data="table"
@@ -40,9 +21,6 @@
 export default {
     data(){
         return{
-            PersonForm:{
-                project:''
-            },
             columns:[
                 {
                     key: 'employeeNumber',
@@ -149,9 +127,6 @@ export default {
     },
     created() {},
     methods: {
-        OnSearch(){
-
-        },
         onSelectionChange(val) {
             console.log('多选', val);
             this.multipleSelection = val;
