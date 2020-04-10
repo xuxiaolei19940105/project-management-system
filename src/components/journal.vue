@@ -60,5 +60,7 @@ export default {
 };
 </script>  
 <style scoped>
-
+.box-card{
+    margin-left: 10px;
+}
 </style>
