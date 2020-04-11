@@ -3,7 +3,7 @@
     <el-card class="box-card">
         <div slot="header" class="clearfix">
             <span>开发任务概况</span>
-            <el-button style="float: right; padding: 3px 0" type="text">新建任务</el-button>
+            <el-button style="float: right; padding: 3px 0" type="text" @click="dialogNewDeveltaskVisible = true">新建任务</el-button>
         </div>
         <el-row>
             <el-col :span="6">
@@ -39,7 +39,7 @@
                                     type="text"
                                     size="small"
                                 >查看</el-button>
-                                <el-button type="text" size="small">编辑</el-button>
+                                <el-button type="text" size="small" @click="dialogNewDeveltaskVisible = true">编辑</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -47,12 +47,24 @@
             </el-col>
         </el-row>
     </el-card>
+    <el-dialog title="新建开发任务"  :visible.sync="dialogNewDeveltaskVisible" width="50%" :append-to-body="true">
+            <newdeveloppage></newdeveloppage>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogNewDeveltaskVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogNewDeveltaskVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
+import newdeveloppage from './newdevelopInform.vue'
 export default {
+    components:{
+        newdeveloppage
+    },
     data() {
         return {
+            dialogNewDeveltaskVisible:false,
             projectForm: {
                 implStartDate: '',
                 implEndDate: '',
@@ -130,6 +142,7 @@ export default {
     },
      methods: {
       handleClick(row) {
+        this.dialogNewDeveltaskVisible = true;
         console.log(row);
       }
     },
