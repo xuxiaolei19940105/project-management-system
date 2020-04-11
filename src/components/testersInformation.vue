@@ -3,7 +3,7 @@
     <el-card class="box-card">
         <div slot="header" class="clearfix">
             <span>测试任务概况</span>
-            <el-button style="float: right; padding: 3px 0" type="text">新建任务</el-button>
+            <el-button style="float: right; padding: 3px 0" type="text" @click="dialogNewtesttaskVisible = true">新建任务</el-button>
         </div>
         <el-row>
             <el-col :span="6">
@@ -39,7 +39,7 @@
                                     type="text"
                                     size="small"
                                 >查看</el-button>
-                                <el-button type="text" size="small">编辑</el-button>
+                                <el-button type="text" size="small" @click="dialogNewtesttaskVisible = true">编辑</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -47,12 +47,24 @@
             </el-col>
         </el-row>
     </el-card>
+    <el-dialog title="新建实施任务"  :visible.sync="dialogNewtesttaskVisible" width="50%" :append-to-body="true">
+        <newtesttaskpage></newtesttaskpage>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogNewtesttaskVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogNewtesttaskVisible = false">确 定</el-button>
+        </span>
+    </el-dialog>
     </div>
 </template>
 <script>
+import newtesttaskpage from './newtestersinform.vue'
 export default {
+    components: {
+        newtesttaskpage
+    },
     data() {
         return {
+            dialogNewtesttaskVisible:false,
             projectForm: {
                 implStartDate: '',
                 implEndDate: '',
@@ -130,6 +142,7 @@ export default {
     },
      methods: {
       handleClick(row) {
+        this.dialogNewtesttaskVisible=true;
         console.log(row);
       }
     },

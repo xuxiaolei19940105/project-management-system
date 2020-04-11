@@ -25,19 +25,6 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="6" :offset="2">
-                        <el-form-item label="重要级别">
-                            <el-select v-model="projectForm.projectleave" placeholder="请选择">
-                                <el-option v-for="item in projectleaveOptions"
-                                    :key="item.lable"
-                                    :label="item.value"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row>
-                    <el-col :span="6">
                         <el-form-item label="项目负责人" >
                             <el-select v-model="projectForm.projectLeader" placeholder="请选择">
                                 <el-option v-for="item in projectLeaderOptions"
@@ -48,13 +35,15 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6" :offset="2">
-                        <el-form-item label="开始日期">
+                </el-row>
+                <el-row>
+                    <el-col :span="6">
+                        <el-form-item label="项目开始日期">
                             <el-date-picker v-model="projectForm.projectStartDate" placeholder="请选择"></el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="6" :offset="2">
-                        <el-form-item label="预计结束时间">
+                        <el-form-item label="项目结束时间">
                             <el-date-picker v-model="projectForm.projectEndDate" placeholder="请选择"></el-date-picker>
                         </el-form-item>
                     </el-col>
@@ -66,12 +55,12 @@
                 </el-row>
                 <el-row>
                     <el-col :span="6">
-                        <el-form-item label="实施起止时间" >
+                        <el-form-item label="实施开始时间" >
                             <el-date-picker v-model="projectForm.implStartDate" placeholder="请选择"></el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="6" :offset="2">
-                        <el-form-item label="至">
+                        <el-form-item label="实施结束时间">
                             <el-date-picker v-model="projectForm.implEndDate" placeholder="请选择"></el-date-picker>
                         </el-form-item>
                     </el-col>
@@ -89,12 +78,12 @@
                 </el-row>
                 <el-row>
                     <el-col :span="6">
-                        <el-form-item label="开发起止时间" >
+                        <el-form-item label="开发开始时间" >
                             <el-date-picker v-model="projectForm.develStartDate" placeholder="请选择"></el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="6" :offset="2">
-                        <el-form-item label="至">
+                        <el-form-item label="开发结束时间">
                             <el-date-picker v-model="projectForm.develEndDate" placeholder="请选择"></el-date-picker>
                         </el-form-item>
                     </el-col>
@@ -112,12 +101,12 @@
                 </el-row>
                 <el-row>
                     <el-col :span="6">
-                        <el-form-item label="测试起止时间" >
+                        <el-form-item label="测试开始时间" >
                             <el-date-picker v-model="projectForm.testerStartDate" placeholder="请选择"></el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="6" :offset="2">
-                        <el-form-item label="至">
+                        <el-form-item label="测试结束时间">
                             <el-date-picker v-model="projectForm.testerEndDate" placeholder="请选择"></el-date-picker>
                         </el-form-item>
                     </el-col>
@@ -153,7 +142,7 @@
                 </el-row>
                 <el-row>
                     <el-col :span="14">
-                            <el-form-item label="项目说明">
+                        <el-form-item label="项目说明">
                             <el-input type="textarea" v-model="projectForm.comments" :rows="8"></el-input>
                         </el-form-item>
                     </el-col>
