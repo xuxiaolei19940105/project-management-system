@@ -1,8 +1,8 @@
 <template>
     <div>
-        <el-card class="box-card">
+        <el-card>
             <div style="text-align:right;padding-bottom:10px;">
-                <el-button size="mini" @click="dialogVisible = true">新建项目</el-button>
+                <el-button size="mini" @click="dialogNewprojectVisible = true">新建项目</el-button>
             </div>
             <dytable
                 :columns="columns"
@@ -17,26 +17,37 @@
                 v-loading="false"
                 element-loading-text="加载中"
             ></dytable>
-            <el-dialog title="项目信息" :visible.sync="dialogVisible" fullscreen>
-                <projectPage></projectPage>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-                </span>
-            </el-dialog>
         </el-card>
+        <el-dialog title="项目信息" :visible.sync="dialogVisible" width="80%" :append-to-body="true">
+            <projectPage></projectPage>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog title="新建项目" :visible.sync="dialogNewprojectVisible" width="80%" :append-to-body="true">
+            <newprojectpage></newprojectpage>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogNewprojectVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogNewprojectVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
 import projectPage from '../../components/projectPage.vue';
+import newprojectpage from './newProject.vue'
 export default {
     components: {
-        projectPage
+        projectPage,
+        newprojectpage
     },
     data() {
         const { renderControlColumn } = this;
         return {
             dialogVisible: false,
+            dialogNewprojectVisible:false,
+            dialogNewImpltaskVisible:false,
             columns: [
                 {
                     key: 'projectNo',
@@ -104,7 +115,13 @@ export default {
             ],
             pageNum: 1,
             pageSize: 10,
-            total: 10
+            total: 10,
+            projectFormData:[
+                {
+                    projectName:''
+                }
+            ],
+            NewprojectVisibleFlag:''
         };
     },
     created() {},
@@ -121,7 +138,7 @@ export default {
         //编辑
         onRowUpdateButtonClick(row) {
             console.log(row, '编辑');
-            this.dialogVisible = true;
+            this.dialogNewprojectVisible = true;
         },
         onSelectionChange(val) {
             console.log('多选', val);
@@ -160,5 +177,10 @@ export default {
 <style>
 textarea {
   height: 100%;
+}
+.titalS{
+    font-size: 15px;
+    height: 40px;
+    width: 100%;
 }
 </style>

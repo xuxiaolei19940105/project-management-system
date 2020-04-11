@@ -1,17 +1,21 @@
 <template>
     <div>
-        <project-information />
-        <implementers-information />
-        <developer-information />
-        <testers-information />
-        <el-row>
-            <el-col :span="12">
-                <message />
-            </el-col>
-            <el-col :span="12">
-                <journal />
-            </el-col>
-        </el-row>
+        <div><project-information /></div>
+        <div><implementers-information /></div>
+        <div><developer-information /></div>
+        <div><testers-information /></div>
+        <div>
+            <el-card>
+                <el-row>
+                    <el-col :span="12">
+                        <message />
+                    </el-col>
+                    <el-col :span="12">
+                        <journal />
+                    </el-col>
+                </el-row>
+            </el-card>
+        </div>
     </div>
 </template>
 <script>

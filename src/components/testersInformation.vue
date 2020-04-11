@@ -1,4 +1,5 @@
 <template>
+    <div>
     <el-card class="box-card">
         <div slot="header" class="clearfix">
             <span>测试任务概况</span>
@@ -46,6 +47,7 @@
             </el-col>
         </el-row>
     </el-card>
+    </div>
 </template>
 <script>
 export default {

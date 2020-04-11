@@ -1,4 +1,5 @@
 <template>
+    <div>
     <el-card class="box-card">
         <div slot="header" class="clearfix">
             <span>日志</span>
@@ -15,6 +16,7 @@
             </el-col>
         </el-row>
     </el-card>
+    </div>
 </template>
 <script>
 export default {
