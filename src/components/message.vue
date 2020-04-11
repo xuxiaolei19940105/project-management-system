@@ -1,38 +1,50 @@
 <template>
     <div>
-    <el-card class="box-card">
-        <div slot="header" class="clearfix">
-            <span>留言板</span>
-            <el-button style="float: right; padding: 3px 0" type="text">新建留言</el-button>
-        </div>
-        <el-row>
-            <el-col :span="24">
-                <div class="tablebox">
-                    <el-table :data="tableData" border style="width: 100%" height="250" size="mini">
-                        <el-table-column prop="content" label="内容"></el-table-column>
-                        <el-table-column prop="name" label="人员" width="180"></el-table-column>
-                        <el-table-column prop="time" label="开始时间"></el-table-column>
-                        <el-table-column label="操作" width="150">
-                            <template slot-scope="scope">
-                                <el-button
-                                    @click="handleClick(scope.row)"
-                                    type="text"
-                                    size="small"
-                                >查看</el-button>
-                                <el-button type="text" size="small">编辑</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </div>
-            </el-col>
-        </el-row>
-    </el-card>
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span>留言板</span>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="dialogNewmesaagetaskVisible = true">新建留言</el-button>
+            </div>
+            <el-row>
+                <el-col :span="24">
+                    <div class="tablebox">
+                        <el-table :data="tableData" border style="width: 100%" height="250" size="mini">
+                            <el-table-column prop="content" label="内容"></el-table-column>
+                            <el-table-column prop="name" label="人员" width="180"></el-table-column>
+                            <el-table-column prop="time" label="开始时间"></el-table-column>
+                            <el-table-column label="操作" width="150">
+                                <template slot-scope="scope">
+                                    <el-button
+                                        @click="handleClick(scope.row)"
+                                        type="text"
+                                        size="small"
+                                    >查看</el-button>
+                                    <el-button type="text" size="small" @click="dialogNewmesaagetaskVisible = true">编辑</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </el-col>
+            </el-row>
+        </el-card>
+        <el-dialog title="新建提问"  :visible.sync="dialogNewmesaagetaskVisible" width="50%" :append-to-body="true">
+            <newmessagepage></newmessagepage>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogNewmesaagetaskVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogNewmesaagetaskVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
+import newmessagepage from './newmessage.vue'
 export default {
+    components: {
+        newmessagepage
+    },
     data() {
         return {
+            dialogNewmesaagetaskVisible:false,
             tableData: [
                 {
                     content: 'bug修改',
@@ -99,6 +111,7 @@ export default {
     },
     methods: {
         handleClick(row) {
+            this.dialogNewmesaagetaskVisible=true;
             console.log(row);
         }
     }
