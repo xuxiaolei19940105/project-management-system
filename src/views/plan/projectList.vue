@@ -26,7 +26,7 @@
             </span>
         </el-dialog>
         <el-dialog title="新建项目" :visible.sync="dialogNewprojectVisible" width="80%" :append-to-body="true">
-            <newprojectpage></newprojectpage>
+           <project-information />
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewprojectVisible = false">取 消</el-button>
                 <el-button type="primary" @click="dialogNewprojectVisible = false">确 定</el-button>
@@ -36,11 +36,11 @@
 </template>
 <script>
 import projectPage from '../../components/projectPage.vue';
-import newprojectpage from './newProject.vue'
+import projectInformation from '../../components/projectInformation.vue'
 export default {
     components: {
         projectPage,
-        newprojectpage
+        projectInformation
     },
     data() {
         const { renderControlColumn } = this;
@@ -138,7 +138,7 @@ export default {
         //编辑
         onRowUpdateButtonClick(row) {
             console.log(row, '编辑');
-            this.dialogNewprojectVisible = true;
+            this.dialogVisible = true;
         },
         onSelectionChange(val) {
             console.log('多选', val);
@@ -182,5 +182,9 @@ textarea {
     font-size: 15px;
     height: 40px;
     width: 100%;
+}
+.el-dialog__body{
+    max-height: 500px;
+    overflow: auto;
 }
 </style>
