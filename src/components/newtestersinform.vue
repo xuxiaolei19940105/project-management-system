@@ -87,6 +87,7 @@
                             :limit="3"
                             :on-exceed="handleExceed"
                             :file-list="fileList"
+                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
                         >
                         <el-button size="small" type="primary">点击上传</el-button>
                         </el-upload>

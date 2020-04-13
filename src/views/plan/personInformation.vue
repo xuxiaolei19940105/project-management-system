@@ -15,11 +15,27 @@
                 element-loading-text="加载中"
             ></dytable>
         </el-card>
+        <el-card>
+            <dytable
+                :columns="articlesReadyColumns"
+                :table-data="articlesReadytableData"
+                :total="total"
+                ref="multipleTable"
+                :page-num="pageNum"
+                :page-size="pageSize"
+                @current-change="onCurrentChange"
+                @on-selection-change="onSelectionChange"
+                @size-change="onSizeChange"
+                v-loading="false"
+                element-loading-text="加载中"
+            ></dytable>
+        </el-card>
     </div>
 </template>
 <script>
 export default {
     data(){
+        const { renderControlColumn } = this;
         return{
             columns:[
                 {
@@ -58,6 +74,30 @@ export default {
                 {
                     key: 'remarks',
                     title: '备注'
+                }
+            ],
+            articlesReadyColumns:[
+                {
+                    key: 'employeeName',
+                    title: '姓名',
+                    width:'80px'
+                },
+                {
+                    key: 'employeeCategory',
+                    title: '职务',
+                    width:'80px'
+                },
+                {
+                    key: 'employeedetails',
+                    render: renderControlColumn,
+                    title: '近30天占用情况',
+                },
+            ],
+            articlesReadytableData:[
+                {
+                    employeeName:'张三',
+                    employeeCategory:'实施',
+                    persiondate:'wwwwww'
                 }
             ],
             table:[
@@ -137,6 +177,43 @@ export default {
         onCurrentChange(val) {
             this.pageNum = val;
         },
+        renderControlColumn({row}){
+            const  ret =[];
+            var startdate ='20200401';
+            var enddate = '20200422';
+            for(var i=0;i<30;i++){
+                var date1 = new Date();
+                var date2 = new Date(date1);
+                date2.setDate(date1.getDate() + i);
+                const dayString=date2.getDate();
+                var dayMon=date2.getMonth()+1;
+                if(dayMon < 10)dayMon = "0"+dayMon;
+                var dayDate=date2.getDate();
+                if(dayDate < 10)dayDate = "0"+dayDate;
+                var dayNumber = date2.getFullYear()+''+dayMon+''+dayDate;
+                if(dayNumber < startdate){
+                    var htmlS=''+dayNumber+'';
+                    ret.push(
+                        <div style="width:40px;height:30px;line-height:30px;margin-left:2px;text-align:center;float:left;background:#67C23A;">
+                            {dayString}
+                        </div>
+                    );
+                }else if(dayNumber > enddate){
+                    ret.push(
+                        <div style="width:40px;height:30px;line-height:30px;margin-left:2px;text-align:center;float:left;background:#67C23A;">
+                            {dayString}
+                        </div>
+                    );
+                }else{
+                    ret.push(
+                        <div style="width:40px;height:30px;line-height:30px;margin-left:2px;text-align:center;float:left;background:#F56C6C;">
+                            {dayString}
+                        </div>
+                    );
+                }
+            }
+            return <div>{ret}</div>;
+        }
     }
 }
 </script>

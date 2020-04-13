@@ -22,7 +22,7 @@ export default new Router({
                 {
                     path: 'tabs',
                     name: 'tabs',
-                    component: () => import(/* webpackChunkName: "tabs" */ '../components/page/Tabs.vue'),
+                    component: () => import(/* webpackChunkName: "tabs" */ '../components/messageReminder.vue'),
                     meta: {
                         title: '消息'
                     }
