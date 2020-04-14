@@ -1,20 +1,5 @@
 <template>
     <div>
-        <el-card class="box-card">
-            <dytable
-                :columns="columns"
-                :table-data="table"
-                :total="total"
-                ref="multipleTable"
-                :page-num="pageNum"
-                :page-size="pageSize"
-                @current-change="onCurrentChange"
-                @on-selection-change="onSelectionChange"
-                @size-change="onSizeChange"
-                v-loading="false"
-                element-loading-text="加载中"
-            ></dytable>
-        </el-card>
         <el-card>
             <dytable
                 :columns="articlesReadyColumns"
@@ -35,47 +20,8 @@
 <script>
 export default {
     data(){
-        const { renderControlColumn } = this;
+        const { renderControlColumn} = this;     
         return{
-            columns:[
-                {
-                    key: 'employeeNumber',
-                    title: '员工编号'
-                },
-                {
-                    key: 'employeeName',
-                    title: '员工姓名'
-                },
-                {
-                    key: 'employeeCategory',
-                    title: '员工分类'
-                },
-                {
-                    key: 'projectName',
-                    title: '项目名称'
-                },
-                {
-                    key: 'projectTimeFrom',
-                    title: '起始时间'
-                },
-                {
-                    key: 'projectTimeTO',
-                    title: '结束时间'
-                },
-                {
-                    key: 'currentTask',
-                    title: '当前任务'
-                },
-
-                {
-                    key: 'taskSpeed',
-                    title: '任务进度'
-                },
-                {
-                    key: 'remarks',
-                    title: '备注'
-                }
-            ],
             articlesReadyColumns:[
                 {
                     key: 'employeeName',
@@ -97,53 +43,39 @@ export default {
                 {
                     employeeName:'张三',
                     employeeCategory:'实施',
-                    persiondate:'wwwwww'
-                }
-            ],
-            table:[
-                {
-                    employeeNumber: 'fj20201',
-                    employeeName: '张三',
-                    employeeCategory: '实施',
-                    projectName: 'ERP系统管理',
-                    projectTimeFrom: '2020-04-02',
-                    projectTimeTO: '2020-05-02',
-                    currentTask: '订单管理',
-                    taskSpeed: '80%',
-                    remarks: '111111'
+                    projectdetail:[
+                        {
+                            projectname:'111',
+                            projectstarttime:'2020-4-18',
+                            projectendtime:'2020-4-22'
+                        },
+                        {
+                            projectname:'2222',
+                            projectstarttime:'2020-4-25',
+                            projectendtime:'2020-5-2'
+                        }
+                    ],
                 },
                 {
-                    employeeNumber: 'fj20202',
-                    employeeName: '李四',
-                    employeeCategory: '开发',
-                    projectName: 'ERP系统管理',
-                    projectTimeFrom: '2020-04-02',
-                    projectTimeTO: '2020-05-12',
-                    currentTask: '订单管理',
-                    taskSpeed: '70%',
-                    remarks: '111111'
-                },
-                {
-                    employeeNumber: 'fj20203',
-                    employeeName: '王五',
-                    employeeCategory: '测试',
-                    projectName: 'ERP系统管理',
-                    projectTimeFrom: '2020-04-12',
-                    projectTimeTO: '2020-05-02',
-                    currentTask: '订单管理',
-                    taskSpeed: '60%',
-                    remarks: '111111'
-                },
-                {
-                    employeeNumber: 'fj20204',
-                    employeeName: '陈六',
-                    employeeCategory: '实施',
-                    projectName: 'ERP系统管理',
-                    projectTimeFrom: '2020-04-22',
-                    projectTimeTO: '2020-05-02',
-                    currentTask: '订单管理',
-                    taskSpeed: '50%',
-                    remarks: '111111'
+                    employeeName:'黎明',
+                    employeeCategory:'开发',
+                    projectdetail:[
+                        {
+                            projectname:'111',
+                            projectstarttime:'2020-4-19',
+                            projectendtime:'2020-4-22'
+                        },
+                        {
+                            projectname:'2222',
+                            projectstarttime:'2020-4-20',
+                            projectendtime:'2020-5-2'
+                        },
+                        {
+                            projectname:'3333',
+                            projectstarttime:'2020-5-4',
+                            projectendtime:'2020-5-4'
+                        }
+                    ],
                 }
             ],
             pageNum: 1,
@@ -177,42 +109,132 @@ export default {
         onCurrentChange(val) {
             this.pageNum = val;
         },
-        renderControlColumn({row}){
-            const  ret =[];
-            var startdate ='20200401';
-            var enddate = '20200422';
-            for(var i=0;i<30;i++){
-                var date1 = new Date();
-                var date2 = new Date(date1);
-                date2.setDate(date1.getDate() + i);
-                const dayString=date2.getDate();
-                var dayMon=date2.getMonth()+1;
-                if(dayMon < 10)dayMon = "0"+dayMon;
-                var dayDate=date2.getDate();
-                if(dayDate < 10)dayDate = "0"+dayDate;
-                var dayNumber = date2.getFullYear()+''+dayMon+''+dayDate;
-                if(dayNumber < startdate){
-                    var htmlS=''+dayNumber+'';
-                    ret.push(
-                        <div style="width:40px;height:30px;line-height:30px;margin-left:2px;text-align:center;float:left;background:#67C23A;">
-                            {dayString}
-                        </div>
-                    );
-                }else if(dayNumber > enddate){
-                    ret.push(
-                        <div style="width:40px;height:30px;line-height:30px;margin-left:2px;text-align:center;float:left;background:#67C23A;">
-                            {dayString}
-                        </div>
-                    );
+        /**
+         * 格式化时间
+         * @param
+         */
+        dateformate:function(datestring){
+            const dateS = datestring;
+            var dateAa= [];
+            var returnDate='';
+            if (dateS === null || dateS === undefined || dateS === '') {
+                returnDate="00000000";
+            }else{
+                if(dateS.indexOf("-") >0){
+                    dateAa= dateS.split("-");
+                }
+                if(dateAa.length > 0){
+                    for(var i=0;i< dateAa.length;i++){
+                        if(dateAa[i] <10){
+                            returnDate+="0"+dateAa[i];
+                        }else{
+                            returnDate+=dateAa[i];
+                        }
+                    }
                 }else{
-                    ret.push(
-                        <div style="width:40px;height:30px;line-height:30px;margin-left:2px;text-align:center;float:left;background:#F56C6C;">
-                            {dayString}
-                        </div>
-                    );
+                    returnDate=datestring; 
                 }
             }
-            return <div>{ret}</div>;
+           return  returnDate+"";
+        },
+         /**
+         * 判断每一天项目的情况
+         * @param
+         */
+        timevalible:function(row){
+            const currentdate = new Date();
+            var ProjectData = [];
+            var rowData = row.projectdetail;
+            for(var i=0;i<30;i++){
+                var everydate = new Date(currentdate);
+                everydate.setDate(currentdate.getDate() + i);
+                const dayString=everydate.getDate();
+                var dayMon=everydate.getMonth()+1;
+                if(dayMon < 10)dayMon = "0"+dayMon;
+                var dayDate=everydate.getDate();
+                if(dayDate < 10)dayDate = "0"+dayDate;
+                var dayNumber = everydate.getFullYear()+''+dayMon+''+dayDate;
+                const everyData = {};
+                everyData.dayString=dayString+"";
+                everyData.ymdString =everydate.getFullYear()+'-'+dayMon+'-'+dayDate; 
+                const projectobj = this.projecttimevalible(rowData,dayNumber);
+                if(projectobj){
+                    if(projectobj.length > 0){
+                        everyData.typeflag="true";
+                        everyData.projectnameArr=projectobj;
+                    }else{
+                        everyData.typeflag="false";
+                        everyData.projectnameArr=[];
+                    }
+                }else{
+                    everyData.typeflag="false";
+                    everyData.projectnameArr=[];
+                }
+                ProjectData.push(everyData);
+            }
+            return ProjectData;
+        },
+        projecttimevalible:function(data,crruetime){
+            const projectname=[];
+            for(var i=0;i< data.length;i++){
+                if(data[i]){
+                    const formtime= this.dateformate(data[i].projectstarttime);
+                    const totime = this.dateformate(data[i].projectendtime);
+                    console.log(formtime +"RRRR"+totime);
+                    if(formtime==totime){
+                        if(formtime ==="00000000"){
+                            // empty
+                        }else{
+                            if(formtime === crruetime){
+                                projectname.push(data[i].projectname);
+                            }
+                        }
+                    }else if(formtime > totime){
+                        // empty
+                    }else{
+                        if(crruetime < formtime){
+                            // empty
+                        }else if(crruetime >totime){
+                            // empty
+                        }else{
+                            projectname.push(data[i].projectname);
+                        }
+                    }
+                }
+            }
+            return projectname;
+        },
+        createtimetable(row){  
+            const ret =[];
+            var indexf=0;
+            const projectData = this.timevalible(row);
+            for(var i=0;i<projectData.length;i++){
+                indexf=indexf+1;
+                var children = projectData[i];
+                if(children){
+                    if(children.typeflag ==="true"){
+                        ret.push(
+                        <div style="width:40px;height:30px;line-height:30px;margin-left:2px;text-align:center;float:left;background:#F56C6C;">
+                            {children.dayString}
+                        </div>
+                        );
+                    }else{
+                        ret.push(
+                        <div style="width:40px;height:30px;line-height:30px;margin-left:2px;text-align:center;float:left;background:#67C23A;">
+                            {children.dayString}
+                        </div>
+                        );
+                    }  
+                }
+            }
+            return ret;
+        },
+        renderControlColumn({row}){
+            console.log(row.projectdetail);
+            console.log(this);
+            var reutnStr =this.createtimetable(row);
+            return <div>{reutnStr}</div>
+
         }
     }
 }
