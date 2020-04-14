@@ -1,19 +1,35 @@
 <template>
     <div>
-        <div><project-information /></div>
-        <div><implementers-information /></div>
-        <div><developer-information /></div>
-        <div><testers-information /></div>
+        <div>
+            <project-information />
+        </div>
+        <div>
+            <implementers-information />
+        </div>
+        <div>
+            <developer-information />
+        </div>
+        <div>
+            <testers-information />
+        </div>
         <div>
             <el-card>
-                <el-row>
+                <!-- <el-row>
                     <el-col :span="12">
                         <message />
                     </el-col>
                     <el-col :span="12">
                         <journal />
                     </el-col>
-                </el-row>
+                </el-row>-->
+                <el-tabs v-model="activeName" @tab-click="handleClick">
+                    <el-tab-pane label="留言板" name="first">
+                        <message />
+                    </el-tab-pane>
+                    <el-tab-pane label="日志" name="second">
+                        <journal />
+                    </el-tab-pane>
+                </el-tabs>
             </el-card>
         </div>
     </div>
@@ -35,12 +51,19 @@ export default {
         journal
     },
     data() {
-        return {};
+        return {
+            activeName: 'first'
+        };
+    },
+    methods: {
+        handleClick(tab, event) {
+            console.log(tab, event);
+        }
     }
 };
 </script>  
 <style scoped>
-.box-card{
+.box-card {
     margin-top: 10px;
 }
 </style>
