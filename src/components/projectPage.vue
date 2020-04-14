@@ -14,14 +14,6 @@
         </div>
         <div>
             <el-card>
-                <!-- <el-row>
-                    <el-col :span="12">
-                        <message />
-                    </el-col>
-                    <el-col :span="12">
-                        <journal />
-                    </el-col>
-                </el-row>-->
                 <el-tabs v-model="activeName" @tab-click="handleClick">
                     <el-tab-pane label="留言板" name="first">
                         <message />
@@ -32,6 +24,13 @@
                 </el-tabs>
             </el-card>
         </div>
+        <el-dialog title="提示" :visible.sync="personDialogVisible" width="30%">
+            <span>这是一段信息</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="personDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="personDialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -52,7 +51,8 @@ export default {
     },
     data() {
         return {
-            activeName: 'first'
+            activeName: 'first',
+            personDialogVisible: false
         };
     },
     methods: {
