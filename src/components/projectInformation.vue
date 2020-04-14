@@ -37,6 +37,17 @@
                                 <el-date-picker v-model="projectForm.projectEndDate" placeholder="请选择"></el-date-picker>
                             </el-form-item>
                         </el-col>
+                         <el-col :span="6" :offset="2">
+                            <el-form-item label="项目状态">
+                            <el-select v-model="projectForm.state" placeholder="请选择项目状态">
+                                    <el-option v-for="item in stateOptions"
+                                        :key="item.lable"
+                                        :label="item.value"
+                                        :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="6">
@@ -159,7 +170,8 @@ export default {
                 packagerStartDate:'',
                 testers:'',
                 packagers:'',
-                projectNumber:''
+                projectNumber:'',
+                state:''
             },
             labelPosition:'left',
             implementersOptions:[
@@ -174,6 +186,24 @@ export default {
                 {
                     value:'王麻子',
                     lable:'003'
+                }
+            ],
+              stateOptions:[
+                {
+                    value:'进行中',
+                    lable:'001'
+                },
+                {
+                    value:'暂停',
+                    lable:'002'
+                },
+                {
+                    value:'已作废',
+                    lable:'003'
+                },
+                {
+                    value:'已完结',
+                    lable:'004'
                 }
             ],
             developersOptions:[

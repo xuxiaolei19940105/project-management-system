@@ -58,8 +58,8 @@ export default {
                     title: '项目名称'
                 },
                 {
-                    key: 'level',
-                    title: '重要级别'
+                    key: 'state',
+                    title: '项目状态'
                 },
                 {
                     key: 'leader',
@@ -76,14 +76,14 @@ export default {
                 {
                     title: '操作',
                     render: renderControlColumn,
-                    width: '260px'
+                    width: '150px'
                 }
             ],
             table: [
                 {
                     projectNo: 'fj20201',
                     name: '项目1',
-                    level: '1',
+                    state: '已完结',
                     leader: '张三',
                     starttime: '2020-04-02',
                     endtime: '2020-05-02'
@@ -91,7 +91,7 @@ export default {
                 {
                     projectNo: 'fj20201',
                     name: '项目1',
-                    level: '1',
+                    state: '已作废',
                     leader: '张三',
                     starttime: '2020-04-02',
                     endtime: '2020-05-02'
@@ -99,7 +99,7 @@ export default {
                 {
                     projectNo: 'fj20201',
                     name: '项目1',
-                    level: '1',
+                    state: '暂停',
                     leader: '张三',
                     starttime: '2020-04-02',
                     endtime: '2020-05-02'
@@ -107,7 +107,7 @@ export default {
                 {
                     projectNo: 'fj20201',
                     name: '项目1',
-                    level: '1',
+                    state: '进行中',
                     leader: '张三',
                     starttime: '2020-04-02',
                     endtime: '2020-05-02'
@@ -131,10 +131,6 @@ export default {
             console.log(row, '查看');
             this.dialogVisible = true;
         },
-        //删除
-        onRowDeleteButtonClick(row) {
-            console.log(row, '删除');
-        },
         //编辑
         onRowUpdateButtonClick(row) {
             console.log(row, '编辑');
@@ -151,7 +147,7 @@ export default {
             this.pageNum = val;
         },
         renderControlColumn({ row }) {
-            const { onRowDeleteButtonClick, onRowLookButtonClick, onRowUpdateButtonClick } = this;
+            const { onRowLookButtonClick, onRowUpdateButtonClick } = this;
             const ret = [];
             ret.push(
                 <div>
@@ -160,9 +156,6 @@ export default {
                     </el-button>
                     <el-button type="text" icon="el-icon-edit" onClick={() => onRowUpdateButtonClick(row)}>
                         编辑
-                    </el-button>
-                    <el-button type="text" style="color:red" icon="el-icon-delete" onClick={() => onRowDeleteButtonClick(row)}>
-                        删除
                     </el-button>
                 </div>
             );

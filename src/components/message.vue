@@ -11,7 +11,7 @@
                         <el-table :data="tableData" border style="width: 100%" height="250" size="mini">
                             <el-table-column prop="content" label="内容"></el-table-column>
                             <el-table-column prop="name" label="人员" width="80"></el-table-column>
-                            <el-table-column prop="time" label="开始时间"></el-table-column>
+                            <el-table-column prop="time" label="时间"></el-table-column>
                             <el-table-column label="操作" width="100">
                                 <template slot-scope="scope">
                                     <el-button

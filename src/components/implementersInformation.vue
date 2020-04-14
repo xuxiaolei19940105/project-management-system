@@ -3,7 +3,11 @@
         <el-card>
             <div slot="header" class="clearfix">
                 <span>实施任务概况</span>
-                <el-button style="float: right; padding: 3px 0" type="text" @click="dialogNewImpltaskVisible = true">新建任务</el-button>
+                <el-button
+                    style="float: right; padding: 3px 0"
+                    type="text"
+                    @click="dialogNewImpltaskVisible = true"
+                >新建任务</el-button>
             </div>
             <el-row>
                 <el-col :span="6">
@@ -27,7 +31,13 @@
                 </el-col>
                 <el-col :span="18">
                     <div class="tablebox">
-                        <el-table :data="tableData" border style="width: 100%" height="250" size = mini>
+                        <el-table
+                            :data="tableData"
+                            border
+                            style="width: 100%"
+                            height="250"
+                            size="mini"
+                        >
                             <el-table-column prop="name" label="人员" width="180"></el-table-column>
                             <el-table-column prop="task" label="任务"></el-table-column>
                             <el-table-column prop="starttime" label="开始时间"></el-table-column>
@@ -39,7 +49,16 @@
                                         type="text"
                                         size="small"
                                     >查看</el-button>
-                                    <el-button type="text" size="small" @click="dialogNewImpltaskVisible = true">编辑</el-button>
+                                    <el-button
+                                        type="text"
+                                        size="small"
+                                        @click="dialogNewImpltaskVisible = true"
+                                    >编辑</el-button>
+                                    <el-button
+                                        type="text"
+                                        size="small"
+                                       @click="deleteClick(scope.row)"
+                                    >删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -47,7 +66,12 @@
                 </el-col>
             </el-row>
         </el-card>
-        <el-dialog title="新建实施任务"  :visible.sync="dialogNewImpltaskVisible" width="50%" :append-to-body="true">
+        <el-dialog
+            title="新建实施任务"
+            :visible.sync="dialogNewImpltaskVisible"
+            width="50%"
+            :append-to-body="true"
+        >
             <newImpltaskpage></newImpltaskpage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewImpltaskVisible = false">取 消</el-button>
@@ -57,7 +81,7 @@
     </div>
 </template>
 <script>
-import newImpltaskpage from './newimplementerInform.vue'
+import newImpltaskpage from './newimplementerInform.vue';
 export default {
     components: {
         newImpltaskpage
@@ -137,15 +161,18 @@ export default {
                     name: '王小虎'
                 }
             ],
-            dialogNewImpltaskVisible:false,
+            dialogNewImpltaskVisible: false
         };
     },
-     methods: {
-      handleClick(row) {
-        this.dialogNewImpltaskVisible = true;
-        console.log(row);
-      }
-    },
+    methods: {
+        handleClick(row) {
+            this.dialogNewImpltaskVisible = true;
+            console.log(row);
+        },
+        deleteClick(row) {
+            console.log(row);
+        }
+    }
 };
 </script>  
 <style scoped>

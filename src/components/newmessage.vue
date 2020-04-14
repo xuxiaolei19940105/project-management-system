@@ -9,22 +9,22 @@
                 :label-position="labelPosition"
             >
                 <el-row>
-                    <el-col :span="12">
-                        <el-form-item label="人员姓名" >
+                    <el-col :span="24">
+                        <el-form-item label="留言标题">
+                            <el-input v-model="newmessageForm.title"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="人员姓名">
                             <el-input v-model="newmessageForm.username"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="12">
-                        <el-form-item label="时间" >
-                            <el-date-picker v-model="newmessageForm.messagecreateDate" placeholder="请选择"></el-date-picker>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row>
-                    <el-col :span="12">
-                        <el-form-item label="内容" >
+                    <el-col :span="24">
+                        <el-form-item label="详细内容">
                             <el-input type="textarea" v-model="newmessageForm.comments" :rows="8"></el-input>
                         </el-form-item>
                     </el-col>
@@ -35,17 +35,17 @@
 </template>
 <script>
 export default {
-    data(){
+    data() {
         return {
-            newmessageForm:{
-                username:'',
-                messagecreateDate:'',
-                comments:''
+            newmessageForm: {
+                title:'',
+                username: '',
+                messagecreateDate: '',
+                comments: ''
             },
-            labelPosition:'left',
-        }
+            labelPosition: 'left'
+        };
     },
-    methods: {
-    }
-}
+    methods: {}
+};
 </script>

@@ -2,19 +2,19 @@
     <div>
         <el-card>
             <el-form
-                label-width="100px"
+                label-width="70px"
                 v-model="newtesterForm"
                 ref="newtesterForm"
                 class="dataForm"
                 :label-position="labelPosition"
             >
                 <el-row>
-                    <el-col :span="10">
+                    <el-col :span="11">
                         <el-form-item label="任务详情" >
                             <el-input v-model="newtesterForm.taskdetail"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="10" offset="4">
+                    <el-col :span="11" offset="2">
                         <el-form-item label="是否bug" >
                             <el-radio v-model="newtesterForm.radio" label="Yes"></el-radio>
                             <el-radio v-model="newtesterForm.radio" label="No"></el-radio>
@@ -22,36 +22,36 @@
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="10">
+                    <el-col :span="11">
                         <el-form-item label="预计结果" >
                             <el-input v-model="newtesterForm.expectedresults"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="10" offset="4">
+                    <el-col :span="11" offset="2">
                         <el-form-item label="bug标题" >
                             <el-input v-model="newtesterForm.expectedresults"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="10">
+                    <el-col :span="11">
                         <el-form-item label="实际结果" >
                             <el-input v-model="newtesterForm.actualresults"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="10" offset="4">
+                    <el-col :span="11" offset="2">
                         <el-form-item label="bug编号" >
                             <el-input v-model="newtesterForm.expectedresults"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="10">
+                    <el-col :span="11">
                         <el-form-item label="开始时间" >
                             <el-date-picker v-model="newtesterForm.testerStartDate" placeholder="请选择"></el-date-picker>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="10" offset="4">
+                    <el-col :span="11" offset="2">
                         <el-form-item label="抄送">
                             <el-select v-model="newtesterForm.developers" multiple placeholder="请选择开发人员">
                                 <el-option v-for="item in developersOptions"
@@ -64,12 +64,12 @@
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="10">
+                    <el-col :span="11">
                         <el-form-item label="结束时间" >
                             <el-date-picker v-model="newtesterForm.testerEndDate" placeholder="请选择"></el-date-picker>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="10" offset="4">
+                    <el-col :span="11" offset="2">
                         <el-form-item label="bug说明">
                             <el-input type="textarea" v-model="newtesterForm.comments" :rows="8"></el-input>
                         </el-form-item>
