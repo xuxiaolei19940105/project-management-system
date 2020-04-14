@@ -31,10 +31,17 @@
                 </el-row>
             </el-form>
         </el-card>
+        <el-card>
+            <reply />
+        </el-card>
     </div>
 </template>
 <script>
+import reply from './reply.vue';
 export default {
+      components: {
+        reply
+      },
     data() {
         return {
             newmessageForm: {
