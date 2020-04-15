@@ -68,7 +68,7 @@
                     <el-button
                         class="reply-btn"
                         size="medium"
-                        @click="sendCommentReply(i,j)"
+                        @click="sendCommentReply(i)"
                         type="primary"
                     >发表评论</el-button>
                 </div>
@@ -79,7 +79,7 @@
 <script>
 const clickoutside = {
     // 初始化指令
-    bind(el, binding, vnode) {
+    bind(el, binding) {
         function documentHandler(e) {
             // 这里判断点击的元素是否是本身，是本身，则返回
             if (el.contains(e.target)) {
@@ -96,7 +96,7 @@ const clickoutside = {
         document.addEventListener('click', documentHandler);
     },
     update() {},
-    unbind(el, binding) {
+    unbind(el) {
         // 解除事件监听
         document.removeEventListener('click', el.vueClickOutside);
         delete el.vueClickOutside;
@@ -182,6 +182,7 @@ export default {
             this.btnShow = true;
         },
         hideReplyBtn() {
+            var replyInput = document.getElementById('replyInput');
             this.btnShow = false;
             replyInput.style.padding = '10px';
             replyInput.style.border = 'none';
@@ -218,7 +219,7 @@ export default {
                 input.innerHTML = '';
             }
         },
-        sendCommentReply(i, j) {
+        sendCommentReply(i) {
             if (!this.replyComment) {
                 this.$message({
                     showClose: true,
@@ -267,8 +268,9 @@ export default {
                 return s + '天前';
             } else {
                 //超过30天ddd
-                var date = new Date(parseInt(date));
-                return date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+                var date1 = new Date(parseInt(date));
+                var returnstr=date1.getFullYear() + '/' + (date1.getMonth() + 1) + '/' + date1.getDate();
+                return returnstr;
             }
         }
     }

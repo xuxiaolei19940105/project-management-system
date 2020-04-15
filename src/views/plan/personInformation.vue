@@ -180,7 +180,6 @@ export default {
                 if(data[i]){
                     const formtime= this.dateformate(data[i].projectstarttime);
                     const totime = this.dateformate(data[i].projectendtime);
-                    console.log(formtime +"RRRR"+totime);
                     if(formtime==totime){
                         if(formtime ==="00000000"){
                             // empty
@@ -230,8 +229,6 @@ export default {
             return ret;
         },
         renderControlColumn({row}){
-            console.log(row.projectdetail);
-            console.log(this);
             var reutnStr =this.createtimetable(row);
             return <div>{reutnStr}</div>
 

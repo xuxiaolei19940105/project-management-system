@@ -29,7 +29,7 @@
            <project-information />
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewprojectVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogNewprojectVisible = false">确 定</el-button>
+                <el-button type="primary" @click="getNewProjectData()">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -126,6 +126,10 @@ export default {
     },
     created() {},
     methods: {
+        getNewProjectData(){
+            console.log(this);
+            this.dialogNewprojectVisible = true;
+        },
         // 查看
         onRowLookButtonClick(row) {
             console.log(row, '查看');

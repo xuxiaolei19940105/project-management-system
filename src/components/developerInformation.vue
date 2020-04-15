@@ -68,11 +68,12 @@
         </el-card>
         <el-dialog
             title="新建开发任务"
+            v-if="dialogNewDeveltaskVisible"
             :visible.sync="dialogNewDeveltaskVisible"
             width="50%"
             :append-to-body="true"
         >
-            <newdeveloppage></newdeveloppage>
+            <newdeveloppage ref='sonNewdevop' :rowdata="rowdata" :operationmode="operationmode"></newdeveloppage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewDeveltaskVisible = false">取 消</el-button>
                 <el-button type="primary" @click="dialogNewDeveltaskVisible = false">确 定</el-button>
@@ -94,6 +95,8 @@ export default {
                 implEndDate: '',
                 implementers: ''
             },
+            rowdata:[],
+            operationmode:'',
             tableData: [
                 {
                     task: 'bug修改',
@@ -102,10 +105,10 @@ export default {
                     name: '王小虎'
                 },
                 {
-                    task: 'bug修改',
+                    task: 'bug修改1',
                     starttime: '2016-05-02',
                     endtime: '2016-05-02',
-                    name: '王小虎'
+                    name: '王小虎1'
                 },
                 {
                     task: 'bug修改',
@@ -166,8 +169,9 @@ export default {
     },
     methods: {
         handleClick(row) {
+            this.rowdata=row;
+            this.operationmode="consult";
             this.dialogNewDeveltaskVisible = true;
-            console.log(row);
         },
         deleteClick(row) {
             console.log(row);

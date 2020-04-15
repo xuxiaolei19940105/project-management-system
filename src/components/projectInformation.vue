@@ -296,9 +296,6 @@ export default {
         };
     },
     methods: {
-        showPersonPage: function() {
-            eventVue.$emit('myFun', this.msg); //$emit这个方法会触发一个事件
-        }
     }
 };
 </script>

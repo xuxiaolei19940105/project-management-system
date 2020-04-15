@@ -57,7 +57,7 @@
                             class="upload-demo"
                             action="https://jsonplaceholder.typicode.com/posts/"
                             list-type="picture"
-                            :on-preview="handlePictureCardPreview"
+                            :on-preview="handlePreview"
                             :on-remove="handleRemove"
                             :before-remove="beforeRemove"
                             :limit="3"
@@ -74,6 +74,10 @@
 </template>
 <script>
 export default {
+    props:{
+        rowdata:Object,
+        operationmode:String
+    },
     data() {
         return {
             newdevelopForm: {
@@ -105,7 +109,22 @@ export default {
             ]
         };
     },
+    created(){
+        console.log(this.rowdata);
+        console.log(this.operationmode);
+        this.newdevelopForm.taskdetail=this.rowdata.task;
+        this.newdevelopForm.developStartDate=this.rowdata.starttime;
+        this.newdevelopForm.developEndDate=this.rowdata.endtime;
+    },
+    mounted(){
+        console.log("11:"+this.rowdata);
+        console.log("11:"+this.operationmode);
+    },
     methods: {
+        opennewdevoppage(rowdata,mode){
+        console.log(rowdata);
+        console.log(mode);
+        },
         handleRemove(file, fileList) {
             console.log(file, fileList);
         },
@@ -117,7 +136,7 @@ export default {
                 `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`
             );
         },
-        beforeRemove(file, fileList) {
+        beforeRemove(file) {
             return this.$confirm(`确定移除 ${file.name}？`);
         }
     }
