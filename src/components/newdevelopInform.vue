@@ -13,7 +13,7 @@
                         <el-form-item label="任务概述">
                             <el-input
                                 v-model="newdevelopForm.taskdetail"
-                                v-bind:disabled="disabledtaskdetail"
+                                v-bind:disabled="disabled"
                             ></el-input>
                         </el-form-item>
                     </el-col>
@@ -24,7 +24,7 @@
                             <el-date-picker
                                 v-model="newdevelopForm.developStartDate"
                                 placeholder="请选择"
-                                v-bind:disabled="disabledtaskStartDate"
+                                v-bind:disabled="disabled"
                             ></el-date-picker>
                         </el-form-item>
                     </el-col>
@@ -33,7 +33,7 @@
                             <el-date-picker
                                 v-model="newdevelopForm.developEndDate"
                                 placeholder="请选择"
-                                v-bind:disabled="disabledtaskEndDate"
+                                v-bind:disabled="disabled"
                             ></el-date-picker>
                         </el-form-item>
                     </el-col>
@@ -42,7 +42,7 @@
                     <el-col :span="24">
                         <el-form-item label="抄送">
                             <el-input
-                                v-bind:disabled="disabledtesters"
+                                v-bind:disabled="disabled"
                                 prefix-icon="el-icon-search"
                                 v-model="newdevelopForm.testers"
                                 @focus="showPersonPage"
@@ -60,13 +60,14 @@
                             :on-remove="handleRemove"
                             :before-remove="beforeRemove"
                             :limit="3"
+                            :disabled="disabled"
                             :on-exceed="handleExceed"
                             :file-list="fileList"
                         >
                             <el-button
                                 size="small"
                                 type="primary"
-                                v-bind:disabled="disabledtaskbutton"
+                                v-bind:disabled="disabled"
                             >点击上传</el-button>
                         </el-upload>
                     </el-col>
@@ -75,7 +76,7 @@
         </el-card>
         <el-dialog title="人员选择" :visible.sync="dialogVisible" width="80%" :append-to-body="true">
             <el-card>
-                <el-checkbox-group v-model="checkedPerson">
+                <el-checkbox-group v-model="checkedPerson" v-bind:disabled="disabled">
                     <el-checkbox
                         v-for="person in personOptions"
                         :label="person"
@@ -103,12 +104,7 @@ export default {
             checkedPerson: [],
             personOptions: ['吴二', '张三', '李四', '王五'],
             openfrom: '',
-
-            disabledtaskdetail: false,
-            disabledtaskStartDate: false,
-            disabledtaskEndDate: false,
-            disabledtesters: false,
-            disabledtaskbutton: false,
+            disabled: false,
             newdevelopForm: {
                 taskdetail: '',
                 developStartDate: '',
@@ -131,38 +127,22 @@ export default {
             this.newdevelopForm.taskdetail = this.rowdata.task;
             this.newdevelopForm.developStartDate = this.rowdata.starttime;
             this.newdevelopForm.developEndDate = this.rowdata.endtime;
-            this.disabledtaskdetail = false;
-            this.disabledtaskStartDate = false;
-            this.disabledtaskEndDate = false;
-            this.disabledtesters = false;
-            this.disabledtaskbutton = false;
+            this.disabled = false;
         } else if (this.operationmode == 'consult') {
             this.newdevelopForm.taskdetail = this.rowdata.task;
             this.disabledtaskdetail = true;
             this.newdevelopForm.developStartDate = this.rowdata.starttime;
-            this.disabledtaskStartDate = true;
-            this.newdevelopForm.developEndDate = this.rowdata.endtime;
-            this.disabledtaskEndDate = true;
-            this.disabledtesters = true;
-            this.disabledtaskbutton = true;
+            this.disabled = true;
         } else if (this.operationmode == 'new') {
             this.newdevelopForm.taskdetail = '';
-            this.disabledtaskdetail = false;
             this.newdevelopForm.developStartDate = '';
-            this.disabledtaskStartDate = false;
             this.newdevelopForm.developEndDate = '';
-            this.disabledtaskEndDate = false;
-            this.disabledtesters = false;
-            this.disabledtaskbutton = false;
+            this.disabled= false;
         } else {
             this.newdevelopForm.taskdetail = '';
             this.newdevelopForm.developStartDate = '';
             this.newdevelopForm.developEndDate = '';
-            this.disabledtaskdetail = false;
-            this.disabledtaskStartDate = false;
-            this.disabledtaskEndDate = false;
-            this.disabledtesters = false;
-            this.disabledtaskbutton = false;
+            this.disabled= false;
         }
     },
     methods: {

@@ -11,50 +11,50 @@
                 <el-row>
                     <el-col :span="11">
                         <el-form-item label="任务详情" >
-                            <el-input v-model="newtesterForm.taskdetail" v-bind:disabled="disabledtaskdetail"></el-input>
+                            <el-input v-model="newtesterForm.taskdetail" v-bind:disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="11" :offset="2">
                         <el-form-item label="是否bug" >
-                            <el-radio v-model="newtesterForm.radio" label="Yes" v-bind:disabled="disabledradioYes"></el-radio>
-                            <el-radio v-model="newtesterForm.radio" label="No" v-bind:disabled="disabledradioNo"></el-radio>
+                            <el-radio v-model="newtesterForm.radio" label="Yes" v-bind:disabled="disabled"></el-radio>
+                            <el-radio v-model="newtesterForm.radio" label="No" v-bind:disabled="disabled"></el-radio>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="11">
                         <el-form-item label="预计结果" >
-                            <el-input v-model="newtesterForm.expectedresults" v-bind:disabled="disabledexpectedresults"></el-input>
+                            <el-input v-model="newtesterForm.expectedresults" v-bind:disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="11" :offset="2">
                         <el-form-item label="bug标题" >
-                            <el-input v-model="newtesterForm.bugtital" v-bind:disabled="disabledbugtital"></el-input>
+                            <el-input v-model="newtesterForm.bugtital" v-bind:disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="11">
                         <el-form-item label="实际结果" >
-                            <el-input v-model="newtesterForm.actualresults" v-bind:disabled="disabledactualresults"></el-input>
+                            <el-input v-model="newtesterForm.actualresults" v-bind:disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="11" :offset="2">
                         <el-form-item label="bug编号" >
-                            <el-input v-model="newtesterForm.bugnumber" v-bind:disabled="disabledbugnumber"></el-input>
+                            <el-input v-model="newtesterForm.bugnumber" v-bind:disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="11">
                         <el-form-item label="开始时间" >
-                            <el-date-picker v-model="newtesterForm.testerStartDate" placeholder="请选择" v-bind:disabled="disabledtesterStartDate"></el-date-picker>
+                            <el-date-picker v-model="newtesterForm.testerStartDate" placeholder="请选择" v-bind:disabled="disabled"></el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="11" :offset="2">
                         <el-form-item label="抄送">
                             <el-input
-								v-bind:disabled="disableddevelopers"
+								v-bind:disabled="disabled"
                                 prefix-icon="el-icon-search"
                                 v-model="newtesterForm.developers"
                                 @focus="showPersonPage"
@@ -65,12 +65,12 @@
                 <el-row>
                     <el-col :span="11">
                         <el-form-item label="结束时间" >
-                            <el-date-picker v-model="newtesterForm.testerEndDate" placeholder="请选择" v-bind:disabled="disabledtesterEndDate"></el-date-picker>
+                            <el-date-picker v-model="newtesterForm.testerEndDate" placeholder="请选择" v-bind:disabled="disabled"></el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="11" :offset="2">
                         <el-form-item label="bug说明">
-                            <el-input type="textarea" v-model="newtesterForm.comments" :rows="8"></el-input>
+                            <el-input type="textarea" v-model="newtesterForm.comments" v-bind:disabled="disabled" :rows="8"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -84,12 +84,12 @@
                             :on-remove="handleRemove"
                             :before-remove="beforeRemove"
                             :limit="3"
-                            v-bind:disabled="disableduploaddemo"
+                            :disabled="disabled"
                             :on-exceed="handleExceed"
                             :file-list="fileList"
                             accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
                         >
-                        <el-button size="small" type="primary" v-bind:disabled="disabledbutton">点击上传</el-button>
+                        <el-button size="small" type="primary" v-bind:disabled="disabled">点击上传</el-button>
                         </el-upload>
                     </el-col>
                 </el-row>
@@ -97,7 +97,7 @@
         </el-card>
         <el-dialog title="人员选择" :visible.sync="dialogVisible" width="80%" :append-to-body="true">
             <el-card>
-                <el-checkbox-group v-model="checkedPerson">
+                <el-checkbox-group v-model="checkedPerson" v-bind:disabled="disabled">
                     <el-checkbox
                         v-for="person in personOptions"
                         :label="person"
@@ -126,19 +126,7 @@ export default {
             personOptions: ['吴二', '张三', '李四', '王五'],
             openfrom: '',
 
-            disabledtaskdetail:false,
-            disabledradioYes:false,
-            disabledradioNo:false,
-            disabledexpectedresults:false,
-            disabledbugtital:false,
-            disabledactualresults:false,
-            disabledbugnumber:false,
-            disabledtesterStartDate:false,
-            disableddevelopers:false,
-            disabledtesterEndDate:false,
-            disabledcomments:false,
-            disableduploaddemo:false,
-            disabledbutton:false,
+            disabled:false,
             newtesterForm:{
                 taskdetail:'',
                 expectedresults:'',
@@ -169,76 +157,28 @@ export default {
             this.newtesterForm.actualresults=this.rowdata.actual;
             this.newtesterForm.testerStartDate=this.rowdata.starttime;
             this.newtesterForm.testerEndDate=this.rowdata.endtime;
-            this.disabledtaskdetail=false;
-            this.disabledradioYes=false;
-            this.disabledradioNo=false;
-            this.disabledexpectedresults=false;
-            this.disabledbugtital=false;
-            this.disabledactualresults=false;
-            this.disabledbugnumber=false;
-            this.disabledtesterStartDate=false;
-            this.disableddevelopers=false;
-            this.disabledtesterEndDate=false;
-            this.disabledcomments=false;
-            this.disableduploaddemo=false;
-            this.disabledbutton=false;
+            this.disabled=false;
         }else if(this.operationmode=='consult'){
             this.newtesterForm.taskdetail=this.rowdata.task;
             this.newtesterForm.expectedresults=this.rowdata.want;
             this.newtesterForm.actualresults=this.rowdata.actual;
             this.newtesterForm.testerStartDate=this.rowdata.starttime;
             this.newtesterForm.testerEndDate=this.rowdata.endtime;
-            this.disabledtaskdetail=true;
-            this.disabledradioYes=true;
-            this.disabledradioNo=true;
-            this.disabledexpectedresults=true;
-            this.disabledbugtital=true;
-            this.disabledactualresults=true;
-            this.disabledbugnumber=true;
-            this.disabledtesterStartDate=true;
-            this.disableddevelopers=true;
-            this.disabledtesterEndDate=true;
-            this.disabledcomments=false;
-            this.disableduploaddemo=true;
-            this.disabledbutton=true;
+            this.disabled=true;
         }else if(this.operationmode=='new'){
             this.newtesterForm.taskdetail='';
             this.newtesterForm.expectedresults='';
             this.newtesterForm.actualresults='';
             this.newtesterForm.testerStartDate='';
             this.newtesterForm.testerEndDate='';
-            this.disabledtaskdetail=false;
-            this.disabledradioYes=false;
-            this.disabledradioNo=false;
-            this.disabledexpectedresults=false;
-            this.disabledbugtital=false;
-            this.disabledactualresults=false;
-            this.disabledbugnumber=false;
-            this.disabledtesterStartDate=false;
-            this.disableddevelopers=false;
-            this.disabledtesterEndDate=false;
-            this.disabledcomments=false;
-            this.disableduploaddemo=false;
-            this.disabledbutton=false;
+            this.disabled=false;
         }else{
             this.newtesterForm.taskdetail='';
             this.newtesterForm.expectedresults='';
             this.newtesterForm.actualresults='';
             this.newtesterForm.testerStartDate='';
             this.newtesterForm.testerEndDate='';
-            this.disabledtaskdetail=false;
-            this.disabledradioYes=false;
-            this.disabledradioNo=false;
-            this.disabledexpectedresults=false;
-            this.disabledbugtital=false;
-            this.disabledactualresults=false;
-            this.disabledbugnumber=false;
-            this.disabledtesterStartDate=false;
-            this.disableddevelopers=false;
-            this.disabledtesterEndDate=false;
-            this.disabledcomments=false;
-            this.disableduploaddemo=false;
-            this.disabledbutton=false;
+            this.disabled=false;
         }
     },
     methods: {

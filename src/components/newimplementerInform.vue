@@ -11,7 +11,7 @@
                 <el-row>
                     <el-col :span="24">
                         <el-form-item label="任务概述">
-                            <el-input v-model="implrmrntForm.taskdetail" v-bind:disabled="disabledtaskdetail"></el-input>
+                            <el-input v-model="implrmrntForm.taskdetail" v-bind:disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -21,7 +21,7 @@
                             <el-date-picker
                                 v-model="implrmrntForm.implementStartDate"
                                 placeholder="请选择"
-                                v-bind:disabled="disabledtaskStartDate"
+                                v-bind:disabled="disabled"
                             ></el-date-picker>
                         </el-form-item>
                     </el-col>
@@ -30,7 +30,7 @@
                             <el-date-picker
                                 v-model="implrmrntForm.implementEndDate"
                                 placeholder="请选择"
-                                v-bind:disabled="disabledtaskEndDate"
+                                v-bind:disabled="disabled"
                             ></el-date-picker>
                         </el-form-item>
                     </el-col>
@@ -43,12 +43,13 @@
                             list-type="picture"
                             :on-preview="handlePreview"
                             :on-remove="handleRemove"
+                            :disabled="disabled"
                             :before-remove="beforeRemove"
                             :limit="3"
                             :on-exceed="handleExceed"
                             :file-list="fileList"
                         >
-                            <el-button size="small" type="primary" v-bind:disabled="disabledtaskbutton">点击上传</el-button>
+                            <el-button size="small" type="primary" v-bind:disabled="disabled">点击上传</el-button>
                         </el-upload>
                     </el-col>
                 </el-row>
@@ -64,10 +65,7 @@ export default {
     },
     data() {
         return {
-            disabledtaskdetail:false,
-            disabledtaskStartDate:false,
-            disabledtaskEndDate:false,
-            disabledtaskbutton:false,
+            disabled:false,
             implrmrntForm: {
                 taskdetail: '',
                 implementStartDate: '',
@@ -89,34 +87,22 @@ export default {
             this.implrmrntForm.taskdetail=this.rowdata.task;
             this.implrmrntForm.implementStartDate=this.rowdata.starttime;
             this.implrmrntForm.implementEndDate=this.rowdata.endtime;
-            this.disabledtaskdetail=false;
-            this.disabledtaskStartDate=false;
-            this.disabledtaskEndDate=false;
-            this.disabledtaskbutton=false;
+            this.disabled=false;
         }else if(this.operationmode=='consult'){
             this.implrmrntForm.taskdetail=this.rowdata.task;
-            this.disabledtaskdetail=true;
             this.implrmrntForm.implementStartDate=this.rowdata.starttime;
-            this.disabledtaskStartDate=true;
             this.implrmrntForm.implementEndDate=this.rowdata.endtime;
-            this.disabledtaskEndDate=true;
-            this.disabledtaskbutton=true;
+            this.disabled=true;
         }else if(this.operationmode=='new'){
             this.implrmrntForm.taskdetail='';
-            this.disabledtaskdetail=false;
             this.implrmrntForm.implementStartDate='';
-            this.disabledtaskStartDate=false;
             this.implrmrntForm.implementEndDate='';
-            this.disabledtaskEndDate=false;
-            this.disabledtaskbutton=false;
+            this.disabled=false;
         }else{
             this.implrmrntForm.taskdetail='';
             this.implrmrntForm.implementStartDate='';
             this.implrmrntForm.implementEndDate='';
-            this.disabledtaskdetail=false;
-            this.disabledtaskStartDate=false;
-            this.disabledtaskEndDate=false;
-            this.disabledtaskbutton=false;
+            this.disabled=false;
         }
         
     },
