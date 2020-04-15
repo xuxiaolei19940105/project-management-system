@@ -53,13 +53,12 @@
                     </el-col>
                     <el-col :span="11" :offset="2">
                         <el-form-item label="抄送">
-                            <el-select v-model="newtesterForm.developers" multiple placeholder="请选择开发人员" v-bind:disabled="disableddevelopers">
-                                <el-option v-for="item in developersOptions"
-                                    :key="item.lable"
-                                    :label="item.value"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select>
+                            <el-input
+								v-bind:disabled="disableddevelopers"
+                                prefix-icon="el-icon-search"
+                                v-model="newtesterForm.developers"
+                                @focus="showPersonPage"
+                            ></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -96,6 +95,21 @@
                 </el-row>
             </el-form>
         </el-card>
+        <el-dialog title="人员选择" :visible.sync="dialogVisible" width="80%" :append-to-body="true">
+            <el-card>
+                <el-checkbox-group v-model="checkedPerson">
+                    <el-checkbox
+                        v-for="person in personOptions"
+                        :label="person"
+                        :key="person"
+                    >{{person}}</el-checkbox>
+                </el-checkbox-group>
+            </el-card>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="addPerson">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -106,6 +120,12 @@ export default {
     },
     data(){
         return {
+			//人员选择弹窗
+            dialogVisible: false,
+            checkedPerson: [],
+            personOptions: ['吴二', '张三', '李四', '王五'],
+            openfrom: '',
+
             disabledtaskdetail:false,
             disabledradioYes:false,
             disabledradioNo:false,
@@ -137,22 +157,8 @@ export default {
                     name:'小鹿',
                     url:'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'
                 }
-            ],
-            developersOptions:[
-                {
-                    value:'张一名',
-                    lable:'001'
-                },
-                {
-                    value:'李四嘉',
-                    lable:'002'
-                },
-                {
-                    value:'王波',
-                    lable:'003'
-                }
-            ],
-        }
+            ]
+        };
     },
     created(){
         console.log(this.rowdata);
@@ -236,18 +242,30 @@ export default {
         }
     },
     methods: {
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePreview(file) {
-        console.log(file);
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(files.length + fileList.length);
-      },
-      beforeRemove(file) {
-        return this.$confirm(file.name);
-      }
+        handleRemove(file, fileList) {
+            console.log(file, fileList);
+        },
+        handlePreview(file) {
+            console.log(file);
+        },
+        handleExceed(files, fileList) {
+            this.$message.warning(files.length + fileList.length);
+        },
+        beforeRemove(file) {
+            return this.$confirm(file.name);
+        },
+
+        showPersonPage() {
+            this.checkedPerson = [];
+            this.dialogVisible = true;
+            if (this.newtesterForm.developers) {
+                this.checkedPerson = this.newtesterForm.developers.split(',');
+            }
+        },
+        addPerson: function() {
+            this.dialogVisible = false;
+            this.newtesterForm.developers = this.checkedPerson.toString();
+        }
     }
 }
 </script>

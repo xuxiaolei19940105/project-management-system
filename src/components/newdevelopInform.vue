@@ -11,7 +11,10 @@
                 <el-row>
                     <el-col :span="24">
                         <el-form-item label="任务概述">
-                            <el-input v-model="newdevelopForm.taskdetail" v-bind:disabled="disabledtaskdetail"></el-input>
+                            <el-input
+                                v-model="newdevelopForm.taskdetail"
+                                v-bind:disabled="disabledtaskdetail"
+                            ></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -38,19 +41,12 @@
                 <el-row>
                     <el-col :span="24">
                         <el-form-item label="抄送">
-                            <el-select
-                                v-model="newdevelopForm.testers"
-                                multiple
-                                placeholder="请选择测试人员"
+                            <el-input
                                 v-bind:disabled="disabledtesters"
-                            >
-                                <el-option
-                                    v-for="item in testerOptions"
-                                    :key="item.lable"
-                                    :label="item.value"
-                                    :value="item.value"
-                                ></el-option>
-                            </el-select>
+                                prefix-icon="el-icon-search"
+                                v-model="newdevelopForm.testers"
+                                @focus="showPersonPage"
+                            ></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -67,27 +63,52 @@
                             :on-exceed="handleExceed"
                             :file-list="fileList"
                         >
-                            <el-button size="small" type="primary" v-bind:disabled="disabledtaskbutton">点击上传</el-button>
+                            <el-button
+                                size="small"
+                                type="primary"
+                                v-bind:disabled="disabledtaskbutton"
+                            >点击上传</el-button>
                         </el-upload>
                     </el-col>
                 </el-row>
             </el-form>
         </el-card>
+        <el-dialog title="人员选择" :visible.sync="dialogVisible" width="80%" :append-to-body="true">
+            <el-card>
+                <el-checkbox-group v-model="checkedPerson">
+                    <el-checkbox
+                        v-for="person in personOptions"
+                        :label="person"
+                        :key="person"
+                    >{{person}}</el-checkbox>
+                </el-checkbox-group>
+            </el-card>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="addPerson">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
 export default {
-    props:{
-        rowdata:Object,
-        operationmode:String
+    props: {
+        rowdata: Object,
+        operationmode: String
     },
     data() {
         return {
-            disabledtaskdetail:false,
-            disabledtaskStartDate:false,
-            disabledtaskEndDate:false,
-            disabledtesters:false,
-            disabledtaskbutton:false,
+            //人员选择弹窗
+            dialogVisible: false,
+            checkedPerson: [],
+            personOptions: ['吴二', '张三', '李四', '王五'],
+            openfrom: '',
+
+            disabledtaskdetail: false,
+            disabledtaskStartDate: false,
+            disabledtaskEndDate: false,
+            disabledtesters: false,
+            disabledtaskbutton: false,
             newdevelopForm: {
                 taskdetail: '',
                 developStartDate: '',
@@ -100,68 +121,54 @@ export default {
                     name: '小鹿',
                     url: 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'
                 }
-            ],
-            testerOptions: [
-                {
-                    value: '张一名',
-                    lable: '001'
-                },
-                {
-                    value: '李四嘉',
-                    lable: '002'
-                },
-                {
-                    value: '王波',
-                    lable: '003'
-                }
             ]
         };
     },
-    created(){
+    created() {
         console.log(this.rowdata);
         console.log(this.operationmode);
-        if(this.operationmode=='edit'){
-            this.newdevelopForm.taskdetail=this.rowdata.task;
-            this.newdevelopForm.developStartDate=this.rowdata.starttime;
-            this.newdevelopForm.developEndDate=this.rowdata.endtime;
-            this.disabledtaskdetail=false;
-            this.disabledtaskStartDate=false;
-            this.disabledtaskEndDate=false;
-            this.disabledtesters=false;
-            this.disabledtaskbutton=false;
-        }else if(this.operationmode=='consult'){
-            this.newdevelopForm.taskdetail=this.rowdata.task;
-            this.disabledtaskdetail=true;
-            this.newdevelopForm.developStartDate=this.rowdata.starttime;
-            this.disabledtaskStartDate=true;
-            this.newdevelopForm.developEndDate=this.rowdata.endtime;
-            this.disabledtaskEndDate=true;
-            this.disabledtesters=true;
-            this.disabledtaskbutton=true;
-        }else if(this.operationmode=='new'){
-            this.newdevelopForm.taskdetail='';
-            this.disabledtaskdetail=false;
-            this.newdevelopForm.developStartDate='';
-            this.disabledtaskStartDate=false;
-            this.newdevelopForm.developEndDate='';
-            this.disabledtaskEndDate=false;
-            this.disabledtesters=false;
-            this.disabledtaskbutton=false;
-        }else{
-            this.newdevelopForm.taskdetail='';
-            this.newdevelopForm.developStartDate='';
-            this.newdevelopForm.developEndDate='';
-            this.disabledtaskdetail=false;
-            this.disabledtaskStartDate=false;
-            this.disabledtaskEndDate=false;
-            this.disabledtesters=false;
-            this.disabledtaskbutton=false;
+        if (this.operationmode == 'edit') {
+            this.newdevelopForm.taskdetail = this.rowdata.task;
+            this.newdevelopForm.developStartDate = this.rowdata.starttime;
+            this.newdevelopForm.developEndDate = this.rowdata.endtime;
+            this.disabledtaskdetail = false;
+            this.disabledtaskStartDate = false;
+            this.disabledtaskEndDate = false;
+            this.disabledtesters = false;
+            this.disabledtaskbutton = false;
+        } else if (this.operationmode == 'consult') {
+            this.newdevelopForm.taskdetail = this.rowdata.task;
+            this.disabledtaskdetail = true;
+            this.newdevelopForm.developStartDate = this.rowdata.starttime;
+            this.disabledtaskStartDate = true;
+            this.newdevelopForm.developEndDate = this.rowdata.endtime;
+            this.disabledtaskEndDate = true;
+            this.disabledtesters = true;
+            this.disabledtaskbutton = true;
+        } else if (this.operationmode == 'new') {
+            this.newdevelopForm.taskdetail = '';
+            this.disabledtaskdetail = false;
+            this.newdevelopForm.developStartDate = '';
+            this.disabledtaskStartDate = false;
+            this.newdevelopForm.developEndDate = '';
+            this.disabledtaskEndDate = false;
+            this.disabledtesters = false;
+            this.disabledtaskbutton = false;
+        } else {
+            this.newdevelopForm.taskdetail = '';
+            this.newdevelopForm.developStartDate = '';
+            this.newdevelopForm.developEndDate = '';
+            this.disabledtaskdetail = false;
+            this.disabledtaskStartDate = false;
+            this.disabledtaskEndDate = false;
+            this.disabledtesters = false;
+            this.disabledtaskbutton = false;
         }
     },
     methods: {
-        opennewdevoppage(rowdata,mode){
-        console.log(rowdata);
-        console.log(mode);
+        opennewdevoppage(rowdata, mode) {
+            console.log(rowdata);
+            console.log(mode);
         },
         handleRemove(file, fileList) {
             console.log(file, fileList);
@@ -176,6 +183,18 @@ export default {
         },
         beforeRemove(file) {
             return this.$confirm(`确定移除 ${file.name}？`);
+        },
+
+        showPersonPage() {
+            this.checkedPerson = [];
+            this.dialogVisible = true;
+            if (this.newdevelopForm.testers) {
+                this.checkedPerson = this.newdevelopForm.testers.split(',');
+            }
+        },
+        addPerson: function() {
+            this.dialogVisible = false;
+            this.newdevelopForm.testers = this.checkedPerson.toString();
         }
     }
 };

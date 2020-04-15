@@ -20,9 +20,17 @@
                                 <el-input v-model="projectForm.projectNumber" :disabled="true"></el-input>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="6" :offset="2">
-                            <el-form-item label="项目负责人">
-                                <el-input v-model="projectForm.projectLeader"></el-input>
+
+                        <el-col :span="8" :offset="2">
+                            <el-form-item label="项目状态">
+                                <el-select v-model="projectForm.state" placeholder="请选择项目状态">
+                                    <el-option
+                                        v-for="item in stateOptions"
+                                        :key="item.lable"
+                                        :label="item.value"
+                                        :value="item.value"
+                                    ></el-option>
+                                </el-select>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -43,16 +51,13 @@
                                 ></el-date-picker>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="6" :offset="2">
-                            <el-form-item label="项目状态">
-                                <el-select v-model="projectForm.state" placeholder="请选择项目状态">
-                                    <el-option
-                                        v-for="item in stateOptions"
-                                        :key="item.lable"
-                                        :label="item.value"
-                                        :value="item.value"
-                                    ></el-option>
-                                </el-select>
+                        <el-col :span="8" :offset="2">
+                            <el-form-item label="项目负责人">
+                                <el-input
+                                    prefix-icon="el-icon-search"
+                                    v-model="projectForm.projectLeader"
+                                    @focus="showPersonPage(1)"
+                                ></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -70,20 +75,13 @@
                                 <el-date-picker v-model="projectForm.implEndDate" placeholder="请选择"></el-date-picker>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="6" :offset="2">
+                        <el-col :span="8" :offset="2">
                             <el-form-item label="实施人员">
-                                <el-select
+                                <el-input
+                                    prefix-icon="el-icon-search"
                                     v-model="projectForm.implementers"
-                                    multiple
-                                    placeholder="请选择实施人员"
-                                >
-                                    <el-option
-                                        v-for="item in implementersOptions"
-                                        :key="item.lable"
-                                        :label="item.value"
-                                        :value="item.value"
-                                    ></el-option>
-                                </el-select>
+                                    @focus="showPersonPage(2)"
+                                ></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -104,20 +102,14 @@
                                 ></el-date-picker>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="6" :offset="2">
+
+                        <el-col :span="8" :offset="2">
                             <el-form-item label="开发人员">
-                                <el-select
+                                <el-input
+                                    prefix-icon="el-icon-search"
                                     v-model="projectForm.developers"
-                                    multiple
-                                    placeholder="请选择开发人员"
-                                >
-                                    <el-option
-                                        v-for="item in developersOptions"
-                                        :key="item.lable"
-                                        :label="item.value"
-                                        :value="item.value"
-                                    ></el-option>
-                                </el-select>
+                                    @focus="showPersonPage(3)"
+                                ></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -138,20 +130,13 @@
                                 ></el-date-picker>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="6" :offset="2">
+                        <el-col :span="8" :offset="2">
                             <el-form-item label="测试人员">
-                                <el-select
+                                <el-input
+                                    prefix-icon="el-icon-search"
                                     v-model="projectForm.testers"
-                                    multiple
-                                    placeholder="请选择测试人员"
-                                >
-                                    <el-option
-                                        v-for="item in testerOptions"
-                                        :key="item.lable"
-                                        :label="item.value"
-                                        :value="item.value"
-                                    ></el-option>
-                                </el-select>
+                                    @focus="showPersonPage(4)"
+                                ></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -164,39 +149,47 @@
                                 ></el-date-picker>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="6" :offset="10">
+                        <el-col :span="8" :offset="10">
                             <el-form-item label="打包人员">
-                                <el-select
+                                <el-input
+                                    prefix-icon="el-icon-search"
                                     v-model="projectForm.packagers"
-                                    multiple
-                                    placeholder="请选择打包人员"
-                                >
-                                    <el-option
-                                        v-for="item in packagersOptions"
-                                        :key="item.lable"
-                                        :label="item.value"
-                                        :value="item.value"
-                                    ></el-option>
-                                </el-select>
+                                    @focus="showPersonPage(5)"
+                                ></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <!-- <el-row>
-                        <el-col :span="14">
-                             <el-form-item label="项目说明">
-                                <el-input type="textarea" v-model="projectForm.comments" :rows="8"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>-->
                 </el-form>
             </div>
         </el-card>
+
+        <el-dialog title="人员选择" :visible.sync="dialogVisible" width="80%" :append-to-body="true">
+            <el-card>
+                <el-checkbox-group v-model="checkedPerson">
+                    <el-checkbox
+                        v-for="person in personOptions"
+                        :label="person"
+                        :key="person"
+                    >{{person}}</el-checkbox>
+                </el-checkbox-group>
+            </el-card>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="addPerson">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
 export default {
     data() {
         return {
+            //人员选择弹窗
+            dialogVisible: false,
+            checkedPerson: [],
+            personOptions: ['吴二', '张三', '李四', '王五'],
+            openfrom: '',
+
             projectForm: {
                 projectName: '',
                 projectCategory: '',
@@ -219,20 +212,6 @@ export default {
                 state: ''
             },
             labelPosition: 'left',
-            implementersOptions: [
-                {
-                    value: '张三',
-                    lable: '001'
-                },
-                {
-                    value: '李四',
-                    lable: '002'
-                },
-                {
-                    value: '王麻子',
-                    lable: '003'
-                }
-            ],
             stateOptions: [
                 {
                     value: '进行中',
@@ -251,51 +230,39 @@ export default {
                     lable: '004'
                 }
             ],
-            developersOptions: [
-                {
-                    value: '张一名',
-                    lable: '001'
-                },
-                {
-                    value: '李四嘉',
-                    lable: '002'
-                },
-                {
-                    value: '王波',
-                    lable: '003'
-                }
-            ],
-            testerOptions: [
-                {
-                    value: '张一名',
-                    lable: '001'
-                },
-                {
-                    value: '李四嘉',
-                    lable: '002'
-                },
-                {
-                    value: '王波',
-                    lable: '003'
-                }
-            ],
-            packagersOptions: [
-                {
-                    value: '张一名',
-                    lable: '001'
-                },
-                {
-                    value: '李四嘉',
-                    lable: '002'
-                },
-                {
-                    value: '王波',
-                    lable: '003'
-                }
-            ]
         };
     },
     methods: {
+        showPersonPage(openfrom) {
+            this.checkedPerson = [];
+            this.openfrom = openfrom;
+            this.dialogVisible = true;
+            if (this.openfrom == 1 && this.projectForm.projectLeader) {
+                this.checkedPerson=this.projectForm.projectLeader.split(",");
+            } else if (this.openfrom == 2 && this.projectForm.implementers) {
+                this.checkedPerson=this.projectForm.implementers.split(",");
+            } else if (this.openfrom == 3 && this.projectForm.developers) {
+                this.checkedPerson=this.projectForm.developers.split(",");
+            } else if (this.openfrom == 4 && this.projectForm.testers) {
+                this.checkedPerson=this.projectForm.testers.split(",");
+            } else if(this.openfrom == 4 && this.projectForm.packagers){
+                this.checkedPerson=this.projectForm.packagers.split(",");
+            }
+        },
+        addPerson: function() {
+            this.dialogVisible = false;
+            if (this.openfrom == 1) {
+                this.projectForm.projectLeader = this.checkedPerson.toString();
+            } else if (this.openfrom == 2) {
+                this.projectForm.implementers = this.checkedPerson.toString();
+            } else if (this.openfrom == 3) {
+                this.projectForm.developers = this.checkedPerson.toString();
+            } else if (this.openfrom == 4) {
+                this.projectForm.testers = this.checkedPerson.toString();
+            } else{
+                 this.projectForm.packagers = this.checkedPerson.toString();
+            }
+        }
     }
 };
 </script>
