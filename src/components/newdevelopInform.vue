@@ -11,7 +11,7 @@
                 <el-row>
                     <el-col :span="24">
                         <el-form-item label="任务概述">
-                            <el-input v-model="newdevelopForm.taskdetail"></el-input>
+                            <el-input v-model="newdevelopForm.taskdetail" v-bind:disabled="disabledtaskdetail"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -21,6 +21,7 @@
                             <el-date-picker
                                 v-model="newdevelopForm.developStartDate"
                                 placeholder="请选择"
+                                v-bind:disabled="disabledtaskStartDate"
                             ></el-date-picker>
                         </el-form-item>
                     </el-col>
@@ -29,6 +30,7 @@
                             <el-date-picker
                                 v-model="newdevelopForm.developEndDate"
                                 placeholder="请选择"
+                                v-bind:disabled="disabledtaskEndDate"
                             ></el-date-picker>
                         </el-form-item>
                     </el-col>
@@ -40,6 +42,7 @@
                                 v-model="newdevelopForm.testers"
                                 multiple
                                 placeholder="请选择测试人员"
+                                v-bind:disabled="disabledtesters"
                             >
                                 <el-option
                                     v-for="item in testerOptions"
@@ -64,7 +67,7 @@
                             :on-exceed="handleExceed"
                             :file-list="fileList"
                         >
-                            <el-button size="small" type="primary">点击上传</el-button>
+                            <el-button size="small" type="primary" v-bind:disabled="disabledtaskbutton">点击上传</el-button>
                         </el-upload>
                     </el-col>
                 </el-row>
@@ -80,6 +83,11 @@ export default {
     },
     data() {
         return {
+            disabledtaskdetail:false,
+            disabledtaskStartDate:false,
+            disabledtaskEndDate:false,
+            disabledtesters:false,
+            disabledtaskbutton:false,
             newdevelopForm: {
                 taskdetail: '',
                 developStartDate: '',
@@ -112,13 +120,43 @@ export default {
     created(){
         console.log(this.rowdata);
         console.log(this.operationmode);
-        this.newdevelopForm.taskdetail=this.rowdata.task;
-        this.newdevelopForm.developStartDate=this.rowdata.starttime;
-        this.newdevelopForm.developEndDate=this.rowdata.endtime;
-    },
-    mounted(){
-        console.log("11:"+this.rowdata);
-        console.log("11:"+this.operationmode);
+        if(this.operationmode=='edit'){
+            this.newdevelopForm.taskdetail=this.rowdata.task;
+            this.newdevelopForm.developStartDate=this.rowdata.starttime;
+            this.newdevelopForm.developEndDate=this.rowdata.endtime;
+            this.disabledtaskdetail=false;
+            this.disabledtaskStartDate=false;
+            this.disabledtaskEndDate=false;
+            this.disabledtesters=false;
+            this.disabledtaskbutton=false;
+        }else if(this.operationmode=='consult'){
+            this.newdevelopForm.taskdetail=this.rowdata.task;
+            this.disabledtaskdetail=true;
+            this.newdevelopForm.developStartDate=this.rowdata.starttime;
+            this.disabledtaskStartDate=true;
+            this.newdevelopForm.developEndDate=this.rowdata.endtime;
+            this.disabledtaskEndDate=true;
+            this.disabledtesters=true;
+            this.disabledtaskbutton=true;
+        }else if(this.operationmode=='new'){
+            this.newdevelopForm.taskdetail='';
+            this.disabledtaskdetail=false;
+            this.newdevelopForm.developStartDate='';
+            this.disabledtaskStartDate=false;
+            this.newdevelopForm.developEndDate='';
+            this.disabledtaskEndDate=false;
+            this.disabledtesters=false;
+            this.disabledtaskbutton=false;
+        }else{
+            this.newdevelopForm.taskdetail='';
+            this.newdevelopForm.developStartDate='';
+            this.newdevelopForm.developEndDate='';
+            this.disabledtaskdetail=false;
+            this.disabledtaskStartDate=false;
+            this.disabledtaskEndDate=false;
+            this.disabledtesters=false;
+            this.disabledtaskbutton=false;
+        }
     },
     methods: {
         opennewdevoppage(rowdata,mode){

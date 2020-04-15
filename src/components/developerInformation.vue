@@ -6,7 +6,7 @@
                 <el-button
                     style="float: right; padding: 3px 0"
                     type="text"
-                    @click="dialogNewDeveltaskVisible = true"
+                    @click="newdevelopList()"
                 >新建任务</el-button>
             </div>
             <el-row>
@@ -52,7 +52,7 @@
                                     <el-button
                                         type="text"
                                         size="small"
-                                        @click="dialogNewDeveltaskVisible = true"
+                                        @click="editleclick(scope.row)"
                                     >编辑</el-button>
                                     <el-button
                                         type="text"
@@ -76,7 +76,7 @@
             <newdeveloppage ref='sonNewdevop' :rowdata="rowdata" :operationmode="operationmode"></newdeveloppage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewDeveltaskVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogNewDeveltaskVisible = false">确 定</el-button>
+                <el-button type="primary" @click="savenewDevelop()">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -95,7 +95,7 @@ export default {
                 implEndDate: '',
                 implementers: ''
             },
-            rowdata:[],
+            rowdata:{},
             operationmode:'',
             tableData: [
                 {
@@ -168,13 +168,30 @@ export default {
         };
     },
     methods: {
+        newdevelopList(){
+            this.rowdata={};
+            this.operationmode="new";
+            this.dialogNewDeveltaskVisible = true;
+        },
         handleClick(row) {
             this.rowdata=row;
             this.operationmode="consult";
             this.dialogNewDeveltaskVisible = true;
         },
+        editleclick(row){
+            this.rowdata=row;
+            this.operationmode="edit";
+            this.dialogNewDeveltaskVisible = true;
+        },
         deleteClick(row) {
             console.log(row);
+        },
+        savenewDevelop(){
+            console.log(this.$refs.sonNewdevop.newdevelopForm.taskdetail);
+            console.log(this.$refs.sonNewdevop.newdevelopForm.developStartDate);
+            console.log(this.$refs.sonNewdevop.newdevelopForm.developEndDate);
+            console.log(this.$refs.sonNewdevop.newdevelopForm.testers);
+            this.dialogNewDeveltaskVisible = false
         }
     }
 };

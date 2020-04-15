@@ -6,7 +6,7 @@
                 <el-button
                     style="float: right; padding: 3px 0"
                     type="text"
-                    @click="dialogNewmesaagetaskVisible = true"
+                    @click="Newmessagetask()"
                 >新建留言</el-button>
             </div>
             <el-row>
@@ -32,7 +32,7 @@
                                     <el-button
                                         type="text"
                                         size="small"
-                                        @click="dialogNewmesaagetaskVisible = true"
+                                        @click="editleclick(scope.row)"
                                     >编辑</el-button>
                                 </template>
                             </el-table-column>
@@ -44,13 +44,14 @@
         <el-dialog
             title="新建提问"
             :visible.sync="dialogNewmesaagetaskVisible"
+            v-if="dialogNewmesaagetaskVisible"
             width="50%"
             :append-to-body="true"
         >
-            <newmessagepage></newmessagepage>
+            <newmessagepage ref='sonNewmessinform' :rowdata="rowdata" :operationmode="operationmode"></newmessagepage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewmesaagetaskVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogNewmesaagetaskVisible = false">确 定</el-button>
+                <el-button type="primary" @click="saveNewmesaage()">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -64,6 +65,8 @@ export default {
     data() {
         return {
             dialogNewmesaagetaskVisible: false,
+            rowdata:{},
+            operationmode:'',
             tableData: [
                 {
                     content: 'bug修改',
@@ -129,9 +132,24 @@ export default {
         };
     },
     methods: {
-        handleClick(row) {
+        Newmessagetask(){
+            this.rowdata={};
+            this.operationmode="new";
             this.dialogNewmesaagetaskVisible = true;
-            console.log(row);
+        },
+        handleClick(row) {
+            this.rowdata=row;
+            this.operationmode="consult";
+            this.dialogNewmesaagetaskVisible = true;
+        },
+        editleclick(row){
+            this.rowdata=row;
+            this.operationmode="edit";
+            this.dialogNewmesaagetaskVisible = true;
+        },
+        saveNewmesaage(){
+            console.log(this.$refs.sonNewmessinform.newmessageForm.title);
+            this.dialogNewmesaagetaskVisible = false
         }
     }
 };

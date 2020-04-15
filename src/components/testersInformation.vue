@@ -6,7 +6,7 @@
                 <el-button
                     style="float: right; padding: 3px 0"
                     type="text"
-                    @click="dialogNewtesttaskVisible = true"
+                    @click="Newtesttask()"
                 >新建任务</el-button>
             </div>
             <el-row>
@@ -54,7 +54,7 @@
                                     <el-button
                                         type="text"
                                         size="small"
-                                        @click="dialogNewtesttaskVisible = true"
+                                        @click="editleclick(scope.row)"
                                     >编辑</el-button>
                                     <el-button
                                         type="text"
@@ -71,13 +71,14 @@
         <el-dialog
             title="新建实施任务"
             :visible.sync="dialogNewtesttaskVisible"
+            v-if="dialogNewtesttaskVisible"
             width="50%"
             :append-to-body="true"
         >
-            <newtesttaskpage></newtesttaskpage>
+            <newtesttaskpage ref='sonNewtestinform' :rowdata="rowdata" :operationmode="operationmode"></newtesttaskpage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewtesttaskVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogNewtesttaskVisible = false">确 定</el-button>
+                <el-button type="primary" @click="savenewTester()">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -96,6 +97,8 @@ export default {
                 implEndDate: '',
                 implementers: ''
             },
+            rowdata:{},
+            operationmode:'',
             tableData: [
                 {
                     task: 'bug修改',
@@ -157,12 +160,32 @@ export default {
         };
     },
     methods: {
-        handleClick(row) {
+        Newtesttask(){
+            this.rowdata={};
+            this.operationmode="new";
             this.dialogNewtesttaskVisible = true;
-            console.log(row);
+        },
+        handleClick(row) {
+            this.rowdata=row;
+            this.operationmode="consult";
+            this.dialogNewtesttaskVisible = true;
+        },
+        editleclick(row){
+            this.rowdata=row;
+            this.operationmode="edit";
+            this.dialogNewtesttaskVisible = true;
         },
         deleteClick(row) {
             console.log(row);
+        },
+        savenewTester(){
+            console.log(this.$refs.sonNewtestinform.newtesterForm.taskdetail);
+            console.log(this.$refs.sonNewtestinform.newtesterForm.radio);
+            console.log(this.$refs.sonNewtestinform.newtesterForm.expectedresults);
+            console.log(this.$refs.sonNewtestinform.newtesterForm.actualresults);
+            console.log(this.$refs.sonNewtestinform.newtesterForm.testerStartDate);
+            console.log(this.$refs.sonNewtestinform.newtesterForm.testerEndDate);
+            this.dialogNewtesttaskVisible = false
         }
     }
 };

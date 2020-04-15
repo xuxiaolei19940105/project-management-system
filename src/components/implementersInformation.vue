@@ -6,7 +6,7 @@
                 <el-button
                     style="float: right; padding: 3px 0"
                     type="text"
-                    @click="dialogNewImpltaskVisible = true"
+                    @click="NewImpltask()"
                 >新建任务</el-button>
             </div>
             <el-row>
@@ -52,7 +52,7 @@
                                     <el-button
                                         type="text"
                                         size="small"
-                                        @click="dialogNewImpltaskVisible = true"
+                                        @click="editleclick(scope.row)"
                                     >编辑</el-button>
                                     <el-button
                                         type="text"
@@ -69,13 +69,14 @@
         <el-dialog
             title="新建实施任务"
             :visible.sync="dialogNewImpltaskVisible"
+            v-if="dialogNewImpltaskVisible"
             width="50%"
             :append-to-body="true"
         >
-            <newImpltaskpage></newImpltaskpage>
+            <newImpltaskpage ref='sonNewimplement' :rowdata="rowdata" :operationmode="operationmode"></newImpltaskpage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewImpltaskVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogNewImpltaskVisible = false">确 定</el-button>
+                <el-button type="primary" @click="saveNewImpltask()">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -93,6 +94,8 @@ export default {
                 implEndDate: '',
                 implementers: ''
             },
+            rowdata:{},
+            operationmode:'',
             tableData: [
                 {
                     task: 'bug修改',
@@ -165,12 +168,29 @@ export default {
         };
     },
     methods: {
-        handleClick(row) {
+        NewImpltask(){
+            this.rowdata={};
+            this.operationmode="new";
             this.dialogNewImpltaskVisible = true;
-            console.log(row);
+        },
+        handleClick(row) {
+            this.rowdata=row;
+            this.operationmode="consult";
+            this.dialogNewImpltaskVisible = true;
+        },
+        editleclick(row){
+            this.rowdata=row;
+            this.operationmode="edit";
+            this.dialogNewImpltaskVisible = true;
         },
         deleteClick(row) {
             console.log(row);
+        },
+        saveNewImpltask(){
+            console.log(this.$refs.sonNewimplement.implrmrntForm.taskdetail);
+            console.log(this.$refs.sonNewimplement.implrmrntForm.implementStartDate);
+            console.log(this.$refs.sonNewimplement.implrmrntForm.implementEndDate);
+            this.dialogNewImpltaskVisible = false
         }
     }
 };
