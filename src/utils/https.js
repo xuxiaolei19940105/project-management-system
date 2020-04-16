@@ -43,8 +43,8 @@ const errorHandle = (status, other) => {
         case 401:
             toLogin();
             break;
-        // 403 token过期
-        // 清除token并跳转登录页
+            // 403 token过期
+            // 清除token并跳转登录页
         case 403:
             tip('登录过期，请重新登录');
             localStorage.removeItem('token');
@@ -53,7 +53,7 @@ const errorHandle = (status, other) => {
                 toLogin();
             }, 1000);
             break;
-        // 404请求不存在
+            // 404请求不存在
         case 404:
             tip('请求的资源不存在');
             break;
@@ -64,8 +64,10 @@ const errorHandle = (status, other) => {
 
 // 创建axios实例
 var _axios = axios.create({ timeout: 1000 * 12, baseUrl: process.env.BASE_URL });
+//var _axios = axios.create({ timeout: 1000 * 12 });
 // 设置post请求头
-_axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+//_axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+_axios.defaults.headers.post['Content-Type'] = 'application/json';
 /**
  * 请求拦截器
  * 每次请求前，如果存在token则在请求头中携带token
@@ -123,7 +125,7 @@ export function get(url, params) {
             .catch(err => {
                 reject(err.data);
             });
-    });
+    }).catch(() => {});
 }
 /**
  * post方法，对应post请求
@@ -140,5 +142,5 @@ export function post(url, params) {
             .catch(err => {
                 reject(err.data);
             });
-    });
+    }).catch((err) => { console.log(err) });
 }

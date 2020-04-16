@@ -8,12 +8,17 @@ import './components/common/directives';
 import 'babel-polyfill';
 import store from './store';
 import comInstall from './components/common/index';
-import api from './model/api'; // 导入api接口
+import api from './model/api/index'; // 导入api接口
+import axios from 'axios'
+
+Vue.prototype.$axios = axios
+axios.defaults.headers.post["Content-type"] = "application/json"
 
 Vue.config.productionTip = false;
 Vue.use(comInstall);
 Vue.use(ElementUI);
 Vue.prototype.$api = api;
+
 
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {

@@ -25,12 +25,13 @@
 </template>
 
 <script>
+
 export default {
     data: function() {
         return {
             param: {
                 username: 'admin',
-                password: '123123'
+                password: 'admin'
             },
             rules: {
                 username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -40,6 +41,31 @@ export default {
     },
     methods: {
         submitForm() {
+            var usernameS = this.param.username;
+            var passwordS = this.param.password;
+            if(!usernameS){
+                this.$message.error("请输入用户名!");
+            }
+            if(!passwordS){
+                this.$message.error("请输入密码!");
+            }
+            if(usernameS && passwordS){
+                var paramdata={};
+                paramdata.username=usernameS;
+                paramdata.password=passwordS;
+                console.log(usernameS);
+                console.log(passwordS);
+                this.$axios.post('/api/User/login',paramdata).then(res=>{
+                    console.log(res)
+                })
+                /*this.$api.task.login(paramdata).then((response)=>{
+                    console.log(response);
+                    this.$message.error("请输入用户名和密码!");
+                });*/
+            }else{
+                console.log("111");
+            }
+            /*
             this.$refs.login.validate(valid => {
                 if (valid) {
                     this.$message.success('登录成功');
@@ -51,6 +77,7 @@ export default {
                     return false;
                 }
             });
+            */
         }
     }
 };
