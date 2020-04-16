@@ -7,12 +7,13 @@
                     style="float: right; padding: 3px 0"
                     type="text"
                     @click="NewImpltask()"
+                    :disabled="disabled"
                 >新建任务</el-button>
             </div>
             <el-row>
                 <el-col :span="6">
                     <div class="left">
-                        <el-form v-model="projectForm" class="dataForm" size="mini">
+                        <el-form v-model="projectForm" class="dataForm" size="mini" :disabled="disabled">
                             <el-form-item label="开始时间">
                                 <el-input v-model="projectForm.implStartDate"></el-input>
                             </el-form-item>
@@ -48,16 +49,19 @@
                                         @click="handleClick(scope.row)"
                                         type="text"
                                         size="small"
+                                        :disabled="disabled"
                                     >查看</el-button>
                                     <el-button
                                         type="text"
                                         size="small"
                                         @click="editleclick(scope.row)"
+                                        :disabled="disabled"
                                     >编辑</el-button>
                                     <el-button
                                         type="text"
                                         size="small"
-                                       @click="deleteClick(scope.row)"
+                                        @click="deleteClick(scope.row)"
+                                        :disabled="disabled"
                                     >删除</el-button>
                                 </template>
                             </el-table-column>
@@ -73,7 +77,11 @@
             width="50%"
             :append-to-body="true"
         >
-            <newImpltaskpage ref='sonNewimplement' :rowdata="rowdata" :operationmode="operationmode"></newImpltaskpage>
+            <newImpltaskpage
+                ref="sonNewimplement"
+                :rowdata="rowdata"
+                :operationmode="operationmode"
+            ></newImpltaskpage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewImpltaskVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveNewImpltask()">确 定</el-button>
@@ -89,13 +97,16 @@ export default {
     },
     data() {
         return {
+            disabled: false,
+
+
             projectForm: {
                 implStartDate: '',
                 implEndDate: '',
                 implementers: ''
             },
-            rowdata:{},
-            operationmode:'',
+            rowdata: {},
+            operationmode: '',
             tableData: [
                 {
                     task: 'bug修改',
@@ -167,30 +178,34 @@ export default {
             dialogNewImpltaskVisible: false
         };
     },
+     mounted() {
+        let disabled = localStorage.getItem('list');
+        this.disabled = JSON.parse(disabled);
+    },
     methods: {
-        NewImpltask(){
-            this.rowdata={};
-            this.operationmode="new";
+        NewImpltask() {
+            this.rowdata = {};
+            this.operationmode = 'new';
             this.dialogNewImpltaskVisible = true;
         },
         handleClick(row) {
-            this.rowdata=row;
-            this.operationmode="consult";
+            this.rowdata = row;
+            this.operationmode = 'consult';
             this.dialogNewImpltaskVisible = true;
         },
-        editleclick(row){
-            this.rowdata=row;
-            this.operationmode="edit";
+        editleclick(row) {
+            this.rowdata = row;
+            this.operationmode = 'edit';
             this.dialogNewImpltaskVisible = true;
         },
         deleteClick(row) {
             console.log(row);
         },
-        saveNewImpltask(){
+        saveNewImpltask() {
             console.log(this.$refs.sonNewimplement.implrmrntForm.taskdetail);
             console.log(this.$refs.sonNewimplement.implrmrntForm.implementStartDate);
             console.log(this.$refs.sonNewimplement.implrmrntForm.implementEndDate);
-            this.dialogNewImpltaskVisible = false
+            this.dialogNewImpltaskVisible = false;
         }
     }
 };

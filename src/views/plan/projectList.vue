@@ -18,14 +18,14 @@
                 element-loading-text="加载中"
             ></dytable>
         </el-card>
-        <el-dialog title="项目信息" :visible.sync="dialogVisible" width="80%" :append-to-body="true">
+        <el-dialog title="项目信息" :visible.sync="dialogVisible" width="80%" :append-to-body="true" v-if="dialogVisible">
             <projectPage></projectPage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
             </span>
         </el-dialog>
-        <el-dialog title="新建项目" :visible.sync="dialogNewprojectVisible" width="80%" :append-to-body="true">
+        <el-dialog title="新建项目" :visible.sync="dialogNewprojectVisible" width="80%" :append-to-body="true" v-if="dialogNewprojectVisible">
            <project-information />
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewprojectVisible = false">取 消</el-button>
@@ -133,11 +133,13 @@ export default {
         // 查看
         onRowLookButtonClick(row) {
             console.log(row, '查看');
+            localStorage.setItem("list", JSON.stringify(true));
             this.dialogVisible = true;
         },
         //编辑
         onRowUpdateButtonClick(row) {
             console.log(row, '编辑');
+            localStorage.setItem("list", JSON.stringify(false));
             this.dialogVisible = true;
         },
         onSelectionChange(val) {

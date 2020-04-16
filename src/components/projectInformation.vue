@@ -8,6 +8,7 @@
                     class="dataForm"
                     :label-position="labelPosition"
                     size="mini"
+                    v-bind:disabled="disabled"
                 >
                     <el-row>
                         <el-col :span="6">
@@ -184,6 +185,8 @@
 export default {
     data() {
         return {
+            disabled: false,
+
             //人员选择弹窗
             dialogVisible: false,
             checkedPerson: [],
@@ -229,8 +232,12 @@ export default {
                     value: '已完结',
                     lable: '004'
                 }
-            ],
+            ]
         };
+    },
+    mounted() {
+        let disabled = localStorage.getItem('list');
+        this.disabled = JSON.parse(disabled);
     },
     methods: {
         showPersonPage(openfrom) {
@@ -238,15 +245,15 @@ export default {
             this.openfrom = openfrom;
             this.dialogVisible = true;
             if (this.openfrom == 1 && this.projectForm.projectLeader) {
-                this.checkedPerson=this.projectForm.projectLeader.split(",");
+                this.checkedPerson = this.projectForm.projectLeader.split(',');
             } else if (this.openfrom == 2 && this.projectForm.implementers) {
-                this.checkedPerson=this.projectForm.implementers.split(",");
+                this.checkedPerson = this.projectForm.implementers.split(',');
             } else if (this.openfrom == 3 && this.projectForm.developers) {
-                this.checkedPerson=this.projectForm.developers.split(",");
+                this.checkedPerson = this.projectForm.developers.split(',');
             } else if (this.openfrom == 4 && this.projectForm.testers) {
-                this.checkedPerson=this.projectForm.testers.split(",");
-            } else if(this.openfrom == 4 && this.projectForm.packagers){
-                this.checkedPerson=this.projectForm.packagers.split(",");
+                this.checkedPerson = this.projectForm.testers.split(',');
+            } else if (this.openfrom == 4 && this.projectForm.packagers) {
+                this.checkedPerson = this.projectForm.packagers.split(',');
             }
         },
         addPerson: function() {
@@ -259,8 +266,8 @@ export default {
                 this.projectForm.developers = this.checkedPerson.toString();
             } else if (this.openfrom == 4) {
                 this.projectForm.testers = this.checkedPerson.toString();
-            } else{
-                 this.projectForm.packagers = this.checkedPerson.toString();
+            } else {
+                this.projectForm.packagers = this.checkedPerson.toString();
             }
         }
     }

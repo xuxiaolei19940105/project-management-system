@@ -1,7 +1,7 @@
 
 <template>
     <div>
-        <div v-clickoutside="hideReplyBtn" @click="inputFocus" class="my-reply">
+        <div v-clickoutside="hideReplyBtn" @click="inputFocus" class="my-reply" v-if="disabled">
             <div class="reply-info">
                 <div
                     tabindex="0"
@@ -23,7 +23,7 @@
                 <span class="author-name">{{item.name}}</span>
                 <span class="author-time">{{item.time}}</span>
             </div>
-            <div class="icon-btn">
+            <div class="icon-btn"  v-if="disabled">
                 <span @click="showReplyInput(i,item.name,item.id)">
                     <i class="iconfont el-icon-s-comment"></i>
                 </span>
@@ -39,7 +39,7 @@
                         <span class="author-name">{{reply.from}}</span>
                         <span class="author-time">{{reply.time}}</span>
                     </div>
-                    <div class="icon-btn">
+                    <div class="icon-btn"  v-if="disabled">
                         <span @click="showReplyInput(i,reply.from,reply.id)">
                             <i class="iconfont el-icon-s-comment"></i>
                         </span>
@@ -106,6 +106,8 @@ export default {
     name: 'ArticleComment',
     data() {
         return {
+            disabled: false,
+
             btnShow: false,
             index: '0',
             replyComment: '',
@@ -171,6 +173,10 @@ export default {
         };
     },
     directives: { clickoutside },
+    mounted() {
+        let disabled = localStorage.getItem('list');
+        this.disabled = !(JSON.parse(disabled));
+    },
     methods: {
         inputFocus() {
             var replyInput = document.getElementById('replyInput');
@@ -269,7 +275,7 @@ export default {
             } else {
                 //超过30天ddd
                 var date1 = new Date(parseInt(date));
-                var returnstr=date1.getFullYear() + '/' + (date1.getMonth() + 1) + '/' + date1.getDate();
+                var returnstr = date1.getFullYear() + '/' + (date1.getMonth() + 1) + '/' + date1.getDate();
                 return returnstr;
             }
         }
@@ -277,87 +283,136 @@ export default {
 };
 </script>
 <style lang="stylus" scoped>
-.my-reply
-    padding 10px
-    background-color #fafbfc
-    .header-img
-        display inline-block
-        vertical-align top
-    .reply-info    
-        display inline-block
-        margin-left 5px
-        width 90%
-        @media screen and (max-width:1200px) {
-            width 80%
-        }
-        .reply-input
-            min-height 20px
-            line-height 22px
-            padding 10px 10px
-            color #ccc
-            background-color #fff
-            border-radius 5px
-            &:empty:before
-                content attr(placeholder)
-            &:focus:before
-                content none
-            &:focus
-                padding 8px 8px
-                border 2px solid blue
-                box-shadow none
-                outline none
-    .reply-btn-box
-        height 25px
-        margin 10px 0
-        .reply-btn
-            position relative
-            float right
-            margin-right 15px
-.my-comment-reply
-    .reply-input
-        width flex
-.author-title:not(:last-child)
-    border-bottom: 1px solid rgba(178,186,194,.3)
-.author-title
-    padding 10px
-    .header-img
-        display inline-block
-        vertical-align top
-    .author-info
-        display inline-block
-        width 60%
-        height 40px
-        line-height 20px
-        >span 
-            display block
-            cursor pointer
-            overflow hidden
-            white-space nowrap
-            text-overflow ellipsis
-        .author-name
-            color #000
-            font-size 14px
-        .author-time
-            font-size 10px
-    .icon-btn
-        width 10%
-        padding 0 !important 
-        float right
-        @media screen and (max-width : 1200px){
-            width 20%
-            padding 7px
-        }
-        >span 
-            cursor pointer
-        .iconfont 
-            margin 0 5px
-    .talk-box
-        >p
-           margin 0
-        .reply
-            font-size 12px
-            color #000
-    .reply-box
-        margin 10px 0 0 0
-        background-color #efefef
+.my-reply {
+  padding: 10px;
+  background-color: #fafbfc;
+
+  .header-img {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .reply-info {
+    display: inline-block;
+    margin-left: 5px;
+    width: 90%;
+
+    @media screen and (max-width: 1200px) {
+      width: 80%;
+    }
+
+    .reply-input {
+      min-height: 20px;
+      line-height: 22px;
+      padding: 10px 10px;
+      color: #ccc;
+      background-color: #fff;
+      border-radius: 5px;
+
+      &:empty:before {
+        content: attr(placeholder);
+      }
+
+      &:focus:before {
+        content: none;
+      }
+
+      &:focus {
+        padding: 8px 8px;
+        border: 2px solid blue;
+        box-shadow: none;
+        outline: none;
+      }
+    }
+  }
+
+  .reply-btn-box {
+    height: 25px;
+    margin: 10px 0;
+
+    .reply-btn {
+      position: relative;
+      float: right;
+      margin-right: 15px;
+    }
+  }
+}
+
+.my-comment-reply {
+  .reply-input {
+    width: flex;
+  }
+}
+
+.author-title:not(:last-child) {
+  border-bottom: 1px solid rgba(178, 186, 194, 0.3);
+}
+
+.author-title {
+  padding: 10px;
+
+  .header-img {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .author-info {
+    display: inline-block;
+    width: 60%;
+    height: 40px;
+    line-height: 20px;
+
+    >span {
+      display: block;
+      cursor: pointer;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .author-name {
+      color: #000;
+      font-size: 14px;
+    }
+
+    .author-time {
+      font-size: 10px;
+    }
+  }
+
+  .icon-btn {
+    width: 10%;
+    padding: 0 !important;
+    float: right;
+
+    @media screen and (max-width: 1200px) {
+      width: 20%;
+      padding: 7px;
+    }
+
+    >span {
+      cursor: pointer;
+    }
+
+    .iconfont {
+      margin: 0 5px;
+    }
+  }
+
+  .talk-box {
+    >p {
+      margin: 0;
+    }
+
+    .reply {
+      font-size: 12px;
+      color: #000;
+    }
+  }
+
+  .reply-box {
+    margin: 10px 0 0 0;
+    background-color: #efefef;
+  }
+}
 </style>
