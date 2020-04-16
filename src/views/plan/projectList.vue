@@ -2,7 +2,7 @@
     <div>
         <el-card>
             <div style="text-align:right;padding-bottom:10px;">
-                <el-button size="mini" @click="dialogNewprojectVisible = true">新建项目</el-button>
+                <el-button size="mini" @click="newprojectVisible">新建项目</el-button>
             </div>
             <dytable
                 :columns="columns"
@@ -18,15 +18,27 @@
                 element-loading-text="加载中"
             ></dytable>
         </el-card>
-        <el-dialog title="项目信息" :visible.sync="dialogVisible" width="80%" :append-to-body="true" v-if="dialogVisible">
+        <el-dialog
+            title="项目信息"
+            :visible.sync="dialogVisible"
+            width="80%"
+            :append-to-body="true"
+            v-if="dialogVisible"
+        >
             <projectPage></projectPage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
             </span>
         </el-dialog>
-        <el-dialog title="新建项目" :visible.sync="dialogNewprojectVisible" width="80%" :append-to-body="true" v-if="dialogNewprojectVisible">
-           <project-information />
+        <el-dialog
+            title="新建项目"
+            :visible.sync="dialogNewprojectVisible"
+            width="80%"
+            :append-to-body="true"
+            v-if="dialogNewprojectVisible"
+        >
+            <project-information />
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewprojectVisible = false">取 消</el-button>
                 <el-button type="primary" @click="getNewProjectData()">确 定</el-button>
@@ -36,7 +48,7 @@
 </template>
 <script>
 import projectPage from '../../components/projectPage.vue';
-import projectInformation from '../../components/projectInformation.vue'
+import projectInformation from '../../components/projectInformation.vue';
 export default {
     components: {
         projectPage,
@@ -46,8 +58,8 @@ export default {
         const { renderControlColumn } = this;
         return {
             dialogVisible: false,
-            dialogNewprojectVisible:false,
-            dialogNewImpltaskVisible:false,
+            dialogNewprojectVisible: false,
+            dialogNewImpltaskVisible: false,
             columns: [
                 {
                     key: 'projectNo',
@@ -116,30 +128,37 @@ export default {
             pageNum: 1,
             pageSize: 10,
             total: 10,
-            projectFormData:[
+            projectFormData: [
                 {
-                    projectName:''
+                    projectName: ''
                 }
             ],
-            NewprojectVisibleFlag:''
+            NewprojectVisibleFlag: ''
         };
     },
     created() {},
     methods: {
-        getNewProjectData(){
+        // 新建
+        newprojectVisible() {
+            this.dialogNewprojectVisible = true;
+            localStorage.setItem('list', JSON.stringify(false));
+        },
+
+        // 新建确定
+        getNewProjectData() {
             console.log(this);
             this.dialogNewprojectVisible = true;
         },
         // 查看
         onRowLookButtonClick(row) {
             console.log(row, '查看');
-            localStorage.setItem("list", JSON.stringify(true));
+            localStorage.setItem('list', JSON.stringify(true));
             this.dialogVisible = true;
         },
         //编辑
         onRowUpdateButtonClick(row) {
             console.log(row, '编辑');
-            localStorage.setItem("list", JSON.stringify(false));
+            localStorage.setItem('list', JSON.stringify(false));
             this.dialogVisible = true;
         },
         onSelectionChange(val) {
@@ -171,18 +190,17 @@ export default {
 };
 </script>
 <style scoped>
-
 </style>
 <style>
 textarea {
-  height: 100%;
+    height: 100%;
 }
-.titalS{
+.titalS {
     font-size: 15px;
     height: 40px;
     width: 100%;
 }
-.el-dialog__body{
+.el-dialog__body {
     max-height: 500px;
     overflow: auto;
 }
