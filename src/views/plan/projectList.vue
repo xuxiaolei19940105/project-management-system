@@ -38,7 +38,7 @@
             :append-to-body="true"
             v-if="dialogNewprojectVisible"
         >
-            <project-information />
+            <project-information ref="sonNewproject"/>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewprojectVisible = false">取 消</el-button>
                 <el-button type="primary" @click="getNewProjectData()">确 定</el-button>
@@ -57,6 +57,8 @@ export default {
     data() {
         const { renderControlColumn } = this;
         return {
+            rowdata: {},
+            operationmode: '',
             dialogVisible: false,
             dialogNewprojectVisible: false,
             dialogNewImpltaskVisible: false,
@@ -136,7 +138,36 @@ export default {
             NewprojectVisibleFlag: ''
         };
     },
-    created() {},
+    created() {
+        let userData = localStorage.getItem('ms_data');
+        if(userData){
+            this.$api.task.getProjectMess(userData).then((response)=>{
+                let responsevalue=response;
+                if(responsevalue){
+                    let tabledata=[];
+                    let returndata =responsevalue.data;
+                    for(var i=0;i<returndata.length;i++){
+                        let proObject={};
+                        proObject.projectNo=returndata[i].proNum;
+                        proObject.name=returndata[i].proName;
+                        proObject.state=returndata[i].proState;
+                        proObject.leader=returndata[i].leaderUserId;
+                        var starttime = returndata[i].overallStartTime;
+                        starttime=starttime.split("T")[0];
+                        proObject.starttime=starttime;
+                        var endtime = returndata[i].overallStartTime;
+                        endtime=endtime.split("T")[0];
+                        proObject.endtime=endtime;
+                        tabledata.push(proObject);
+                    }
+                    this.table=tabledata;
+                    
+                }else{
+                   this.$message.success('没有权限,请联系Admin!'); 
+                }
+            });
+        }
+    },
     methods: {
         // 新建
         newprojectVisible() {
@@ -146,8 +177,42 @@ export default {
 
         // 新建确定
         getNewProjectData() {
-            console.log(this);
-            this.dialogNewprojectVisible = true;
+            let projectObject={};
+            projectObject.id="";
+            projectObject.proName=this.$refs.sonNewproject.projectForm.projectName;
+            projectObject.proNum=this.$refs.sonNewproject.projectForm.projectNumber;
+            projectObject.leaderUserId=this.$refs.sonNewproject.projectForm.projectLeader;
+            projectObject.overallStartTime=this.$refs.sonNewproject.projectForm.projectStartDate;
+            projectObject.overallEndTime=this.$refs.sonNewproject.projectForm.projectEndDate;
+            projectObject.proState=this.$refs.sonNewproject.projectForm.state;
+            projectObject.effectStartTime=this.$refs.sonNewproject.projectForm.implStartDate;
+            projectObject.effectEndTime=this.$refs.sonNewproject.projectForm.implEndDate;
+            projectObject.effectUserIdList=this.$refs.sonNewproject.projectForm.implementers;
+            projectObject.exploitStartTime=this.$refs.sonNewproject.projectForm.develStartDate;
+            projectObject.exploitEndTime=this.$refs.sonNewproject.projectForm.develEndDate;
+            projectObject.exploitUserIdList=this.$refs.sonNewproject.projectForm.developers;
+            projectObject.testStartTime=this.$refs.sonNewproject.projectForm.testerStartDate;
+            projectObject.testEndTime=this.$refs.sonNewproject.projectForm.testerEndDate;
+            projectObject.testUserIdList=this.$refs.sonNewproject.projectForm.testers;
+            projectObject.packageTime=this.$refs.sonNewproject.projectForm.packagerStartDate;
+            projectObject.packageUserIdList=this.$refs.sonNewproject.projectForm.packagers;
+            projectObject.effectTaskId="";
+            projectObject.exploitTaskId="";
+            projectObject.testTaskId="";
+            projectObject.guestbookId="";
+            projectObject.logId="";
+            this.$api.task.setProject(projectObject).then((response)=>{
+                var responsevalue=response;
+                if(responsevalue){
+                    this.$message.success('创建成功');
+                    this.dialogNewprojectVisible = false;
+                }else{
+                    this.$message.error("创建失败,请重新创建!");
+                    this.dialogNewprojectVisible = true;
+                    return false;
+                }
+                
+            });
         },
         // 查看
         onRowLookButtonClick(row) {

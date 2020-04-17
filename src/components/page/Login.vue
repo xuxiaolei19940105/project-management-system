@@ -58,10 +58,8 @@ export default {
                     if(responsevalue){
                         let returndata =responsevalue.data;
                         this.$message.success('登录成功');
-                        localStorage.setItem('ms_username', returndata.username);
+                        localStorage.setItem('ms_data', JSON.stringify(returndata));
                         localStorage.setItem('ms_name', returndata.name);
-                        localStorage.setItem('ms_roleId', returndata.roleId);
-                        localStorage.setItem('ms_workList', returndata.workList);
                         this.$router.push('/');
                     }else{
                         this.$message.error("请输入用户名和密码22!");

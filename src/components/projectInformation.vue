@@ -29,7 +29,7 @@
                                         v-for="item in stateOptions"
                                         :key="item.lable"
                                         :label="item.value"
-                                        :value="item.value"
+                                        :value="item.lable"
                                     ></el-option>
                                 </el-select>
                             </el-form-item>
@@ -186,7 +186,6 @@ export default {
     data() {
         return {
             disabled: false,
-
             //人员选择弹窗
             dialogVisible: false,
             checkedPerson: [],

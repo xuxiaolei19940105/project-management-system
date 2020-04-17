@@ -161,6 +161,14 @@ export default {
             ]
         }
     },
+    created(){
+        let userData = localStorage.getItem('ms_data');
+        if(userData){
+            this.$api.task.getMessagelist(userData).then((response)=>{
+                console.log(response)
+            });
+        }
+    },
     mounted(){},
     methods:{
         //分页

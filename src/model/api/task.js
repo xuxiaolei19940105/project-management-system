@@ -11,17 +11,22 @@ const task = {
     test1() {
         return httpReqest.post(`${v}/taskStructure/init`, { userCode: '001' });
     },
-    // articleDetail(id, params) {
-    //     return axios.get(`${v}/topic/${id}`, {
-    //         params: params
-    //     });
-    // },
+    //登录
     login(params) {
         //return post(`${testV}/User/login`, QS.stringify(params));
-        //return httpReqest.post('/api/User/login', QS.stringify(params));
         return httpReqest.post('/api/User/login', params);
-        //return post(`${testV}/User/login`, QS.stringify(params));
-
+    },
+    //查询消息列表
+    getMessagelist(params) {
+        return httpReqest.post('/api/Message/getMessageList', params);
+    },
+    //新建项目
+    setProject(params) {
+        return httpReqest.post('/api/Project/createProject', params);
+    },
+    //获取项目信息
+    getProjectMess(params) {
+        return httpReqest.post('/api/Project/getProList', params);
     }
 };
 
