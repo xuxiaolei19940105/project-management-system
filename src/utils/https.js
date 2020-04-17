@@ -67,7 +67,7 @@ var _axios = axios.create({ timeout: 1000 * 12, baseUrl: process.env.BASE_URL })
 //var _axios = axios.create({ timeout: 1000 * 12 });
 // 设置post请求头
 //_axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
-_axios.defaults.headers.post['Content-Type'] = 'application/json';
+_axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
 /**
  * 请求拦截器
  * 每次请求前，如果存在token则在请求头中携带token
@@ -75,8 +75,8 @@ _axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 _axios.interceptors.request.use(
     config => {
-        config.headers.Authorization = 'bearer 9a00a32c-c59c-471d-8638-297e7f00f7f6';
-        config.headers.Accept = 'application/json, text/javascript, */*; q=0.01';
+        //config.headers.Authorization = 'bearer 9a00a32c-c59c-471d-8638-297e7f00f7f6';
+        //config.headers.Accept = 'application/json;charset=utf-8';
         // 登录流程控制中，根据本地是否存在token判断用户的登录情况
         // 但是即使token存在，也有可能token是过期的，所以在每次的请求头中携带token
         // 后台根据携带的token判断用户的登录情况，并返回给我们对应的状态码
@@ -144,3 +144,4 @@ export function post(url, params) {
             });
     }).catch((err) => { console.log(err) });
 }
+export default _axios;

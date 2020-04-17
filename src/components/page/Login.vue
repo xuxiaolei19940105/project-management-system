@@ -30,8 +30,8 @@ export default {
     data: function() {
         return {
             param: {
-                username: 'admin',
-                password: 'admin'
+                username: '',
+                password: ''
             },
             rules: {
                 username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -50,34 +50,29 @@ export default {
                 this.$message.error("请输入密码!");
             }
             if(usernameS && passwordS){
-                var paramdata={};
+                let paramdata={};
                 paramdata.username=usernameS;
                 paramdata.password=passwordS;
-                console.log(usernameS);
-                console.log(passwordS);
-                this.$axios.post('/api/User/login',paramdata).then(res=>{
-                    console.log(res)
-                })
-                /*this.$api.task.login(paramdata).then((response)=>{
-                    console.log(response);
-                    this.$message.error("请输入用户名和密码!");
-                });*/
+                this.$api.task.login(paramdata).then((response)=>{
+                    var responsevalue=response;
+                    if(responsevalue){
+                        let returndata =responsevalue.data;
+                        this.$message.success('登录成功');
+                        localStorage.setItem('ms_username', returndata.username);
+                        localStorage.setItem('ms_name', returndata.name);
+                        localStorage.setItem('ms_roleId', returndata.roleId);
+                        localStorage.setItem('ms_workList', returndata.workList);
+                        this.$router.push('/');
+                    }else{
+                        this.$message.error("请输入用户名和密码22!");
+                        return false;
+                    }
+                    
+                });
             }else{
-                console.log("111");
+                this.$message.error("请输入用户名和密码!");
+                return false;
             }
-            /*
-            this.$refs.login.validate(valid => {
-                if (valid) {
-                    this.$message.success('登录成功');
-                    localStorage.setItem('ms_username', this.param.username);
-                    this.$router.push('/');
-                } else {
-                    this.$message.error('请输入账号和密码');
-                    console.log('error submit!!');
-                    return false;
-                }
-            });
-            */
         }
     }
 };

@@ -9,10 +9,6 @@ import 'babel-polyfill';
 import store from './store';
 import comInstall from './components/common/index';
 import api from './model/api/index'; // 导入api接口
-import axios from 'axios'
-
-Vue.prototype.$axios = axios
-axios.defaults.headers.post["Content-type"] = "application/json"
 
 Vue.config.productionTip = false;
 Vue.use(comInstall);
