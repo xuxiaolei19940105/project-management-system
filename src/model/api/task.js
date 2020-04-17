@@ -27,6 +27,10 @@ const task = {
     //获取项目信息
     getProjectMess(params) {
         return httpReqest.post('/api/Project/getProList', params);
+    },
+    //获取人员情况
+    getAllUser() {
+        return httpReqest.post('/api/User/findAll');
     }
 };
 

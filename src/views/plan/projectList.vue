@@ -93,40 +93,7 @@ export default {
                     width: '150px'
                 }
             ],
-            table: [
-                {
-                    projectNo: 'fj20201',
-                    name: '项目1',
-                    state: '已完结',
-                    leader: '张三',
-                    starttime: '2020-04-02',
-                    endtime: '2020-05-02'
-                },
-                {
-                    projectNo: 'fj20201',
-                    name: '项目1',
-                    state: '已作废',
-                    leader: '张三',
-                    starttime: '2020-04-02',
-                    endtime: '2020-05-02'
-                },
-                {
-                    projectNo: 'fj20201',
-                    name: '项目1',
-                    state: '暂停',
-                    leader: '张三',
-                    starttime: '2020-04-02',
-                    endtime: '2020-05-02'
-                },
-                {
-                    projectNo: 'fj20201',
-                    name: '项目1',
-                    state: '进行中',
-                    leader: '张三',
-                    starttime: '2020-04-02',
-                    endtime: '2020-05-02'
-                }
-            ],
+            table: [],
             pageNum: 1,
             pageSize: 10,
             total: 10,
@@ -161,7 +128,6 @@ export default {
                         tabledata.push(proObject);
                     }
                     this.table=tabledata;
-                    
                 }else{
                    this.$message.success('没有权限,请联系Admin!'); 
                 }

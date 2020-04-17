@@ -97,7 +97,35 @@ export default {
             ]
         }
     },
-    created() {},
+    created() {
+        this.$api.task.getAllUser().then((response)=>{
+            let responsevalue=response;
+            if(responsevalue){
+                let tabledata=[];
+                let returndata =responsevalue.data;
+                for(var i=0;i<returndata.length;i++){
+                    let proObject={};
+                    proObject.employeeName=returndata[i].name;
+                    if(returndata[i].roleId ==="1"){
+                        proObject.employeeCategory="实施";
+                    } else if(returndata[i].roleId ==="2"){
+                        proObject.employeeCategory="开发";
+                    }else if(returndata[i].roleId ==="3"){
+                        proObject.employeeCategory="测试";
+                    }else if(returndata[i].roleId ==="4"){
+                        proObject.employeeCategory="打包人员";
+                    }else{
+                        proObject.employeeCategory="admin";
+                    }
+                    proObject.projectdetail=returndata[i].workList;
+                    tabledata.push(proObject);
+                }
+                this.articlesReadytableData=tabledata;
+            }else{
+                this.$message.success('请联系Admin!'); 
+            }
+        });
+    },
     methods: {
         onSelectionChange(val) {
             console.log('多选', val);
