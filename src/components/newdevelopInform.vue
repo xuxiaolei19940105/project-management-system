@@ -64,25 +64,21 @@
                             :on-exceed="handleExceed"
                             :file-list="fileList"
                         >
-                            <el-button
-                                size="small"
-                                type="primary"
-                                v-bind:disabled="disabled"
-                            >点击上传</el-button>
+                            <el-button size="small" type="primary" v-bind:disabled="disabled">点击上传</el-button>
                         </el-upload>
                     </el-col>
                 </el-row>
             </el-form>
         </el-card>
-        <el-dialog title="人员选择" :visible.sync="dialogVisible" width="80%" :append-to-body="true">
+        <el-dialog title="人员选择" :visible.sync="dialogVisible" width="680px" :append-to-body="true">
             <el-card>
-                <el-checkbox-group v-model="checkedPerson" v-bind:disabled="disabled">
-                    <el-checkbox
-                        v-for="person in personOptions"
-                        :label="person"
-                        :key="person"
-                    >{{person}}</el-checkbox>
-                </el-checkbox-group>
+                <el-transfer
+                    filterable
+                    v-model="checkedPerson"
+                    :props="{key: 'id',label: 'name'}"
+                    :titles="['未选择', '已选择']"
+                    :data="personOptions"
+                ></el-transfer>
             </el-card>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
@@ -101,9 +97,16 @@ export default {
         return {
             //人员选择弹窗
             dialogVisible: false,
+            personOptions: [
+                { id: 1, name: '测试1' },
+                { id: 2, name: '测试2' },
+                { id: 3, name: '测试3' }
+            ],
             checkedPerson: [],
-            personOptions: ['吴二', '张三', '李四', '王五'],
+            checkedDeveloperId: [],
+            checkedPersonValue: [],
             openfrom: '',
+
             disabled: false,
             newdevelopForm: {
                 taskdetail: '',
@@ -120,6 +123,7 @@ export default {
             ]
         };
     },
+
     created() {
         console.log(this.rowdata);
         console.log(this.operationmode);
@@ -128,6 +132,23 @@ export default {
             this.newdevelopForm.developStartDate = this.rowdata.starttime;
             this.newdevelopForm.developEndDate = this.rowdata.endtime;
             this.disabled = false;
+
+            this.$api.task.getAllUser().then(response => {
+                console.log(response);
+                let responsevalue = response.data;
+                if (responsevalue) {
+                    let personOptions = [];
+                    for (var i = 0; i < responsevalue.length; i++) {
+                        let proObject = {};
+                        proObject.id = responsevalue[i].id;
+                        proObject.name = responsevalue[i].name;
+                        personOptions.push(proObject);
+                    }
+                    this.personOptions = personOptions;
+                } else {
+                    this.$message.success('请联系Admin!');
+                }
+            });
         } else if (this.operationmode == 'consult') {
             this.newdevelopForm.taskdetail = this.rowdata.task;
             this.disabledtaskdetail = true;
@@ -137,12 +158,12 @@ export default {
             this.newdevelopForm.taskdetail = '';
             this.newdevelopForm.developStartDate = '';
             this.newdevelopForm.developEndDate = '';
-            this.disabled= false;
+            this.disabled = false;
         } else {
             this.newdevelopForm.taskdetail = '';
             this.newdevelopForm.developStartDate = '';
             this.newdevelopForm.developEndDate = '';
-            this.disabled= false;
+            this.disabled = false;
         }
     },
     methods: {
@@ -165,16 +186,33 @@ export default {
             return this.$confirm(`确定移除 ${file.name}？`);
         },
 
-        showPersonPage() {
+        getval() {
+            let checkedPersonValue = [];
+            for (var i = 0; i < this.checkedPerson.length; i++) {
+                for (var j = 0; j < this.personOptions.length; j++) {
+                    if (this.checkedPerson[i] == this.personOptions[j].id) {
+                        checkedPersonValue.push(this.personOptions[j].name);
+                    }
+                }
+            }
+            this.checkedPersonValue = checkedPersonValue;
+        },
+
+        showPersonPage(openfrom) {
             this.checkedPerson = [];
+            this.openfrom = openfrom;
             this.dialogVisible = true;
             if (this.newdevelopForm.testers) {
-                this.checkedPerson = this.newdevelopForm.testers.split(',');
+                this.checkedPerson = this.checkedDeveloperId;
             }
         },
         addPerson: function() {
             this.dialogVisible = false;
-            this.newdevelopForm.testers = this.checkedPerson.toString();
+            this.getval();
+            console.log(this.checkedPerson);
+            this.checkedDeveloperId = this.checkedPerson;
+            this.newdevelopForm.testers = this.checkedPersonValue.toString();
+           
         }
     }
 };

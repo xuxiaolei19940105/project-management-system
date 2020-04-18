@@ -246,22 +246,23 @@ export default {
         };
     },
     created() {
-        // this.$api.task.getAllUser().then((response)=>{
-        //     console.log(response);
-        //     let responsevalue=response;
-        //     if(responsevalue){
-        //         let personOptions=[];
-        //         for(var i=0;i<responsevalue.length;i++){
-        //             let proObject={};
-        //             proObject.id=responsevalue[i].id;
-        //             proObject.name=responsevalue[i].name;
-        //             personOptions.push(proObject);
-        //         }
-        //         this.personOptions=personOptions;
-        //     }else{
-        //         this.$message.success('请联系Admin!');
-        //     }
-        // });
+            this.$api.task.getAllUser().then((response)=>{
+                console.log(response);
+                let responsevalue=response.data;
+                if(responsevalue){
+                    let personOptions=[];
+                    for(var i=0;i<responsevalue.length;i++){
+                        let proObject={};
+                        proObject.id=responsevalue[i].id;
+                        proObject.name=responsevalue[i].name;
+                        personOptions.push(proObject);
+                    }
+                    this.personOptions=personOptions;
+                    console.log(this.personOptions)
+                }else{
+                    this.$message.success('请联系Admin!');
+                }
+            });
     },
     mounted() {
         let disabled = localStorage.getItem('list');
