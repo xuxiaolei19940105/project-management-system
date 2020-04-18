@@ -164,15 +164,16 @@
             </div>
         </el-card>
 
-        <el-dialog title="人员选择" :visible.sync="dialogVisible" width="80%" :append-to-body="true">
+        <el-dialog title="人员选择" :visible.sync="dialogVisible" width="680px" :append-to-body="true">
             <el-card>
-                <el-checkbox-group v-model="checkedPerson">
-                    <el-checkbox
-                        v-for="person in personOptions"
-                        :label="person"
-                        :key="person"
-                    >{{person}}</el-checkbox>
-                </el-checkbox-group>
+                <el-transfer
+                    filterable
+                    v-model="checkedPerson"
+                    :props="{key: 'id',label: 'name'}"
+                    :titles="['未选择', '已选择']"
+                    @change="handleChange"
+                    :data="personOptions"
+                ></el-transfer>
             </el-card>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
@@ -187,9 +188,19 @@ export default {
         return {
             disabled: false,
             //人员选择弹窗
-            dialogVisible: false,
+            personOptions: [
+                { id: 1, name: '测试1' },
+                { id: 2, name: '测试2' },
+                { id: 3, name: '测试3' }
+            ],
             checkedPerson: [],
-            personOptions: ['吴二', '张三', '李四', '王五'],
+            checkedLeaderId: [],
+            checkedImplementerId: [],
+            checkedDeveloperId: [],
+            checkedTesterId: [],
+            checkedPackagerId: [],
+            checkedPersonValue: [],
+            dialogVisible: false,
             openfrom: '',
 
             projectForm: {
@@ -234,39 +245,82 @@ export default {
             ]
         };
     },
+    created() {
+        // this.$api.task.getAllUser().then((response)=>{
+        //     console.log(response);
+        //     let responsevalue=response;
+        //     if(responsevalue){
+        //         let personOptions=[];
+        //         for(var i=0;i<responsevalue.length;i++){
+        //             let proObject={};
+        //             proObject.id=responsevalue[i].id;
+        //             proObject.name=responsevalue[i].name;
+        //             personOptions.push(proObject);
+        //         }
+        //         this.personOptions=personOptions;
+        //     }else{
+        //         this.$message.success('请联系Admin!');
+        //     }
+        // });
+    },
     mounted() {
         let disabled = localStorage.getItem('list');
         this.disabled = JSON.parse(disabled);
     },
     methods: {
+        handleChange(value, direction, movedKeys) {
+            console.log(value, direction, movedKeys);
+        },
+
+        getval() {
+            let checkedPersonValue = [];
+            for (var i = 0; i < this.checkedPerson.length; i++) {
+                for (var j = 0; j < this.personOptions.length; j++) {
+                    if (this.checkedPerson[i] == this.personOptions[j].id) {
+                        checkedPersonValue.push(this.personOptions[j].name);
+                    }
+                }
+            }
+            this.checkedPersonValue = checkedPersonValue;
+        },
+
         showPersonPage(openfrom) {
+            debugger;
             this.checkedPerson = [];
             this.openfrom = openfrom;
             this.dialogVisible = true;
             if (this.openfrom == 1 && this.projectForm.projectLeader) {
-                this.checkedPerson = this.projectForm.projectLeader.split(',');
+                this.checkedPerson = this.checkedLeaderId;
             } else if (this.openfrom == 2 && this.projectForm.implementers) {
-                this.checkedPerson = this.projectForm.implementers.split(',');
+                this.checkedPerson = this.checkedImplementerId;
             } else if (this.openfrom == 3 && this.projectForm.developers) {
-                this.checkedPerson = this.projectForm.developers.split(',');
+                this.checkedPerson = this.checkedDeveloperId;
             } else if (this.openfrom == 4 && this.projectForm.testers) {
-                this.checkedPerson = this.projectForm.testers.split(',');
-            } else if (this.openfrom == 4 && this.projectForm.packagers) {
-                this.checkedPerson = this.projectForm.packagers.split(',');
+                this.checkedPerson = this.checkedTesterId;
+            } else if (this.openfrom == 5 && this.projectForm.packagers) {
+                this.checkedPerson = this.checkedPackagerId;
             }
         },
         addPerson: function() {
+            debugger;
             this.dialogVisible = false;
+            this.getval();
+            console.log(this.checkedPerson);
             if (this.openfrom == 1) {
-                this.projectForm.projectLeader = this.checkedPerson.toString();
+                this.checkedLeaderId = this.checkedPerson;
+                this.projectForm.projectLeader = this.checkedPersonValue.toString();
             } else if (this.openfrom == 2) {
-                this.projectForm.implementers = this.checkedPerson.toString();
+                this.checkedImplementerId = this.checkedPerson;
+                this.projectForm.implementers = this.checkedPersonValue.toString();
             } else if (this.openfrom == 3) {
-                this.projectForm.developers = this.checkedPerson.toString();
+                this.checkedDeveloperId = this.checkedPerson;
+                this.projectForm.developers = this.checkedPersonValue.toString();
             } else if (this.openfrom == 4) {
-                this.projectForm.testers = this.checkedPerson.toString();
+                this.checkedTesterId = this.checkedPerson;
+                this.projectForm.testers = this.checkedPersonValue.toString();
             } else {
-                this.projectForm.packagers = this.checkedPerson.toString();
+                this.checkedPackagerId = this.checkedPerson;
+                this.projectForm.packagers = this.checkedPersonValue.toString();
             }
         }
     }
