@@ -24,13 +24,6 @@
                 </el-tabs>
             </el-card>
         </div>
-        <el-dialog title="提示" :visible.sync="personDialogVisible" width="30%">
-            <span>这是一段信息</span>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="personDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="personDialogVisible = false">确 定</el-button>
-            </span>
-        </el-dialog>
     </div>
 </template>
 <script>
@@ -41,6 +34,9 @@ import testersInformation from './testersInformation.vue';
 import message from './message.vue';
 import journal from './journal.vue';
 export default {
+    props: {
+        rowdata: Object
+    },
     components: {
         projectInformation,
         implementersInformation,

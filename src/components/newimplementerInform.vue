@@ -59,13 +59,13 @@
 </template>
 <script>
 export default {
-    props:{
-        rowdata:Object,
-        operationmode:String
+    props: {
+        rowdata: Object,
+        operationmode: String
     },
     data() {
         return {
-            disabled:false,
+            disabled: false,
             implrmrntForm: {
                 taskdetail: '',
                 implementStartDate: '',
@@ -80,31 +80,30 @@ export default {
             ]
         };
     },
-    created(){
+    created() {
         console.log(this.rowdata);
         console.log(this.operationmode);
-        if(this.operationmode=='edit'){
-            this.implrmrntForm.taskdetail=this.rowdata.task;
-            this.implrmrntForm.implementStartDate=this.rowdata.starttime;
-            this.implrmrntForm.implementEndDate=this.rowdata.endtime;
-            this.disabled=false;
-        }else if(this.operationmode=='consult'){
-            this.implrmrntForm.taskdetail=this.rowdata.task;
-            this.implrmrntForm.implementStartDate=this.rowdata.starttime;
-            this.implrmrntForm.implementEndDate=this.rowdata.endtime;
-            this.disabled=true;
-        }else if(this.operationmode=='new'){
-            this.implrmrntForm.taskdetail='';
-            this.implrmrntForm.implementStartDate='';
-            this.implrmrntForm.implementEndDate='';
-            this.disabled=false;
-        }else{
-            this.implrmrntForm.taskdetail='';
-            this.implrmrntForm.implementStartDate='';
-            this.implrmrntForm.implementEndDate='';
-            this.disabled=false;
+        if (this.operationmode == 'edit') {
+            this.implrmrntForm.taskdetail = this.rowdata.task;
+            this.implrmrntForm.implementStartDate = this.rowdata.starttime;
+            this.implrmrntForm.implementEndDate = this.rowdata.endtime;
+            this.disabled = false;
+        } else if (this.operationmode == 'consult') {
+            this.implrmrntForm.taskdetail = this.rowdata.task;
+            this.implrmrntForm.implementStartDate = this.rowdata.starttime;
+            this.implrmrntForm.implementEndDate = this.rowdata.endtime;
+            this.disabled = true;
+        } else if (this.operationmode == 'new') {
+            this.implrmrntForm.taskdetail = '';
+            this.implrmrntForm.implementStartDate = '';
+            this.implrmrntForm.implementEndDate = '';
+            this.disabled = false;
+        } else {
+            this.implrmrntForm.taskdetail = '';
+            this.implrmrntForm.implementStartDate = '';
+            this.implrmrntForm.implementEndDate = '';
+            this.disabled = false;
         }
-        
     },
     methods: {
         handleRemove(file, fileList) {

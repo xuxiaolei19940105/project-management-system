@@ -27,8 +27,8 @@
         >
             <projectPage></projectPage>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                <el-button @click="closeDialogVisible">取 消</el-button>
+                <el-button type="primary" @click="getNewProjectData">确 定</el-button>
             </span>
         </el-dialog>
         <el-dialog
@@ -38,9 +38,9 @@
             :append-to-body="true"
             v-if="dialogNewprojectVisible"
         >
-            <project-information ref="sonNewproject"/>
+            <project-information ref="sonNewproject" />
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogNewprojectVisible = false">取 消</el-button>
+                <el-button @click="closeDialogVisible">取 消</el-button>
                 <el-button type="primary" @click="getNewProjectData()">确 定</el-button>
             </span>
         </el-dialog>
@@ -57,12 +57,15 @@ export default {
     data() {
         const { renderControlColumn } = this;
         return {
-            rowdata: {},
             operationmode: '',
             dialogVisible: false,
             dialogNewprojectVisible: false,
             dialogNewImpltaskVisible: false,
             columns: [
+                {
+                    key: 'id',
+                    title: '项目id'
+                },
                 {
                     key: 'projectNo',
                     title: '项目编号'
@@ -107,29 +110,30 @@ export default {
     },
     created() {
         let userData = localStorage.getItem('ms_data');
-        if(userData){
-            this.$api.task.getProjectMess(userData).then((response)=>{
-                let responsevalue=response;
-                if(responsevalue){
-                    let tabledata=[];
-                    let returndata =responsevalue.data;
-                    for(var i=0;i<returndata.length;i++){
-                        let proObject={};
-                        proObject.projectNo=returndata[i].proNum;
-                        proObject.name=returndata[i].proName;
-                        proObject.state=returndata[i].proState;
-                        proObject.leader=returndata[i].leaderUserId;
+        if (userData) {
+            this.$api.task.getProjectMess(userData).then(response => {
+                let responsevalue = response;
+                if (responsevalue) {
+                    let tabledata = [];
+                    let returndata = responsevalue.data;
+                    for (var i = 0; i < returndata.length; i++) {
+                        let proObject = {};
+                        proObject.id = returndata[i].id;
+                        proObject.projectNo = returndata[i].proNum;
+                        proObject.name = returndata[i].proName;
+                        proObject.state = returndata[i].proState;
+                        proObject.leader = returndata[i].leaderUserId;
                         var starttime = returndata[i].overallStartTime;
-                        starttime=starttime.split("T")[0];
-                        proObject.starttime=starttime;
+                        starttime = starttime.split('T')[0];
+                        proObject.starttime = starttime;
                         var endtime = returndata[i].overallStartTime;
-                        endtime=endtime.split("T")[0];
-                        proObject.endtime=endtime;
+                        endtime = endtime.split('T')[0];
+                        proObject.endtime = endtime;
                         tabledata.push(proObject);
                     }
-                    this.table=tabledata;
-                }else{
-                   this.$message.success('没有权限,请联系Admin!'); 
+                    this.table = tabledata;
+                } else {
+                    this.$message.success('没有权限,请联系Admin!');
                 }
             });
         }
@@ -139,59 +143,86 @@ export default {
         newprojectVisible() {
             this.dialogNewprojectVisible = true;
             localStorage.setItem('list', JSON.stringify(false));
+            localStorage.removeItem('pro_id');
         },
 
         // 新建确定
         getNewProjectData() {
-            let projectObject={};
-            projectObject.id="";
-            projectObject.proName=this.$refs.sonNewproject.projectForm.projectName;
-            projectObject.proNum=this.$refs.sonNewproject.projectForm.projectNumber;
-            projectObject.leaderUserId=this.$refs.sonNewproject.projectForm.projectLeader;
-            projectObject.overallStartTime=this.$refs.sonNewproject.projectForm.projectStartDate;
-            projectObject.overallEndTime=this.$refs.sonNewproject.projectForm.projectEndDate;
-            projectObject.proState=this.$refs.sonNewproject.projectForm.state;
-            projectObject.effectStartTime=this.$refs.sonNewproject.projectForm.implStartDate;
-            projectObject.effectEndTime=this.$refs.sonNewproject.projectForm.implEndDate;
-            projectObject.effectUserIdList=this.$refs.sonNewproject.projectForm.implementers;
-            projectObject.exploitStartTime=this.$refs.sonNewproject.projectForm.develStartDate;
-            projectObject.exploitEndTime=this.$refs.sonNewproject.projectForm.develEndDate;
-            projectObject.exploitUserIdList=this.$refs.sonNewproject.projectForm.developers;
-            projectObject.testStartTime=this.$refs.sonNewproject.projectForm.testerStartDate;
-            projectObject.testEndTime=this.$refs.sonNewproject.projectForm.testerEndDate;
-            projectObject.testUserIdList=this.$refs.sonNewproject.projectForm.testers;
-            projectObject.packageTime=this.$refs.sonNewproject.projectForm.packagerStartDate;
-            projectObject.packageUserIdList=this.$refs.sonNewproject.projectForm.packagers;
-            projectObject.effectTaskId="";
-            projectObject.exploitTaskId="";
-            projectObject.testTaskId="";
-            projectObject.guestbookId="";
-            projectObject.logId="";
-            this.$api.task.setProject(projectObject).then((response)=>{
-                var responsevalue=response;
-                if(responsevalue){
+            console.log(this.$refs.sonNewproject.projectForm.implementers);
+            let projectObject = {};
+            projectObject.id = '';
+            projectObject.proName = this.$refs.sonNewproject.projectForm.projectName;
+            projectObject.proNum = this.$refs.sonNewproject.projectForm.projectNumber;
+            projectObject.leaderUserId = this.$refs.sonNewproject.checkedLeaderId;
+            projectObject.overallStartTime = this.$refs.sonNewproject.projectForm.projectStartDate;
+            projectObject.overallEndTime = this.$refs.sonNewproject.projectForm.projectEndDate;
+            if (this.$refs.sonNewproject.projectForm.state === '进行中') {
+                projectObject.proState = 0;
+            } else if (this.$refs.sonNewproject.projectForm.state === '暂停') {
+                projectObject.proState = 1;
+            } else if (this.$refs.sonNewproject.projectForm.state === '已作废') {
+                projectObject.proState = 2;
+            } else if (this.$refs.sonNewproject.projectForm.state === '已完结') {
+                projectObject.proState = 3;
+            }
+            debugger;
+            projectObject.effectStartTime = this.$refs.sonNewproject.projectForm.implStartDate;
+            projectObject.effectEndTime = this.$refs.sonNewproject.projectForm.implEndDate;
+            projectObject.effectUserIdList = this.$refs.sonNewproject.checkedImplementerId;
+            projectObject.exploitStartTime = this.$refs.sonNewproject.projectForm.develStartDate;
+            projectObject.exploitEndTime = this.$refs.sonNewproject.projectForm.develEndDate;
+            projectObject.exploitUserIdList = this.$refs.sonNewproject.checkedDeveloperId;
+            projectObject.testStartTime = this.$refs.sonNewproject.projectForm.testerStartDate;
+            projectObject.testEndTime = this.$refs.sonNewproject.projectForm.testerEndDate;
+            projectObject.testUserIdList = this.$refs.sonNewproject.checkedTesterId;
+            projectObject.packageTime = this.$refs.sonNewproject.projectForm.packagerStartDate;
+            projectObject.packageUserIdList = this.$refs.sonNewproject.checkedPackagerId;
+            projectObject.effectTaskId = '';
+            projectObject.exploitTaskId = '';
+            projectObject.testTaskId = '';
+            projectObject.guestbookId = '';
+            projectObject.logId = '';
+            console.log(projectObject)
+            this.$api.task.setProject(projectObject).then(response => {
+                var responsevalue = response;
+                if (responsevalue) {
                     this.$message.success('创建成功');
                     this.dialogNewprojectVisible = false;
-                }else{
-                    this.$message.error("创建失败,请重新创建!");
+                } else {
+                    this.$message.error('创建失败,请重新创建!');
                     this.dialogNewprojectVisible = true;
                     return false;
                 }
-                
             });
         },
         // 查看
         onRowLookButtonClick(row) {
-            console.log(row, '查看');
+            console.log(row.id, '查看');
             localStorage.setItem('list', JSON.stringify(true));
             this.dialogVisible = true;
+            // let projectObjectId = {};
+            // projectObjectId.id = row.id;
+            localStorage.setItem('pro_id', row.id);
+            // this.$api.task.initProData(projectObjectId).then(response => {
+            //     debugger
+            //     this.rowdata = response;
+            //     console.log(this.rowdata);
+            // });
         },
         //编辑
         onRowUpdateButtonClick(row) {
             console.log(row, '编辑');
             localStorage.setItem('list', JSON.stringify(false));
             this.dialogVisible = true;
+            localStorage.setItem('pro_id', row.id);
         },
+
+        closeDialogVisible() {
+            this.dialogNewprojectVisible = false;
+            this.dialogVisible = false;
+            localStorage.removeItem('pro_id');
+        },
+
         onSelectionChange(val) {
             console.log('多选', val);
             this.multipleSelection = val;

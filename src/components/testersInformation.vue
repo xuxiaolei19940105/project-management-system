@@ -20,15 +20,15 @@
                             :disabled="disabled"
                         >
                             <el-form-item label="开始时间">
-                                <el-input v-model="projectForm.implStartDate"></el-input>
+                                <el-input v-model="projectForm.testStartDate"></el-input>
                             </el-form-item>
                             <el-form-item label="结束时间">
-                                <el-input v-model="projectForm.implEndDate"></el-input>
+                                <el-input v-model="projectForm.testEndDate"></el-input>
                             </el-form-item>
                             <el-form-item label="测试任务参与人员">
                                 <el-input
                                     type="textarea"
-                                    v-model="projectForm.implementers"
+                                    v-model="projectForm.testers"
                                     style="height:70px"
                                 ></el-input>
                             </el-form-item>
@@ -108,9 +108,9 @@ export default {
 
             dialogNewtesttaskVisible: false,
             projectForm: {
-                implStartDate: '',
-                implEndDate: '',
-                implementers: ''
+                testStartDate: '',
+                testEndDate: '',
+                testers: ''
             },
             rowdata: {},
             operationmode: '',
@@ -173,6 +173,17 @@ export default {
                 }
             ]
         };
+    },
+    created() {
+        let pro_id = localStorage.getItem('pro_id');
+        let projectObjectId = {};
+        projectObjectId.id = pro_id;
+        this.$api.task.initProData(projectObjectId).then(response => {
+            let responseValue = response.data;
+            this.projectForm.testStartDate = responseValue.testStartTime;
+            this.projectForm.testEndDate = responseValue.testEndTime;
+            this.projectForm.testers = responseValue.testUserIdList;
+        });
     },
     mounted() {
         let disabled = localStorage.getItem('list');

@@ -228,41 +228,77 @@ export default {
             stateOptions: [
                 {
                     value: '进行中',
-                    lable: '001'
+                    lable: '进行中'
                 },
                 {
                     value: '暂停',
-                    lable: '002'
+                    lable: '暂停'
                 },
                 {
                     value: '已作废',
-                    lable: '003'
+                    lable: '已作废'
                 },
                 {
                     value: '已完结',
-                    lable: '004'
+                    lable: '已完结'
                 }
             ]
         };
     },
     created() {
-            this.$api.task.getAllUser().then((response)=>{
-                console.log(response);
-                let responsevalue=response.data;
-                if(responsevalue){
-                    let personOptions=[];
-                    for(var i=0;i<responsevalue.length;i++){
-                        let proObject={};
-                        proObject.id=responsevalue[i].id;
-                        proObject.name=responsevalue[i].name;
-                        personOptions.push(proObject);
-                    }
-                    this.personOptions=personOptions;
-                    console.log(this.personOptions)
-                }else{
-                    this.$message.success('请联系Admin!');
+        this.$api.task.getAllUser().then(response => {
+            let responsevalue = response.data;
+            if (responsevalue) {
+                let personOptions = [];
+                for (var i = 0; i < responsevalue.length; i++) {
+                    let proObject = {};
+                    proObject.id = responsevalue[i].id;
+                    proObject.name = responsevalue[i].name;
+                    personOptions.push(proObject);
                 }
-            });
+                this.personOptions = personOptions;
+            } else {
+                this.$message.success('请联系Admin!');
+            }
+        });
+        let pro_id = localStorage.getItem('pro_id');
+        let projectObjectId = {};
+        projectObjectId.id = pro_id;
+        if(pro_id){
+            this.$api.task.initProData(projectObjectId).then(response => {
+            let responseValue = response.data;
+            this.projectForm.projectName = responseValue.proName;
+            this.projectForm.projectNumber = responseValue.proNum;
+
+            if (responseValue.proState === 0) {
+                this.projectForm.state = '进行中';
+            } else if (responseValue.proState === 1) {
+                this.projectForm.state = '暂停';
+            } else if (responseValue.proState === 2) {
+                this.projectForm.state = '已作废';
+            } else if (responseValue.proState === 3) {
+                this.projectForm.state = '已完结';
+            }
+            this.projectForm.projectStartDate = responseValue.overallStartTime;
+            this.projectForm.projectEndDate = responseValue.overallEndTime;
+            this.projectForm.projectLeader = responseValue.leaderName;
+
+            this.projectForm.implStartDate = responseValue.effectStartTime;
+            this.projectForm.implEndDate = responseValue.effectEndTime;
+            this.projectForm.implementers = responseValue.effectUserIdList;
+
+            this.projectForm.develStartDate = responseValue.exploitStartTime;
+            this.projectForm.develEndDate = responseValue.exploitEndTime;
+            this.projectForm.developers = responseValue.exploitUserIdList;
+
+            this.projectForm.testerStartDate = responseValue.testStartTime;
+            this.projectForm.testerEndDate = responseValue.testEndTime;
+            this.projectForm.testers = responseValue.testUserIdList;
+
+            this.projectForm.packagerStartDate = responseValue.packageTime;
+            this.projectForm.packagers = responseValue.packageUserIdList;
+        });
+        }
     },
     mounted() {
         let disabled = localStorage.getItem('list');
@@ -306,7 +342,6 @@ export default {
             debugger;
             this.dialogVisible = false;
             this.getval();
-            console.log(this.checkedPerson);
             if (this.openfrom == 1) {
                 this.checkedLeaderId = this.checkedPerson;
                 this.projectForm.projectLeader = this.checkedPersonValue.toString();

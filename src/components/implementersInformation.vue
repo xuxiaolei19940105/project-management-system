@@ -13,7 +13,12 @@
             <el-row>
                 <el-col :span="6">
                     <div class="left">
-                        <el-form v-model="projectForm" class="dataForm" size="mini" :disabled="disabled">
+                        <el-form
+                            v-model="projectForm"
+                            class="dataForm"
+                            size="mini"
+                            :disabled="disabled"
+                        >
                             <el-form-item label="开始时间">
                                 <el-input v-model="projectForm.implStartDate"></el-input>
                             </el-form-item>
@@ -95,10 +100,10 @@ export default {
     components: {
         newImpltaskpage
     },
+
     data() {
         return {
             disabled: false,
-
 
             projectForm: {
                 implStartDate: '',
@@ -178,7 +183,18 @@ export default {
             dialogNewImpltaskVisible: false
         };
     },
-     mounted() {
+    created() {
+        let pro_id = localStorage.getItem('pro_id');
+        let projectObjectId = {};
+        projectObjectId.id = pro_id;
+        this.$api.task.initProData(projectObjectId).then(response => {
+            let responseValue = response.data;
+            this.projectForm.implStartDate = responseValue.effectStartTime;
+            this.projectForm.implEndDate = responseValue.effectEndTime;
+            this.projectForm.implementers = responseValue.effectUserIdList;
+        });
+    },
+    mounted() {
         let disabled = localStorage.getItem('list');
         this.disabled = JSON.parse(disabled);
     },

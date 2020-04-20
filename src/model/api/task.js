@@ -31,6 +31,10 @@ const task = {
     //获取人员情况
     getAllUser() {
         return httpReqest.post('/api/User/findAll');
+    },
+    //获取项目情况
+    initProData(params) {
+        return httpReqest.post('/api/Project/initProData',params);
     }
 };
 

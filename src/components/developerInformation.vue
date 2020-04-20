@@ -20,15 +20,15 @@
                             :disabled="disabled"
                         >
                             <el-form-item label="开始时间">
-                                <el-input v-model="projectForm.implStartDate"></el-input>
+                                <el-input v-model="projectForm.developStartDate"></el-input>
                             </el-form-item>
                             <el-form-item label="结束时间">
-                                <el-input v-model="projectForm.implEndDate"></el-input>
+                                <el-input v-model="projectForm.developEndDate"></el-input>
                             </el-form-item>
                             <el-form-item label="开发任务参与人员">
                                 <el-input
                                     type="textarea"
-                                    v-model="projectForm.implementers"
+                                    v-model="projectForm.developers"
                                     style="height:70px"
                                 ></el-input>
                             </el-form-item>
@@ -102,9 +102,9 @@ export default {
 
             dialogNewDeveltaskVisible: false,
             projectForm: {
-                implStartDate: '',
-                implEndDate: '',
-                implementers: ''
+                developStartDate: '',
+                developEndDate: '',
+                developers: ''
             },
             rowdata: {},
             operationmode: '',
@@ -177,6 +177,17 @@ export default {
                 }
             ]
         };
+    },
+    created() {
+        let pro_id = localStorage.getItem('pro_id');
+        let projectObjectId = {};
+        projectObjectId.id = pro_id;
+        this.$api.task.initProData(projectObjectId).then(response => {
+            let responseValue = response.data;
+            this.projectForm.developStartDate = responseValue.exploitStartTime;
+            this.projectForm.developEndDate = responseValue.exploitEndTime;
+            this.projectForm.developers = responseValue.exploitUserIdList;
+        });
     },
     mounted() {
         let disabled = localStorage.getItem('list');
