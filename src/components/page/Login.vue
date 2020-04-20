@@ -58,9 +58,9 @@ export default {
                     if(responsevalue){
                         let returndata =responsevalue.data;
                         localStorage.setItem('ms_data', JSON.stringify(returndata));
-                        localStorage.setItem('ms_name', returndata.name);
-                        localStorage.setItem('ms_id', returndata.id);
-                        localStorage.setItem('ms_username', returndata.username);
+                        localStorage.setItem('ms_name',  returndata.name);
+                        localStorage.setItem('ms_id',  returndata.id);
+                        localStorage.setItem('ms_username',  returndata.username);
                         this.$router.push('/');
                         this.$message.success('登录成功');
                     }else{
