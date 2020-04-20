@@ -9,7 +9,7 @@
                 </el-breadcrumb>
             </div>
             <div>
-                <el-tabs v-model="atctiveName" >
+                <el-tabs v-model="atctiveName" @tab-click="handleClick">
                     <el-tab-pane label="待办消息" name="first" >
                         <dytable
                             :columns="articlesReadyColumns"
@@ -29,6 +29,21 @@
                         <dytable
                             :columns="articlesDoneColumns"
                             :table-data="articlesDonetableData"
+                            :total="total"
+                            ref="multipleTable"
+                            :page-num="pageNum"
+                            :page-size="pageSize"
+                            @current-change="onCurrentChange"
+                            @on-selection-change="onSelectionChange"
+                            @size-change="onSizeChange"
+                            v-loading="false"
+                            element-loading-text="加载中"
+                        ></dytable>
+                    </el-tab-pane>
+                    <el-tab-pane label="拒绝消息" name="Third" >
+                        <dytable
+                            :columns="articlesRejectColumns"
+                            :table-data="articlesRejecttableData"
                             :total="total"
                             ref="multipleTable"
                             :page-num="pageNum"
@@ -86,7 +101,38 @@ export default {
                     width: '260px'
                 }
             ],
+            articlesRejectColumns:[
+                {
+                    key: 'taskno',
+                    title: '编号',
+                    width: '100'
+                },
+                {
+                    key: 'taskname',
+                    title: '任务名称',
+                    width: '100'
+                },
+                {
+                    key: 'publisher',
+                    title: '发布者',
+                    width: '100'
+                },
+                {
+                    key: 'publishdate',
+                    title: '发布时间'
+                },
+                {
+                    key: 'taskdetail',
+                    title: '任务详情'
+                },
+                {
+                    title: '操作',
+                    render: renderControlColumn,
+                    width: '260px'
+                }
+            ],
             articlesReadytableData:[],
+            articlesRejecttableData:[],
             articlesDoneColumns: [
                 {
                     key: 'taskno',
@@ -121,11 +167,13 @@ export default {
         }
     },
     created(){
-        let userData = localStorage.getItem('ms_data');
-        if(userData){
-            this.$api.task.getMessagelist(userData).then((response)=>{
+        let userid = localStorage.getItem('ms_id');
+        if(userid){
+            let paramdata={};
+            paramdata.receiveUserid=userid;
+            paramdata.state=0;
+            this.$api.task.getMessagelist(paramdata).then((response)=>{
                 let paramReadydata=[];
-                let paramDonedata=[];
                 let param=[];
                 param=response.data;
                 if(param.length > 0){
@@ -138,20 +186,97 @@ export default {
                         senddate=senddate.split("T")[0];
                         mdata.publishdate=senddate;
                         mdata.taskdetail=param[i].messageDescribe;
-                        if(param[i].state==="1"){
-                            paramDonedata.push(mdata);
-                        }else{
-                            paramReadydata.push(mdata);
-                        }
+                        paramReadydata.push(mdata);
                     }
                 }
                 this.articlesReadytableData=paramReadydata;
-                this.articlesDonetableData=paramDonedata;
             });
         }
     },
     mounted(){},
     methods:{
+        //切换待办和已办消息
+        handleClick(tab){
+            var tabsname =tab.paneName;
+            if(tabsname){
+                if(tabsname ==="first"){
+                    //待办消息
+                    let userid = localStorage.getItem('ms_id');
+                    let paramdata={};
+                    paramdata.receiveUserid=userid;
+                    paramdata.state=0;
+                    this.$api.task.getMessagelist(paramdata).then((response)=>{
+                        let paramReadydata=[];
+                        let param=[];
+                        param=response.data;
+                        if(param.length > 0){
+                            for(var i=0;i<param.length;i++){
+                                let mdata={};
+                                mdata.taskno=param[i].id;
+                                mdata.taskname=param[i].messageName;
+                                mdata.publisher=param[i].sendUserName+"("+param[i].sendUserid+")";
+                                var senddate=param[i].inserttime;
+                                senddate=senddate.split("T")[0];
+                                mdata.publishdate=senddate;
+                                mdata.taskdetail=param[i].messageDescribe;
+                                paramReadydata.push(mdata);
+                            }
+                        }
+                        this.articlesReadytableData=paramReadydata;
+                    });
+                }else if(tabsname ==="second"){
+                    //已办消息的已接收消息
+                    let userid = localStorage.getItem('ms_id');
+                    let paramdata={};
+                    paramdata.receiveUserid=userid;
+                    paramdata.state=1;
+                    this.$api.task.getMessagelist(paramdata).then((response)=>{
+                        let paramOKdata=[];
+                        let param=[];
+                        param=response.data;
+                        if(param.length > 0){
+                            for(var i=0;i<param.length;i++){
+                                let mdata={};
+                                mdata.taskno=param[i].id;
+                                mdata.taskname=param[i].messageName;
+                                mdata.publisher=param[i].sendUserName+"("+param[i].sendUserid+")";
+                                var senddate=param[i].inserttime;
+                                senddate=senddate.split("T")[0];
+                                mdata.publishdate=senddate;
+                                mdata.taskdetail=param[i].messageDescribe;
+                                paramOKdata.push(mdata);
+                            }
+                        }
+                        this.articlesDonetableData=paramOKdata;
+                    });
+                }
+            }else{
+                //已拒绝消息
+                let userid = localStorage.getItem('ms_id');
+                let paramdatare={};
+                paramdatare.receiveUserid=userid;
+                paramdatare.state=2;
+                this.$api.task.getMessagelist(paramdatare).then((response)=>{
+                    let paramrejdata=[];
+                    let param=[];
+                    param=response.data;
+                    if(param.length > 0){
+                        for(var i=0;i<param.length;i++){
+                            let mdata={};
+                            mdata.taskno=param[i].id;
+                            mdata.taskname=param[i].messageName;
+                            mdata.publisher=param[i].sendUserName+"("+param[i].sendUserid+")";
+                            var senddate=param[i].inserttime;
+                            senddate=senddate.split("T")[0];
+                            mdata.publishdate=senddate;
+                            mdata.taskdetail=param[i].messageDescribe;
+                            paramrejdata.push(mdata);
+                        }
+                    }
+                    this.articlesRejecttableData=paramrejdata;
+                });
+            }
+        },
         //分页
         onSizeChange(val) {
             console.log(val);
@@ -197,7 +322,6 @@ export default {
             messageObject.readTag="0";
             messageObject.sendUserName=crueateusername;
             messageObject.receiveUserName=userename;
-            console.log(messageObject);
             this.$api.task.rejectOrconfirmMessage(paramdata).then(()=>{
                 this.$api.task.newMessage(messageObject).then(()=>{
                     this.$message.success('任务已拒绝.');
