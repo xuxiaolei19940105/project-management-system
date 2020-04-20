@@ -48,6 +48,7 @@
 <script>
 export default {
     name: 'tabs',
+    inject:['reload'],
     data(){
         const { renderControlColumn } = this;
         return{
@@ -76,10 +77,6 @@ export default {
                     title: '发布时间'
                 },
                 {
-                    key: 'project',
-                    title: '项目'
-                },
-                {
                     key: 'taskdetail',
                     title: '任务详情'
                 },
@@ -89,24 +86,7 @@ export default {
                     width: '260px'
                 }
             ],
-            articlesReadytableData:[
-                {
-                    taskno: '001',
-                    taskname: '功能修改',
-                    publisher: '李伟',
-                    publishdate: '2020-04-12',
-                    project: '福佳集团eas',
-                    taskdetail: '添加功能详情',
-                },
-                {
-                    taskno: '002',
-                    taskname: '新建页面修改',
-                    publisher: '李金',
-                    publishdate: '2020-04-11',
-                    project: '福佳集团eas',
-                    taskdetail: '添加详情',
-                },
-            ],
+            articlesReadytableData:[],
             articlesDoneColumns: [
                 {
                     key: 'taskno',
@@ -128,10 +108,6 @@ export default {
                     title: '发布时间'
                 },
                 {
-                    key: 'project',
-                    title: '项目'
-                },
-                {
                     key: 'taskdetail',
                     title: '任务详情'
                 },
@@ -141,31 +117,36 @@ export default {
                     width: '260px'
                 }
             ],
-            articlesDonetableData:[
-                {
-                    taskno: '001',
-                    taskname: 'bug',
-                    publisher: '张三',
-                    publishdate: '2020-04-12',
-                    project: '福佳集团eas',
-                    taskdetail: '添加功能详情',
-                },
-                {
-                    taskno: '002',
-                    taskname: '新建页面修改bug',
-                    publisher: '小明',
-                    publishdate: '2020-04-11',
-                    project: 'eas',
-                    taskdetail: '详情111',
-                },
-            ]
+            articlesDonetableData:[]
         }
     },
     created(){
         let userData = localStorage.getItem('ms_data');
         if(userData){
             this.$api.task.getMessagelist(userData).then((response)=>{
-                console.log(response)
+                let paramReadydata=[];
+                let paramDonedata=[];
+                let param=[];
+                param=response.data;
+                if(param.length > 0){
+                    for(var i=0;i<param.length;i++){
+                        let mdata={};
+                        mdata.taskno=param[i].id;
+                        mdata.taskname=param[i].messageName;
+                        mdata.publisher=param[i].sendUserName+"("+param[i].sendUserid+")";
+                        var senddate=param[i].inserttime;
+                        senddate=senddate.split("T")[0];
+                        mdata.publishdate=senddate;
+                        mdata.taskdetail=param[i].messageDescribe;
+                        if(param[i].state==="1"){
+                            paramDonedata.push(mdata);
+                        }else{
+                            paramReadydata.push(mdata);
+                        }
+                    }
+                }
+                this.articlesReadytableData=paramReadydata;
+                this.articlesDonetableData=paramDonedata;
             });
         }
     },
@@ -186,11 +167,53 @@ export default {
         },
         //拒绝
         onRowRefuseButtonClick(row) {
-            console.log(row, '删除');
+            let paramdata={};
+            paramdata.id=row.taskno;
+            paramdata.state='2';
+            let crueateid=localStorage.getItem('ms_id');
+            let crueatename=localStorage.getItem('ms_name');
+            let crueateusername=localStorage.getItem('ms_username');
+             var userS=row.publisher;
+             var userid ="";
+             var userename="";
+            if(userS.indexOf("(")>-1){
+                userid=userS.split("(")[1];
+                userid=userid.split(")")[0];
+                userename=userS.split("(")[0];
+            }else{
+                userid=row.publisher;
+                userename=row.publisher;
+            }
+            var dates=new Date();
+            let messageObject={};
+            messageObject.id=row.taskno;
+            messageObject.messageName=crueatename+" 已经拒绝了任务: "+row.taskname;
+            messageObject.messageDescribe=row.taskdetail;
+            messageObject.sendUserid=crueateid;
+            messageObject.receiveUserid=userid;
+            messageObject.state="0";
+            messageObject.inserttime=dates;
+            messageObject.updatetime=dates;
+            messageObject.readTag="0";
+            messageObject.sendUserName=crueateusername;
+            messageObject.receiveUserName=userename;
+            console.log(messageObject);
+            this.$api.task.rejectOrconfirmMessage(paramdata).then(()=>{
+                this.$api.task.newMessage(messageObject).then(()=>{
+                    this.$message.success('任务已拒绝.');
+                    this.reload();
+                }); 
+            });
         },
         //确认
         onRowAgreeButtonClick(row) {
-            console.log(row, '编辑');
+            let paramdata={};
+            paramdata.id=row.taskno;
+            paramdata.state='1';
+            this.$api.task.rejectOrconfirmMessage(paramdata).then(()=>{
+                this.$message.success('任务已确认.');
+                this.reload();
+            });
         },
         renderControlColumn({row}){
             const { onRowRefuseButtonClick, onRowAgreeButtonClick } = this;

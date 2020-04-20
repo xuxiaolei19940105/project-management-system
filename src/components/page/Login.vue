@@ -57,12 +57,14 @@ export default {
                     var responsevalue=response;
                     if(responsevalue){
                         let returndata =responsevalue.data;
-                        this.$message.success('登录成功');
                         localStorage.setItem('ms_data', JSON.stringify(returndata));
                         localStorage.setItem('ms_name', returndata.name);
+                        localStorage.setItem('ms_id', returndata.id);
+                        localStorage.setItem('ms_username', returndata.username);
                         this.$router.push('/');
+                        this.$message.success('登录成功');
                     }else{
-                        this.$message.error("请输入用户名和密码22!");
+                        this.$message.error("请输入用户名和密码!");
                         return false;
                     }
                     

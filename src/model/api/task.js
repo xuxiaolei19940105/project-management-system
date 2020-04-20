@@ -34,7 +34,19 @@ const task = {
     },
     //获取项目情况
     initProData(params) {
-        return httpReqest.post('/api/Project/initProData',params);
+        return httpReqest.post('/api/Project/initProData', params);
+    },
+    //标记已读
+    updateMessage(params) {
+        return httpReqest.post('/api/Message/markedAsRead', params);
+    },
+    //更新消息
+    rejectOrconfirmMessage(params) {
+        return httpReqest.post('/api/Message/updateState', params);
+    },
+    //新建消息
+    newMessage(params) {
+        return httpReqest.post('/api/Message/insertMessage', params);
     }
 };
 

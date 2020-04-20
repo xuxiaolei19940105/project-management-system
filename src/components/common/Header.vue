@@ -75,6 +75,8 @@ export default {
             if (command == 'loginout') {
                 localStorage.removeItem('ms_name');
                 localStorage.removeItem('ms_data');
+                localStorage.removeItem('ms_id');
+                localStorage.removeItem('ms_username');
                 this.$router.push('/login');
             }
         },

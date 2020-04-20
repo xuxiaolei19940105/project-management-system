@@ -39,45 +39,7 @@ export default {
                     title: '近30天占用情况',
                 },
             ],
-            articlesReadytableData:[
-                {
-                    employeeName:'张三',
-                    employeeCategory:'实施',
-                    projectdetail:[
-                        {
-                            projectname:'111',
-                            projectstarttime:'2020-4-18',
-                            projectendtime:'2020-4-22'
-                        },
-                        {
-                            projectname:'2222',
-                            projectstarttime:'2020-4-25',
-                            projectendtime:'2020-5-2'
-                        }
-                    ],
-                },
-                {
-                    employeeName:'黎明',
-                    employeeCategory:'开发',
-                    projectdetail:[
-                        {
-                            projectname:'111',
-                            projectstarttime:'2020-4-19',
-                            projectendtime:'2020-4-22'
-                        },
-                        {
-                            projectname:'2222',
-                            projectstarttime:'2020-4-20',
-                            projectendtime:'2020-5-2'
-                        },
-                        {
-                            projectname:'3333',
-                            projectstarttime:'2020-5-4',
-                            projectendtime:'2020-5-4'
-                        }
-                    ],
-                }
-            ],
+            articlesReadytableData:[],
             pageNum: 1,
             pageSize: 10,
             total: 10,
@@ -117,7 +79,24 @@ export default {
                     }else{
                         proObject.employeeCategory="admin";
                     }
-                    proObject.projectdetail=returndata[i].workList;
+                    let projec=[];
+                    let projectdet=returndata[i].workList;
+                    if(projectdet.length>0){
+                        for(var j=0;j<projectdet.length;j++){
+                            let proObjectdet={};
+                            proObjectdet.projectname=projectdet[j].belongProId;
+                            var starttime = projectdet[j].starttime;
+                            starttime=starttime.split("T")[0];
+                            proObjectdet.projectstarttime=starttime;
+                            var endtime = projectdet[j].endtime;
+                            endtime=endtime.split("T")[0];
+                            proObjectdet.projectendtime=endtime;
+                            projec.push(proObjectdet);
+                        }
+                        proObject.projectdetail=projec;
+                    }else{
+                        proObject.projectdetail=returndata[i].workList;
+                    }
                     tabledata.push(proObject);
                 }
                 this.articlesReadytableData=tabledata;
@@ -153,11 +132,7 @@ export default {
                 }
                 if(dateAa.length > 0){
                     for(var i=0;i< dateAa.length;i++){
-                        if(dateAa[i] <10){
-                            returnDate+="0"+dateAa[i];
-                        }else{
-                            returnDate+=dateAa[i];
-                        }
+                        returnDate+=dateAa[i];
                     }
                 }else{
                     returnDate=datestring; 

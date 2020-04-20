@@ -3,6 +3,7 @@ module.exports = {
     assetsDir: 'assets', //静态资源目录（js, css, img）
     lintOnSave: false, //是否开启eslint
     devServer: {
+        host: '0.0.0.0',
         proxy: {
             '/api': {
                 target: 'http://192.168.21.178:8080', //API服务器的地址

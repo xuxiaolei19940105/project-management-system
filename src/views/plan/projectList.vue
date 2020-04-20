@@ -165,7 +165,6 @@ export default {
             } else if (this.$refs.sonNewproject.projectForm.state === '已完结') {
                 projectObject.proState = 3;
             }
-            debugger;
             projectObject.effectStartTime = this.$refs.sonNewproject.projectForm.implStartDate;
             projectObject.effectEndTime = this.$refs.sonNewproject.projectForm.implEndDate;
             projectObject.effectUserIdList = this.$refs.sonNewproject.checkedImplementerId;
