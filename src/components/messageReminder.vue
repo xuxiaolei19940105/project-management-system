@@ -223,6 +223,7 @@ export default {
                             }
                         }
                         this.articlesReadytableData=paramReadydata;
+                        this.reload();
                     });
                 }else if(tabsname ==="second"){
                     //已办消息的已接收消息
@@ -248,6 +249,7 @@ export default {
                             }
                         }
                         this.articlesDonetableData=paramOKdata;
+                        this.reload();
                     });
                 }
             }else{
@@ -274,6 +276,7 @@ export default {
                         }
                     }
                     this.articlesRejecttableData=paramrejdata;
+                    this.reload();
                 });
             }
         },

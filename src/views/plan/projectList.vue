@@ -54,10 +54,12 @@ export default {
         projectPage,
         projectInformation
     },
+    inject:['reload'],
     data() {
         const { renderControlColumn } = this;
         const { renderStartTimeDate } = this;
         const { renderEndTimeDate } = this;
+        const { renderprojectNo } = this;
         return {
             operationmode: '',
             dialogVisible: false,
@@ -65,12 +67,9 @@ export default {
             dialogNewImpltaskVisible: false,
             columns: [
                 {
-                    key: 'id',
-                    title: '项目id'
-                },
-                {
                     key: 'projectNo',
-                    title: '项目编号'
+                    title: '项目编号',
+                    render:renderprojectNo
                 },
                 {
                     key: 'name',
@@ -123,11 +122,10 @@ export default {
                     for (var i = 0; i < returndata.length; i++) {
                         if (returndata[i]) {
                             let proObject = {};
-                            proObject.id = returndata[i].id;
-                            proObject.projectNo = returndata[i].proNum;
+                            proObject.projectNo = returndata[i].proNum+"-("+returndata[i].id+")";
                             proObject.name = returndata[i].proName;
                             proObject.state = returndata[i].proState;
-                            proObject.leader = returndata[i].leaderUserId;
+                            proObject.leader = returndata[i].leaderUserList;
                             var starttime = returndata[i].overallStartTime;
                             // starttime = starttime.split('T')[0];
                             proObject.starttime = starttime;
@@ -187,12 +185,12 @@ export default {
             projectObject.testTaskId = '';
             projectObject.guestbookId = '';
             projectObject.logId = '';
-            console.log(projectObject);
             this.$api.task.setProject(projectObject).then(response => {
                 var responsevalue = response;
                 if (responsevalue) {
                     this.$message.success('创建成功');
                     this.dialogNewprojectVisible = false;
+                    this.reload();
                 } else {
                     this.$message.error('创建失败,请重新创建!');
                     this.dialogNewprojectVisible = true;
@@ -204,10 +202,13 @@ export default {
         onRowLookButtonClick(row) {
             console.log(row, '查看');
             localStorage.setItem('list', JSON.stringify(true));
+            let projectS=row.projectNo;
+            let projectIdS=projectS.split("-(")[1];
+            projectIdS=projectIdS.split(")")[1];
             this.dialogVisible = true;
             // let projectObjectId = {};
             // projectObjectId.id = row.id;
-            localStorage.setItem('pro_id', row.id);
+            localStorage.setItem('pro_id', projectIdS);
             // this.$api.task.initProData(projectObjectId).then(response => {
             //     debugger
             //     this.rowdata = response;
@@ -219,7 +220,10 @@ export default {
             console.log(row, '编辑');
             localStorage.setItem('list', JSON.stringify(false));
             this.dialogVisible = true;
-            localStorage.setItem('pro_id', row.id);
+            let projectS=row.projectNo;
+            let projectIdS=projectS.split("-(")[1];
+            projectIdS=projectIdS.split(")")[1];
+            localStorage.setItem('pro_id', projectIdS);
         },
 
         closeDialogVisible() {
@@ -246,6 +250,13 @@ export default {
         renderEndTimeDate(v) {
             if (v.row.endtime) {
                 return <div>{v.row.endtime.slice(0, 10)}</div>;
+            }
+        },
+        renderprojectNo(v){
+            if (v.row.projectNo) {
+                let projectNoS=v.row.projectNo;
+                projectNoS=projectNoS.split("-(")[0];
+                return <div>{projectNoS}</div>;
             }
         },
         renderControlColumn({ row }) {
