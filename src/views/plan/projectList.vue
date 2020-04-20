@@ -121,19 +121,21 @@ export default {
                     let tabledata = [];
                     let returndata = responsevalue.data;
                     for (var i = 0; i < returndata.length; i++) {
-                        let proObject = {};
-                        proObject.id = returndata[i].id;
-                        proObject.projectNo = returndata[i].proNum;
-                        proObject.name = returndata[i].proName;
-                        proObject.state = returndata[i].proState;
-                        proObject.leader = returndata[i].leaderUserId;
-                        var starttime = returndata[i].overallStartTime;
-                        // starttime = starttime.split('T')[0];
-                        proObject.starttime = starttime;
-                        var endtime = returndata[i].overallStartTime;
-                        // endtime = endtime.split('T')[0];
-                        proObject.endtime = endtime;
-                        tabledata.push(proObject);
+                        if (returndata[i]) {
+                            let proObject = {};
+                            proObject.id = returndata[i].id;
+                            proObject.projectNo = returndata[i].proNum;
+                            proObject.name = returndata[i].proName;
+                            proObject.state = returndata[i].proState;
+                            proObject.leader = returndata[i].leaderUserId;
+                            var starttime = returndata[i].overallStartTime;
+                            // starttime = starttime.split('T')[0];
+                            proObject.starttime = starttime;
+                            var endtime = returndata[i].overallStartTime;
+                            // endtime = endtime.split('T')[0];
+                            proObject.endtime = endtime;
+                            tabledata.push(proObject);
+                        }
                     }
                     this.table = tabledata;
                 } else {
@@ -200,7 +202,7 @@ export default {
         },
         // 查看
         onRowLookButtonClick(row) {
-            console.log(row.id, '查看');
+            console.log(row, '查看');
             localStorage.setItem('list', JSON.stringify(true));
             this.dialogVisible = true;
             // let projectObjectId = {};
