@@ -55,7 +55,7 @@
                     </el-col>
                     <el-col :span="11" :offset="2">
                         <el-form-item label="bug编号">
-                            <el-input v-model="newtesterForm.bugnumber" v-bind:disabled="disabled"></el-input>
+                            <el-input v-model="newtesterForm.bugnumber" disabled></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -184,6 +184,22 @@ export default {
     created() {
         console.log(this.rowdata);
         console.log(this.operationmode);
+        this.$api.task.getAllUser().then(response => {
+            console.log(response);
+            let responsevalue = response.data;
+            if (responsevalue) {
+                let personOptions = [];
+                for (var i = 0; i < responsevalue.length; i++) {
+                    let proObject = {};
+                    proObject.id = responsevalue[i].id;
+                    proObject.name = responsevalue[i].name;
+                    personOptions.push(proObject);
+                }
+                this.personOptions = personOptions;
+            } else {
+                this.$message.success('请联系Admin!');
+            }
+        });
         if (this.operationmode == 'edit') {
             this.newtesterForm.taskdetail = this.rowdata.task;
             this.newtesterForm.expectedresults = this.rowdata.want;
@@ -191,23 +207,6 @@ export default {
             this.newtesterForm.testerStartDate = this.rowdata.starttime;
             this.newtesterForm.testerEndDate = this.rowdata.endtime;
             this.disabled = false;
-
-            this.$api.task.getAllUser().then(response => {
-                console.log(response);
-                let responsevalue = response.data;
-                if (responsevalue) {
-                    let personOptions = [];
-                    for (var i = 0; i < responsevalue.length; i++) {
-                        let proObject = {};
-                        proObject.id = responsevalue[i].id;
-                        proObject.name = responsevalue[i].name;
-                        personOptions.push(proObject);
-                    }
-                    this.personOptions = personOptions;
-                } else {
-                    this.$message.success('请联系Admin!');
-                }
-            });
         } else if (this.operationmode == 'consult') {
             this.newtesterForm.taskdetail = this.rowdata.task;
             this.newtesterForm.expectedresults = this.rowdata.want;

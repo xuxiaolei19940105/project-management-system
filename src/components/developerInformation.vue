@@ -65,13 +65,13 @@
                                     <el-button
                                         type="text"
                                         size="small"
-                                        @click="editleclick(scope.row)"
+                                        @click="editleclick(scope.row, scope.$index)"
                                         :disabled="disabled"
                                     >编辑</el-button>
                                     <el-button
                                         type="text"
                                         size="small"
-                                        @click="deleteClick(scope.row)"
+                                        @click="deleteClick(scope.row, scope.$index)"
                                         :disabled="disabled"
                                     >删除</el-button>
                                 </template>
@@ -110,78 +110,13 @@ export default {
             projectForm: {
                 developStartDate: '',
                 developEndDate: '',
-                developers: ''
+                developers: '',
+                testers: ''
             },
             rowdata: {},
             operationmode: '',
-            tableData: [
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改1',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎1'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                }
-            ]
+            tableData: [],
+            index: ''
         };
     },
     created() {
@@ -210,15 +145,29 @@ export default {
             this.operationmode = 'consult';
             this.dialogNewDeveltaskVisible = true;
         },
-        editleclick(row) {
+        editleclick(row, index) {
+            this.index = index;
             this.rowdata = row;
             this.operationmode = 'edit';
             this.dialogNewDeveltaskVisible = true;
         },
-        deleteClick(row) {
-            console.log(row);
+        deleteClick(row, index) {
+            this.tableData.splice(index, 1);
         },
         savenewDevelop() {
+            this.rowdata = {};
+            this.rowdata.task = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
+            this.rowdata.starttime = this.$refs.sonNewdevop.newdevelopForm.developStartDate;
+            this.rowdata.endtime = this.$refs.sonNewdevop.newdevelopForm.developEndDate;
+            this.rowdata.testers = this.$refs.sonNewdevop.newdevelopForm.testers;
+            this.rowdata.name = localStorage.getItem('ms_name');
+            this.dialogNewImpltaskVisible = false;
+            if (this.operationmode === 'new') {
+                this.tableData.push(this.rowdata);
+            } else if (this.operationmode === 'edit') {
+                this.tableData.splice(this.index, 1, this.rowdata);
+            }
+
             console.log(this.$refs.sonNewdevop.newdevelopForm.taskdetail);
             console.log(this.$refs.sonNewdevop.newdevelopForm.developStartDate);
             console.log(this.$refs.sonNewdevop.newdevelopForm.developEndDate);

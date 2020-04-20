@@ -25,12 +25,9 @@
                                     placeholder="请选择"
                                 ></el-date-picker>
                             </el-form-item>
-                            
+
                             <el-form-item label="结束时间">
-                                <el-date-picker
-                                    v-model="projectForm.testEndDate"
-                                    placeholder="请选择"
-                                ></el-date-picker>
+                                <el-date-picker v-model="projectForm.testEndDate" placeholder="请选择"></el-date-picker>
                             </el-form-item>
                             <el-form-item label="测试任务参与人员">
                                 <el-input
@@ -68,13 +65,13 @@
                                     <el-button
                                         type="text"
                                         size="small"
-                                        @click="editleclick(scope.row)"
+                                        @click="editleclick(scope.row,scope.$index)"
                                         :disabled="disabled"
                                     >编辑</el-button>
                                     <el-button
                                         type="text"
                                         size="small"
-                                        @click="deleteClick(scope.row)"
+                                        @click="deleteClick(scope.row,scope.$index)"
                                         :disabled="disabled"
                                     >删除</el-button>
                                 </template>
@@ -121,64 +118,8 @@ export default {
             },
             rowdata: {},
             operationmode: '',
-            tableData: [
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎',
-                    want: '白富美',
-                    actual: '矮穷丑'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎',
-                    want: '白富美',
-                    actual: '矮穷丑'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎',
-                    want: '白富美',
-                    actual: '矮穷丑'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎',
-                    want: '白富美',
-                    actual: '矮穷丑'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎',
-                    want: '白富美',
-                    actual: '矮穷丑'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎',
-                    want: '白富美',
-                    actual: '矮穷丑'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎',
-                    want: '白富美',
-                    actual: '矮穷丑'
-                }
-            ]
+            tableData: [],
+            index: ''
         };
     },
     created() {
@@ -207,15 +148,30 @@ export default {
             this.operationmode = 'consult';
             this.dialogNewtesttaskVisible = true;
         },
-        editleclick(row) {
+        editleclick(row, index) {
+            this.index = index;
             this.rowdata = row;
             this.operationmode = 'edit';
             this.dialogNewtesttaskVisible = true;
         },
-        deleteClick(row) {
-            console.log(row);
+        deleteClick(row, index) {
+            this.tableData.splice(index, 1);
         },
         savenewTester() {
+            this.rowdata = {};
+            this.rowdata.task = this.$refs.sonNewtestinform.newtesterForm.taskdetail;
+            this.rowdata.starttime = this.$refs.sonNewtestinform.newtesterForm.testerStartDate;
+            this.rowdata.endtime = this.$refs.sonNewtestinform.newtesterForm.testerEndDate;
+            this.rowdata.name = localStorage.getItem('ms_name');
+            this.rowdata.want = this.$refs.sonNewtestinform.newtesterForm.expectedresults;
+            this.rowdata.actual = this.$refs.sonNewtestinform.newtesterForm.actualresults;
+            this.dialogNewImpltaskVisible = false;
+            if (this.operationmode === 'new') {
+                this.tableData.push(this.rowdata);
+            } else if (this.operationmode === 'edit') {
+                this.tableData.splice(this.index, 1, this.rowdata);
+            }
+
             console.log(this.$refs.sonNewtestinform.newtesterForm.taskdetail);
             console.log(this.$refs.sonNewtestinform.newtesterForm.radio);
             console.log(this.$refs.sonNewtestinform.newtesterForm.expectedresults);

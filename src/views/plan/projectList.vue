@@ -55,7 +55,9 @@ export default {
         projectInformation
     },
     data() {
+       
         const { renderControlColumn } = this;
+        const {renderDate}=this
         return {
             operationmode: '',
             dialogVisible: false,
@@ -84,7 +86,8 @@ export default {
                 },
                 {
                     key: 'starttime',
-                    title: '项目开始时间'
+                    title: '项目开始时间',
+                    render:renderDate
                 },
                 {
                     key: 'endtime',
@@ -124,10 +127,10 @@ export default {
                         proObject.state = returndata[i].proState;
                         proObject.leader = returndata[i].leaderUserId;
                         var starttime = returndata[i].overallStartTime;
-                        starttime = starttime.split('T')[0];
+                        // starttime = starttime.split('T')[0];
                         proObject.starttime = starttime;
                         var endtime = returndata[i].overallStartTime;
-                        endtime = endtime.split('T')[0];
+                        // endtime = endtime.split('T')[0];
                         proObject.endtime = endtime;
                         tabledata.push(proObject);
                     }
@@ -231,6 +234,11 @@ export default {
         },
         onCurrentChange(val) {
             this.pageNum = val;
+        },
+        renderDate(v){
+            if(v.row.starttime){
+               return  <div>{v.row.starttime.slice(0,10)}</div>
+            }
         },
         renderControlColumn({ row }) {
             const { onRowLookButtonClick, onRowUpdateButtonClick } = this;

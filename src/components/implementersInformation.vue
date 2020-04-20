@@ -20,16 +20,13 @@
                             :disabled="disabled"
                         >
                             <el-form-item label="开始时间">
-                                 <el-date-picker
+                                <el-date-picker
                                     v-model="projectForm.implStartDate"
                                     placeholder="请选择"
                                 ></el-date-picker>
                             </el-form-item>
                             <el-form-item label="结束时间">
-                                 <el-date-picker
-                                    v-model="projectForm.implEndDate"
-                                    placeholder="请选择"
-                                ></el-date-picker>
+                                <el-date-picker v-model="projectForm.implEndDate" placeholder="请选择"></el-date-picker>
                             </el-form-item>
                             <el-form-item label="实施任务参与人员">
                                 <el-input
@@ -65,13 +62,13 @@
                                     <el-button
                                         type="text"
                                         size="small"
-                                        @click="editleclick(scope.row)"
+                                        @click="editleclick(scope.row , scope.$index)"
                                         :disabled="disabled"
                                     >编辑</el-button>
                                     <el-button
                                         type="text"
                                         size="small"
-                                        @click="deleteClick(scope.row)"
+                                        @click="deleteClick(scope.row, scope.$index)"
                                         :disabled="disabled"
                                     >删除</el-button>
                                 </template>
@@ -118,75 +115,10 @@ export default {
             },
             rowdata: {},
             operationmode: '',
-            tableData: [
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    task: 'bug修改',
-                    starttime: '2016-05-02',
-                    endtime: '2016-05-02',
-                    name: '王小虎'
-                }
-            ],
-            dialogNewImpltaskVisible: false
+            tableData: [],
+            dialogNewImpltaskVisible: false,
+            responseValue: '',
+            index:''
         };
     },
     created() {
@@ -194,11 +126,10 @@ export default {
         let projectObjectId = {};
         projectObjectId.id = pro_id;
         this.$api.task.initProData(projectObjectId).then(response => {
-            let responseValue = response.data;
-            console.log(responseValue)
-            this.projectForm.implStartDate = responseValue.effectStartTime;
-            this.projectForm.implEndDate = responseValue.effectEndTime;
-            this.projectForm.implementers = responseValue.effectUserIdList;
+            this.responseValue = response.data;
+            this.projectForm.implStartDate = this.responseValue.effectStartTime;
+            this.projectForm.implEndDate = this.responseValue.effectEndTime;
+            this.projectForm.implementers = this.responseValue.effectUserIdList;
         });
     },
     mounted() {
@@ -216,19 +147,28 @@ export default {
             this.operationmode = 'consult';
             this.dialogNewImpltaskVisible = true;
         },
-        editleclick(row) {
+        editleclick(row, index) {
+            this.index = index;
             this.rowdata = row;
             this.operationmode = 'edit';
             this.dialogNewImpltaskVisible = true;
         },
-        deleteClick(row) {
-            console.log(row);
+        deleteClick(row , index) {
+            this.tableData.splice(index,1);
         },
         saveNewImpltask() {
-            console.log(this.$refs.sonNewimplement.implrmrntForm.taskdetail);
-            console.log(this.$refs.sonNewimplement.implrmrntForm.implementStartDate);
-            console.log(this.$refs.sonNewimplement.implrmrntForm.implementEndDate);
+            this.rowdata = {};
+            this.rowdata.task = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
+            this.rowdata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
+            console.log(this.rowdata.starttime )
+            this.rowdata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
+            this.rowdata.name = localStorage.getItem('ms_name');
             this.dialogNewImpltaskVisible = false;
+            if (this.operationmode === 'new') {
+                this.tableData.push(this.rowdata);
+            }else if (this.operationmode === 'edit') {
+                this.tableData.splice(this.index,1,this.rowdata);
+            }
         }
     }
 };
