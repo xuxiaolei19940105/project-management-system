@@ -55,9 +55,9 @@ export default {
         projectInformation
     },
     data() {
-       
         const { renderControlColumn } = this;
-        const {renderDate}=this
+        const { renderStartTimeDate } = this;
+        const { renderEndTimeDate } = this;
         return {
             operationmode: '',
             dialogVisible: false,
@@ -87,11 +87,12 @@ export default {
                 {
                     key: 'starttime',
                     title: '项目开始时间',
-                    render:renderDate
+                    render: renderStartTimeDate
                 },
                 {
                     key: 'endtime',
-                    title: '项目结束时间'
+                    title: '项目结束时间',
+                    render: renderEndTimeDate
                 },
                 {
                     title: '操作',
@@ -156,7 +157,7 @@ export default {
             projectObject.id = '';
             projectObject.proName = this.$refs.sonNewproject.projectForm.projectName;
             projectObject.proNum = this.$refs.sonNewproject.projectForm.projectNumber;
-            projectObject.leaderUserId = this.$refs.sonNewproject.checkedLeaderId;
+            projectObject.leaderUserIdList = this.$refs.sonNewproject.checkedLeaderId;
             projectObject.overallStartTime = this.$refs.sonNewproject.projectForm.projectStartDate;
             projectObject.overallEndTime = this.$refs.sonNewproject.projectForm.projectEndDate;
             if (this.$refs.sonNewproject.projectForm.state === '进行中') {
@@ -184,7 +185,7 @@ export default {
             projectObject.testTaskId = '';
             projectObject.guestbookId = '';
             projectObject.logId = '';
-            console.log(projectObject)
+            console.log(projectObject);
             this.$api.task.setProject(projectObject).then(response => {
                 var responsevalue = response;
                 if (responsevalue) {
@@ -235,9 +236,14 @@ export default {
         onCurrentChange(val) {
             this.pageNum = val;
         },
-        renderDate(v){
-            if(v.row.starttime){
-               return  <div>{v.row.starttime.slice(0,10)}</div>
+        renderStartTimeDate(v) {
+            if (v.row.starttime) {
+                return <div>{v.row.starttime.slice(0, 10)}</div>;
+            }
+        },
+        renderEndTimeDate(v) {
+            if (v.row.endtime) {
+                return <div>{v.row.endtime.slice(0, 10)}</div>;
             }
         },
         renderControlColumn({ row }) {
