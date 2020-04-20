@@ -20,10 +20,17 @@
                             :disabled="disabled"
                         >
                             <el-form-item label="开始时间">
-                                <el-input v-model="projectForm.testStartDate"></el-input>
+                                <el-date-picker
+                                    v-model="projectForm.testStartDate"
+                                    placeholder="请选择"
+                                ></el-date-picker>
                             </el-form-item>
+                            
                             <el-form-item label="结束时间">
-                                <el-input v-model="projectForm.testEndDate"></el-input>
+                                <el-date-picker
+                                    v-model="projectForm.testEndDate"
+                                    placeholder="请选择"
+                                ></el-date-picker>
                             </el-form-item>
                             <el-form-item label="测试任务参与人员">
                                 <el-input

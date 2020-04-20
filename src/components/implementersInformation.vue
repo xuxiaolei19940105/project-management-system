@@ -20,10 +20,16 @@
                             :disabled="disabled"
                         >
                             <el-form-item label="开始时间">
-                                <el-input v-model="projectForm.implStartDate"></el-input>
+                                 <el-date-picker
+                                    v-model="projectForm.implStartDate"
+                                    placeholder="请选择"
+                                ></el-date-picker>
                             </el-form-item>
                             <el-form-item label="结束时间">
-                                <el-input v-model="projectForm.implEndDate"></el-input>
+                                 <el-date-picker
+                                    v-model="projectForm.implEndDate"
+                                    placeholder="请选择"
+                                ></el-date-picker>
                             </el-form-item>
                             <el-form-item label="实施任务参与人员">
                                 <el-input
@@ -189,6 +195,7 @@ export default {
         projectObjectId.id = pro_id;
         this.$api.task.initProData(projectObjectId).then(response => {
             let responseValue = response.data;
+            console.log(responseValue)
             this.projectForm.implStartDate = responseValue.effectStartTime;
             this.projectForm.implEndDate = responseValue.effectEndTime;
             this.projectForm.implementers = responseValue.effectUserIdList;
