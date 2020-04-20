@@ -54,7 +54,7 @@ export default {
         projectPage,
         projectInformation
     },
-    inject:['reload'],
+    inject: ['reload'],
     data() {
         const { renderControlColumn } = this;
         const { renderStartTimeDate } = this;
@@ -69,7 +69,7 @@ export default {
                 {
                     key: 'projectNo',
                     title: '项目编号',
-                    render:renderprojectNo
+                    render: renderprojectNo
                 },
                 {
                     key: 'name',
@@ -122,10 +122,14 @@ export default {
                     for (var i = 0; i < returndata.length; i++) {
                         if (returndata[i]) {
                             let proObject = {};
-                            proObject.projectNo = returndata[i].proNum+"-("+returndata[i].id+")";
+                            proObject.projectNo = returndata[i].proNum + '-(' + returndata[i].id + ')';
                             proObject.name = returndata[i].proName;
                             proObject.state = returndata[i].proState;
-                            proObject.leader = returndata[i].leaderUserList;
+                            proObject.leader = '';
+                            for (var j = 0; j < returndata[i].leaderUserList.length; j++) {
+                                proObject.leader += returndata[i].leaderUserList[j].name + ',';
+                            }
+
                             var starttime = returndata[i].overallStartTime;
                             // starttime = starttime.split('T')[0];
                             proObject.starttime = starttime;
@@ -202,9 +206,9 @@ export default {
         onRowLookButtonClick(row) {
             console.log(row, '查看');
             localStorage.setItem('list', JSON.stringify(true));
-            let projectS=row.projectNo;
-            let projectIdS=projectS.split("-(")[1];
-            projectIdS=projectIdS.split(")")[1];
+            let projectS = row.projectNo;
+            let projectIdS = projectS.split('-(')[1];
+            projectIdS = projectIdS.split(')')[1];
             this.dialogVisible = true;
             // let projectObjectId = {};
             // projectObjectId.id = row.id;
@@ -220,9 +224,9 @@ export default {
             console.log(row, '编辑');
             localStorage.setItem('list', JSON.stringify(false));
             this.dialogVisible = true;
-            let projectS=row.projectNo;
-            let projectIdS=projectS.split("-(")[1];
-            projectIdS=projectIdS.split(")")[1];
+            let projectS = row.projectNo;
+            let projectIdS = projectS.split('-(')[1];
+            projectIdS = projectIdS.split(')')[1];
             localStorage.setItem('pro_id', projectIdS);
         },
 
@@ -252,10 +256,10 @@ export default {
                 return <div>{v.row.endtime.slice(0, 10)}</div>;
             }
         },
-        renderprojectNo(v){
+        renderprojectNo(v) {
             if (v.row.projectNo) {
-                let projectNoS=v.row.projectNo;
-                projectNoS=projectNoS.split("-(")[0];
+                let projectNoS = v.row.projectNo;
+                projectNoS = projectNoS.split('-(')[0];
                 return <div>{projectNoS}</div>;
             }
         },
