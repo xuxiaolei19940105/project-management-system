@@ -17,7 +17,7 @@
                             v-model="projectForm"
                             class="dataForm"
                             size="mini"
-                            :disabled="disabled"
+                            disabled
                         >
                             <el-form-item label="开始时间">
                                 <el-date-picker
@@ -118,7 +118,7 @@ export default {
             tableData: [],
             dialogNewImpltaskVisible: false,
             responseValue: '',
-            index:''
+            index: ''
         };
     },
     created() {
@@ -129,7 +129,11 @@ export default {
             this.responseValue = response.data;
             this.projectForm.implStartDate = this.responseValue.effectStartTime;
             this.projectForm.implEndDate = this.responseValue.effectEndTime;
-            this.projectForm.implementers = this.responseValue.effectUserIdList;
+           
+            this.projectForm.implementers = '';
+            for (let i = 0; i < this.responseValue.taskList[0].userList.length; i++) {
+                this.projectForm.implementers += this.responseValue.taskList[0].userList[i].name + ',';
+            }
         });
     },
     mounted() {
@@ -153,21 +157,21 @@ export default {
             this.operationmode = 'edit';
             this.dialogNewImpltaskVisible = true;
         },
-        deleteClick(row , index) {
-            this.tableData.splice(index,1);
+        deleteClick(row, index) {
+            this.tableData.splice(index, 1);
         },
         saveNewImpltask() {
             this.rowdata = {};
             this.rowdata.task = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
             this.rowdata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
-            console.log(this.rowdata.starttime )
+            console.log(this.rowdata.starttime);
             this.rowdata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
             this.rowdata.name = localStorage.getItem('ms_name');
             this.dialogNewImpltaskVisible = false;
             if (this.operationmode === 'new') {
                 this.tableData.push(this.rowdata);
-            }else if (this.operationmode === 'edit') {
-                this.tableData.splice(this.index,1,this.rowdata);
+            } else if (this.operationmode === 'edit') {
+                this.tableData.splice(this.index, 1, this.rowdata);
             }
         }
     }

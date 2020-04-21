@@ -264,40 +264,71 @@ export default {
         let pro_id = localStorage.getItem('pro_id');
         let projectObjectId = {};
         projectObjectId.id = pro_id;
-        if(pro_id){
+        if (pro_id) {
             this.$api.task.initProData(projectObjectId).then(response => {
-            let responseValue = response.data;
-            this.projectForm.projectName = responseValue.proName;
-            this.projectForm.projectNumber = responseValue.proNum;
+                debugger;
+                let responseValue = response.data;
+                this.projectForm.projectName = responseValue.proName;
+                this.projectForm.projectNumber = responseValue.proNum;
 
-            if (responseValue.proState === 0) {
-                this.projectForm.state = '进行中';
-            } else if (responseValue.proState === 1) {
-                this.projectForm.state = '暂停';
-            } else if (responseValue.proState === 2) {
-                this.projectForm.state = '已作废';
-            } else if (responseValue.proState === 3) {
-                this.projectForm.state = '已完结';
-            }
-            this.projectForm.projectStartDate = responseValue.overallStartTime;
-            this.projectForm.projectEndDate = responseValue.overallEndTime;
-            this.projectForm.projectLeader = responseValue.leaderName;
+                if (responseValue.proState === 0) {
+                    this.projectForm.state = '进行中';
+                } else if (responseValue.proState === 1) {
+                    this.projectForm.state = '暂停';
+                } else if (responseValue.proState === 2) {
+                    this.projectForm.state = '已作废';
+                } else if (responseValue.proState === 3) {
+                    this.projectForm.state = '已完结';
+                }
+                this.projectForm.projectStartDate = responseValue.overallStartTime;
+                this.projectForm.projectEndDate = responseValue.overallEndTime;
+                this.projectForm.projectLeader = '';
+                for (let i = 0; i < responseValue.leaderUserList.length; i++) {
+                    this.projectForm.projectLeader += responseValue.leaderUserList[i].name + ',';
+                }
+                for (let i = 0; i < responseValue.leaderUserList.length; i++) {
+                    this.checkedLeaderId.push(responseValue.leaderUserList[i].id);
+                }
 
-            this.projectForm.implStartDate = responseValue.effectStartTime;
-            this.projectForm.implEndDate = responseValue.effectEndTime;
-            this.projectForm.implementers = responseValue.effectUserIdList;
+                this.projectForm.implStartDate = responseValue.effectStartTime;
+                this.projectForm.implEndDate = responseValue.effectEndTime;
+                this.projectForm.implementers = '';
+                for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
+                    this.projectForm.implementers += responseValue.taskList[0].userList[i].name + ',';
+                }
+                for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
+                    this.checkedImplementerId.push(responseValue.taskList[0].userList[i].id);
+                }
 
-            this.projectForm.develStartDate = responseValue.exploitStartTime;
-            this.projectForm.develEndDate = responseValue.exploitEndTime;
-            this.projectForm.developers = responseValue.exploitUserIdList;
+                this.projectForm.develStartDate = responseValue.exploitStartTime;
+                this.projectForm.develEndDate = responseValue.exploitEndTime;
+                this.projectForm.developers = '';
+                for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
+                    this.projectForm.developers += responseValue.taskList[1].userList[i].name + ',';
+                }
+                for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
+                    this.checkedDeveloperId.push(responseValue.taskList[1].userList[i].id);
+                }
 
-            this.projectForm.testerStartDate = responseValue.testStartTime;
-            this.projectForm.testerEndDate = responseValue.testEndTime;
-            this.projectForm.testers = responseValue.testUserIdList;
+                this.projectForm.testerStartDate = responseValue.testStartTime;
+                this.projectForm.testerEndDate = responseValue.testEndTime;
+                this.projectForm.testers = '';
+                for (let i = 0; i < responseValue.taskList[2].userList.length; i++) {
+                    this.projectForm.testers += responseValue.taskList[2].userList[i].name + ',';
+                }
+                for (let i = 0; i < responseValue.taskList[2].userList.length; i++) {
+                    this.checkedTesterId.push(responseValue.taskList[2].userList[i].id);
+                }
 
-            this.projectForm.packagerStartDate = responseValue.packageTime;
-            this.projectForm.packagers = responseValue.packageUserIdList;
-        });
+                this.projectForm.packagerStartDate = responseValue.packageTime;
+                this.projectForm.packagers = '';
+                for (let i = 0; i < responseValue.taskList[3].userList.length; i++) {
+                    this.projectForm.packagers += responseValue.taskList[3].userList[i].name + ',';
+                }
+                 for (let i = 0; i < responseValue.taskList[3].userList.length; i++) {
+                    this.checkedPackagerId.push(responseValue.taskList[3].userList[i].id);
+                }
+            });
         }
     },
     mounted() {

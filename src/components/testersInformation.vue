@@ -17,7 +17,7 @@
                             v-model="projectForm"
                             class="dataForm"
                             size="mini"
-                            :disabled="disabled"
+                            disabled=""
                         >
                             <el-form-item label="开始时间">
                                 <el-date-picker
@@ -131,6 +131,10 @@ export default {
             this.projectForm.testStartDate = responseValue.testStartTime;
             this.projectForm.testEndDate = responseValue.testEndTime;
             this.projectForm.testers = responseValue.testUserIdList;
+            this.projectForm.testers = '';
+            for (let i = 0; i < responseValue.taskList[2].userList.length; i++) {
+                this.projectForm.testers += responseValue.taskList[2].userList[i].name + ',';
+            }
         });
     },
     mounted() {

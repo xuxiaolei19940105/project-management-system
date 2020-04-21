@@ -13,12 +13,7 @@
             <el-row>
                 <el-col :span="6">
                     <div class="left">
-                        <el-form
-                            v-model="projectForm"
-                            class="dataForm"
-                            size="mini"
-                            :disabled="disabled"
-                        >
+                        <el-form v-model="projectForm" class="dataForm" size="mini" disabled>
                             <el-form-item label="开始时间">
                                 <el-date-picker
                                     v-model="projectForm.developStartDate"
@@ -127,7 +122,10 @@ export default {
             let responseValue = response.data;
             this.projectForm.developStartDate = responseValue.exploitStartTime;
             this.projectForm.developEndDate = responseValue.exploitEndTime;
-            this.projectForm.developers = responseValue.exploitUserIdList;
+            this.projectForm.developers = '';
+            for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
+                this.projectForm.developers += responseValue.taskList[1].userList[i].name + ',';
+            }
         });
     },
     mounted() {
