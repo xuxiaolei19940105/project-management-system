@@ -13,12 +13,7 @@
             <el-row>
                 <el-col :span="6">
                     <div class="left">
-                        <el-form
-                            v-model="projectForm"
-                            class="dataForm"
-                            size="mini"
-                            disabled
-                        >
+                        <el-form v-model="projectForm" class="dataForm" size="mini" disabled>
                             <el-form-item label="开始时间">
                                 <el-date-picker
                                     v-model="projectForm.implStartDate"
@@ -47,10 +42,18 @@
                             height="250"
                             size="mini"
                         >
-                            <el-table-column prop="name" label="人员" width="180"></el-table-column>
-                            <el-table-column prop="task" label="任务"></el-table-column>
-                            <el-table-column prop="starttime" label="开始时间"></el-table-column>
-                            <el-table-column prop="endtime" label="结束时间时间"></el-table-column>
+                            <el-table-column prop="userName" label="人员" width="180"></el-table-column>
+                            <el-table-column prop="workDescribe" label="任务"></el-table-column>
+                            <el-table-column label="开始时间">
+                                <template slot-scope="scope">
+                                    <span>{{ scope.row.starttime.slice(0, 10) }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="endtime" label="结束时间时间">
+                                <template slot-scope="scope">
+                                    <span>{{ scope.row.endtime.slice(0, 10) }}</span>
+                                </template>
+                            </el-table-column>
                             <el-table-column label="操作" width="150">
                                 <template slot-scope="scope">
                                     <el-button
@@ -111,7 +114,9 @@ export default {
             projectForm: {
                 implStartDate: '',
                 implEndDate: '',
-                implementers: ''
+                implementers: '',
+                belongProId: '',
+                belongTaskId: ''
             },
             rowdata: {},
             operationmode: '',
@@ -126,10 +131,17 @@ export default {
         let projectObjectId = {};
         projectObjectId.id = pro_id;
         this.$api.task.initProData(projectObjectId).then(response => {
+            //初始化表
             this.responseValue = response.data;
+            //初始化基本信息
+            this.tableData = this.responseValue.taskList[0].workList;
+     
             this.projectForm.implStartDate = this.responseValue.effectStartTime;
             this.projectForm.implEndDate = this.responseValue.effectEndTime;
-           
+            //储存所属项目id和所属任务id
+            this.belongProId = this.responseValue.id;
+            this.belongTaskId = this.responseValue.taskList[0].id;
+
             this.projectForm.implementers = '';
             for (let i = 0; i < this.responseValue.taskList[0].userList.length; i++) {
                 this.projectForm.implementers += this.responseValue.taskList[0].userList[i].name + ',';
@@ -137,42 +149,69 @@ export default {
         });
     },
     mounted() {
+        //按钮权限
         let disabled = localStorage.getItem('list');
         this.disabled = JSON.parse(disabled);
     },
     methods: {
+        //新建工作任务
         NewImpltask() {
             this.rowdata = {};
             this.operationmode = 'new';
             this.dialogNewImpltaskVisible = true;
         },
+        //查看工作任务
         handleClick(row) {
             this.rowdata = row;
             this.operationmode = 'consult';
             this.dialogNewImpltaskVisible = true;
         },
+        //编辑工作任务
         editleclick(row, index) {
             this.index = index;
             this.rowdata = row;
             this.operationmode = 'edit';
             this.dialogNewImpltaskVisible = true;
         },
+        //删除工作任务
         deleteClick(row, index) {
             this.tableData.splice(index, 1);
         },
+
+        // 确定新建工作任务
         saveNewImpltask() {
-            this.rowdata = {};
-            this.rowdata.task = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
-            this.rowdata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
-            console.log(this.rowdata.starttime);
-            this.rowdata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
-            this.rowdata.name = localStorage.getItem('ms_name');
-            this.dialogNewImpltaskVisible = false;
-            if (this.operationmode === 'new') {
-                this.tableData.push(this.rowdata);
-            } else if (this.operationmode === 'edit') {
-                this.tableData.splice(this.index, 1, this.rowdata);
+            console.log(this.tableData)
+            let savedata = this.tableData[this.index];
+            savedata.workDescribe = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
+            savedata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
+            savedata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
+            savedata.belongProId = this.belongProId;
+            savedata.belongTaskId = this.belongTaskId;
+            if (this.operationmode == 'new') {
+                this.$api.task.newWork(savedata).then(() => {
+                    //刷新表
+                    let pro_id = localStorage.getItem('pro_id');
+                    let projectObjectId = {};
+                    projectObjectId.id = pro_id;
+                    this.$api.task.initProData(projectObjectId).then(response => {
+                        this.responseValue = response.data;
+                        this.tableData = this.responseValue.taskList[0].workList;
+                    });
+                });
+            } else if (this.operationmode == 'edit') {
+                this.$api.task.updataWork(savedata).then(() => {
+                    //刷新表
+                    let pro_id = localStorage.getItem('pro_id');
+                    let projectObjectId = {};
+                    projectObjectId.id = pro_id;
+                    this.$api.task.initProData(projectObjectId).then(response => {
+                        this.responseValue = response.data;
+                        this.tableData = this.responseValue.taskList[0].workList;
+                    });
+                });
             }
+
+            this.dialogNewImpltaskVisible = false;
         }
     }
 };

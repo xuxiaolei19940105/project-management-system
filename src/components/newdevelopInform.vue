@@ -128,7 +128,7 @@ export default {
         console.log(this.rowdata);
         console.log(this.operationmode);
         if (this.operationmode == 'edit') {
-            this.newdevelopForm.taskdetail = this.rowdata.task;
+            this.newdevelopForm.taskdetail = this.rowdata.workDescribe;
             this.newdevelopForm.developStartDate = this.rowdata.starttime;
             this.newdevelopForm.developEndDate = this.rowdata.endtime;
             this.disabled = false;

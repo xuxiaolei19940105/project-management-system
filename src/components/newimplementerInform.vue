@@ -84,12 +84,13 @@ export default {
         console.log(this.rowdata);
         console.log(this.operationmode);
         if (this.operationmode == 'edit') {
-            this.implrmrntForm.taskdetail = this.rowdata.task;
+            console.log(this.rowdata.taskdetail)
+            this.implrmrntForm.taskdetail = this.rowdata.workDescribe;
             this.implrmrntForm.implementStartDate = this.rowdata.starttime;
             this.implrmrntForm.implementEndDate = this.rowdata.endtime;
             this.disabled = false;
         } else if (this.operationmode == 'consult') {
-            this.implrmrntForm.taskdetail = this.rowdata.task;
+            this.implrmrntForm.taskdetail = this.rowdata.workDescribe;
             this.implrmrntForm.implementStartDate = this.rowdata.starttime;
             this.implrmrntForm.implementEndDate = this.rowdata.endtime;
             this.disabled = true;

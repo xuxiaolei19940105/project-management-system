@@ -24,6 +24,10 @@ const task = {
     setProject(params) {
         return httpReqest.post('/api/Project/createProject', params);
     },
+    //更新项目
+    updateProject(params) {
+        return httpReqest.post('/api/Project/updateProject', params);
+    },
     //获取项目信息
     getProjectMess(params) {
         return httpReqest.post('/api/Project/getProList', params);
@@ -47,6 +51,14 @@ const task = {
     //新建消息
     newMessage(params) {
         return httpReqest.post('/api/Message/insertMessage', params);
+    },
+    //新建工作任务
+    newWork(params) {
+        return httpReqest.post('/api/Work/createWork', params);
+    },
+    //更新工作内容
+    updataWork(params) {
+        return httpReqest.post('/api/Work/updateWork', params);
     }
 };
 

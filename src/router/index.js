@@ -8,12 +8,12 @@ Vue.use(Router);
 export default new Router({
     mode: 'history',
     base: '/',
-    routes: [
-        {
+    routes: [{
             path: '/',
             name: 'home',
             redirect: '/tabs',
-            component: () => import(/* webpackChunkName: "home" */ '../components/common/Home.vue'),
+            component: () =>
+                import ( /* webpackChunkName: "home" */ '../components/common/Home.vue'),
             meta: {
                 title: ''
             },
@@ -22,7 +22,8 @@ export default new Router({
                 {
                     path: 'tabs',
                     name: 'tabs',
-                    component: () => import(/* webpackChunkName: "tabs" */ '../components/messageReminder.vue'),
+                    component: () =>
+                        import ( /* webpackChunkName: "tabs" */ '../components/messageReminder.vue'),
                     meta: {
                         title: '消息'
                     }
@@ -30,9 +31,10 @@ export default new Router({
                 {
                     path: 'person',
                     name: 'person',
-                    component: () => import(/* webpackChunkName: "tabs" */ '../views/plan/personInformation.vue'),
+                    component: () =>
+                        import ( /* webpackChunkName: "tabs" */ '../views/plan/personInformation.vue'),
                     meta: {
-                        title: '人员信息'
+                        title: '人员占用情况表'
                     }
                 },
             ]
@@ -40,7 +42,8 @@ export default new Router({
         {
             path: '/login',
             name: 'login',
-            component: () => import(/* webpackChunkName: "login" */ '../components/page/Login.vue'),
+            component: () =>
+                import ( /* webpackChunkName: "login" */ '../components/page/Login.vue'),
             meta: {
                 title: '登录'
             }

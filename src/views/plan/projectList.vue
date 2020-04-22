@@ -25,10 +25,10 @@
             :append-to-body="true"
             v-if="dialogVisible"
         >
-            <projectPage></projectPage>
+            <projectPage ref="sonEditproject" ></projectPage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="closeDialogVisible">取 消</el-button>
-                <el-button type="primary" @click="getNewProjectData">确 定</el-button>
+                <el-button type="primary" @click="geteditProjectData">确 定</el-button>
             </span>
         </el-dialog>
         <el-dialog
@@ -41,7 +41,7 @@
             <project-information ref="sonNewproject" />
             <span slot="footer" class="dialog-footer">
                 <el-button @click="closeDialogVisible">取 消</el-button>
-                <el-button type="primary" @click="getNewProjectData()">确 定</el-button>
+                <el-button type="primary" @click="getNewProjectData">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -127,7 +127,9 @@ export default {
                             proObject.state = returndata[i].proState;
                             proObject.leader = '';
                             for (var j = 0; j < returndata[i].leaderUserList.length; j++) {
-                                proObject.leader += returndata[i].leaderUserList[j].name + ',';
+                                if (returndata[i].leaderUserList[j]) {
+                                    proObject.leader += returndata[i].leaderUserList[j].name + ',';
+                                }
                             }
 
                             var starttime = returndata[i].overallStartTime;
@@ -156,7 +158,6 @@ export default {
 
         // 新建确定
         getNewProjectData() {
-            console.log(this.$refs.sonNewproject.projectForm.implementers);
             let projectObject = {};
             projectObject.id = '';
             projectObject.proName = this.$refs.sonNewproject.projectForm.projectName;
@@ -193,6 +194,56 @@ export default {
                 var responsevalue = response;
                 if (responsevalue) {
                     this.$message.success('创建成功');
+                    this.dialogNewprojectVisible = false;
+                    this.reload();
+                } else {
+                    this.$message.error('创建失败,请重新创建!');
+                    this.dialogNewprojectVisible = true;
+                    return false;
+                }
+            });
+        },
+        geteditProjectData() {
+            
+            this.$refs.sonEditproject.save()
+
+            debugger
+            let projectObject = {};
+            projectObject.id = this.$refs.sonEditproject.projectForm.id;
+            projectObject.proName = this.$refs.sonEditproject.projectForm.projectName;
+            projectObject.proNum = this.$refs.sonEditproject.projectForm.projectNumber;
+            projectObject.leaderUserIdList = this.$refs.sonEditproject.checkedLeaderId;
+            projectObject.overallStartTime = this.$refs.sonEditproject.projectForm.projectStartDate;
+            projectObject.overallEndTime = this.$refs.sonEditproject.projectForm.projectEndDate;
+            if (this.$refs.sonEditproject.projectForm.state === '进行中') {
+                projectObject.proState = 0;
+            } else if (this.$refs.sonEditproject.projectForm.state === '暂停') {
+                projectObject.proState = 1;
+            } else if (this.$refs.sonEditproject.projectForm.state === '已作废') {
+                projectObject.proState = 2;
+            } else if (this.$refs.sonEditproject.projectForm.state === '已完结') {
+                projectObject.proState = 3;
+            }
+            projectObject.effectStartTime = this.$refs.sonEditproject.projectForm.implStartDate;
+            projectObject.effectEndTime = this.$refs.sonEditproject.projectForm.implEndDate;
+            projectObject.effectUserIdList = this.$refs.sonEditproject.checkedImplementerId;
+            projectObject.exploitStartTime = this.$refs.sonEditproject.projectForm.develStartDate;
+            projectObject.exploitEndTime = this.$refs.sonEditproject.projectForm.develEndDate;
+            projectObject.exploitUserIdList = this.$refs.sonEditproject.checkedDeveloperId;
+            projectObject.testStartTime = this.$refs.sonEditproject.projectForm.testerStartDate;
+            projectObject.testEndTime = this.$refs.sonEditproject.projectForm.testerEndDate;
+            projectObject.testUserIdList = this.$refs.sonEditproject.checkedTesterId;
+            projectObject.packageTime = this.$refs.sonEditproject.projectForm.packagerStartDate;
+            projectObject.packageUserIdList = this.$refs.sonEditproject.checkedPackagerId;
+            // projectObject.effectTaskId = '';
+            // projectObject.exploitTaskId = '';
+            // projectObject.testTaskId = '';
+            // projectObject.guestbookId = '';
+            // projectObject.logId = '';
+            this.$api.task.updateProject(projectObject).then(response => {
+                var responsevalue = response;
+                if (responsevalue) {
+                    this.$message.success('更新成功');
                     this.dialogNewprojectVisible = false;
                     this.reload();
                 } else {

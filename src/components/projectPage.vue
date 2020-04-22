@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>
-            <project-information />
+            <project-information ref="sonlookproject" />
         </div>
         <div>
             <implementers-information />
@@ -48,12 +48,63 @@ export default {
     data() {
         return {
             activeName: 'first',
-            personDialogVisible: false
+            personDialogVisible: false,
+            checkedLeaderId: [],
+            checkedImplementerId: [],
+            checkedDeveloperId: [],
+            checkedTesterId: [],
+            checkedPackagerId: [],
+            projectForm: {
+                id: '',
+                projectName: '',
+                projectCategory: '',
+                // comments:'',
+                implementers: '',
+                developers: '',
+                projectLeader: '',
+                projectStartDate: '',
+                projectEndDate: '',
+                implStartDate: '',
+                implEndDate: '',
+                develStartDate: '',
+                develEndDate: '',
+                testerStartDate: '',
+                testerEndDate: '',
+                packagerStartDate: '',
+                testers: '',
+                packagers: '',
+                projectNumber: '',
+                state: ''
+            }
         };
+    },
+    created() {
+        debugger;
     },
     methods: {
         handleClick(tab, event) {
             console.log(tab, event);
+        },
+        save() {
+            debugger;
+            this.projectForm.id = this.$refs.sonlookproject.projectForm.id;
+            this.projectForm.projectName = this.$refs.sonlookproject.projectForm.projectName;
+            this.projectForm.projectNumber = this.$refs.sonlookproject.projectForm.projectNumber;
+            this.checkedLeaderId = this.$refs.sonlookproject.checkedLeaderId;
+            this.projectForm.projectStartDate = this.$refs.sonlookproject.projectForm.projectStartDate;
+            this.projectForm.projectEndDate = this.$refs.sonlookproject.projectForm.projectEndDate;
+            this.projectForm.state = this.$refs.sonlookproject.projectForm.state;
+            this.projectForm.implStartDate = this.$refs.sonlookproject.projectForm.implStartDate;
+            this.projectForm.implEndDate = this.$refs.sonlookproject.projectForm.implEndDate;
+            this.checkedImplementerId = this.$refs.sonlookproject.checkedImplementerId;
+            this.projectForm.develStartDate = this.$refs.sonlookproject.projectForm.develStartDate;
+            this.projectForm.develEndDate = this.$refs.sonlookproject.projectForm.develEndDate;
+            this.projectForm.checkedDeveloperId = this.$refs.sonlookproject.checkedDeveloperId;
+            this.projectForm.testerStartDate = this.$refs.sonlookproject.projectForm.testerStartDate;
+            this.projectForm.testerEndDate = this.$refs.sonlookproject.projectForm.testerEndDate;
+            this.checkedTesterId = this.$refs.sonlookproject.checkedTesterId;
+            this.projectForm.packagerStartDate = this.$refs.sonlookproject.projectForm.packagerStartDate;
+            this.checkedPackagerId = this.$refs.sonlookproject.checkedPackagerId;
         }
     }
 };

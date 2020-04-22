@@ -204,6 +204,7 @@ export default {
             openfrom: '',
 
             projectForm: {
+                id:'',
                 projectName: '',
                 projectCategory: '',
                 // comments:'',
@@ -268,6 +269,7 @@ export default {
             this.$api.task.initProData(projectObjectId).then(response => {
                 debugger;
                 let responseValue = response.data;
+                 this.projectForm.id = responseValue.id;
                 this.projectForm.projectName = responseValue.proName;
                 this.projectForm.projectNumber = responseValue.proNum;
 

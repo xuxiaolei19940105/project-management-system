@@ -201,7 +201,7 @@ export default {
             }
         });
         if (this.operationmode == 'edit') {
-            this.newtesterForm.taskdetail = this.rowdata.task;
+            this.newtesterForm.taskdetail = this.rowdata.workDescribe;
             this.newtesterForm.expectedresults = this.rowdata.want;
             this.newtesterForm.actualresults = this.rowdata.actual;
             this.newtesterForm.testerStartDate = this.rowdata.starttime;
