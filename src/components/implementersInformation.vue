@@ -135,7 +135,7 @@ export default {
             this.responseValue = response.data;
             //初始化基本信息
             this.tableData = this.responseValue.taskList[0].workList;
-     
+
             this.projectForm.implStartDate = this.responseValue.effectStartTime;
             this.projectForm.implEndDate = this.responseValue.effectEndTime;
             //储存所属项目id和所属任务id
@@ -175,13 +175,29 @@ export default {
         },
         //删除工作任务
         deleteClick(row, index) {
-            this.tableData.splice(index, 1);
+            this.index = index;
+            this.rowdata = row;
+            this.operationmode = 'delete';
+            this.tableData[this.index].deleteFlg=1;
+            this.$api.task.updataWork( this.tableData[this.index]).then(() => {
+                    //刷新表
+                    let pro_id = localStorage.getItem('pro_id');
+                    let projectObjectId = {};
+                    projectObjectId.id = pro_id;
+                    this.$api.task.initProData(projectObjectId).then(response => {
+                        this.responseValue = response.data;
+                        this.tableData = this.responseValue.taskList[0].workList;
+                    });
+                });
         },
 
         // 确定新建工作任务
         saveNewImpltask() {
-            console.log(this.tableData)
-            let savedata = this.tableData[this.index];
+            console.log();
+
+            let savedata = {};
+            let userData = JSON.parse(localStorage.getItem('ms_data'));
+            savedata.userName = userData.name;
             savedata.workDescribe = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
             savedata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
             savedata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
@@ -199,6 +215,10 @@ export default {
                     });
                 });
             } else if (this.operationmode == 'edit') {
+                let savedata = this.tableData[this.index];
+                savedata.workDescribe = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
+                savedata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
+                savedata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
                 this.$api.task.updataWork(savedata).then(() => {
                     //刷新表
                     let pro_id = localStorage.getItem('pro_id');
@@ -209,7 +229,7 @@ export default {
                         this.tableData = this.responseValue.taskList[0].workList;
                     });
                 });
-            }
+            } 
 
             this.dialogNewImpltaskVisible = false;
         }
