@@ -56,18 +56,22 @@ export default {
                 this.$api.task.login(paramdata).then((response)=>{
                     var responsevalue=response;
                     if(responsevalue){
-                        let returndata =responsevalue.data;
-                        localStorage.setItem('ms_data', JSON.stringify(returndata));
-                        localStorage.setItem('ms_name',  returndata.name);
-                        localStorage.setItem('ms_id',  returndata.id);
-                        localStorage.setItem('ms_username',  returndata.username);
-                        this.$router.push('/');
-                        this.$message.success('登录成功');
+                        if(responsevalue.data && responsevalue.data !=""){
+                            let returndata =responsevalue.data;
+                            localStorage.setItem('ms_data', JSON.stringify(returndata));
+                            localStorage.setItem('ms_name',  returndata.name);
+                            localStorage.setItem('ms_id',  returndata.id);
+                            localStorage.setItem('ms_username',  returndata.username);
+                            this.$router.push('/');
+                            this.$message.success('登录成功');
+                        }else{
+                            this.$message.error("请输入正确用户名和密码!");
+                            return false;
+                        }
                     }else{
-                        this.$message.error("请输入用户名和密码!");
+                        this.$message.error("请输入正确用户名和密码!");
                         return false;
                     }
-                    
                 });
             }else{
                 this.$message.error("请输入用户名和密码!");

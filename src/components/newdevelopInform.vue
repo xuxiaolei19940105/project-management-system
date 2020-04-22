@@ -125,8 +125,6 @@ export default {
     },
 
     created() {
-        console.log(this.rowdata);
-        console.log(this.operationmode);
         if (this.operationmode == 'edit') {
             this.newdevelopForm.taskdetail = this.rowdata.workDescribe;
             this.newdevelopForm.developStartDate = this.rowdata.starttime;
@@ -134,7 +132,6 @@ export default {
             this.disabled = false;
 
             this.$api.task.getAllUser().then(response => {
-                console.log(response);
                 let responsevalue = response.data;
                 if (responsevalue) {
                     let personOptions = [];

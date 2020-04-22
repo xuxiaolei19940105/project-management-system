@@ -63,8 +63,8 @@ const errorHandle = (status, other) => {
 };
 
 // 创建axios实例
-var _axios = axios.create({ timeout: 1000 * 12, baseUrl: process.env.BASE_URL });
-//var _axios = axios.create({ timeout: 1000 * 12 });
+//var _axios = axios.create({ timeout: 1000 * 12, baseUrl: process.env.BASE_URL });
+var _axios = axios.create({ timeout: 1000 * 12 });
 // 设置post请求头
 //_axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 _axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';

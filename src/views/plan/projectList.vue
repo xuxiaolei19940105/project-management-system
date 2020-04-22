@@ -255,7 +255,6 @@ export default {
         },
         // 查看
         onRowLookButtonClick(row) {
-            console.log(row, '查看');
             localStorage.setItem('list', JSON.stringify(true));
             let projectS = row.projectNo;
             let projectIdS = projectS.split('-(')[1];
@@ -272,7 +271,6 @@ export default {
         },
         //编辑
         onRowUpdateButtonClick(row) {
-            console.log(row, '编辑');
             localStorage.setItem('list', JSON.stringify(false));
             this.dialogVisible = true;
             let projectS = row.projectNo;
@@ -288,7 +286,6 @@ export default {
         },
 
         onSelectionChange(val) {
-            console.log('多选', val);
             this.multipleSelection = val;
         },
         onSizeChange(val) {

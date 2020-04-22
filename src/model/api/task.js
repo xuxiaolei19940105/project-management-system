@@ -59,6 +59,10 @@ const task = {
     //更新工作内容
     updataWork(params) {
         return httpReqest.post('/api/Work/updateWork', params);
+    },
+    //创建用户
+    newdataUser(params) {
+        return httpReqest.post('/api/User/insertUser', params);
     }
 };
 

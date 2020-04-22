@@ -182,10 +182,7 @@ export default {
         };
     },
     created() {
-        console.log(this.rowdata);
-        console.log(this.operationmode);
         this.$api.task.getAllUser().then(response => {
-            console.log(response);
             let responsevalue = response.data;
             if (responsevalue) {
                 let personOptions = [];

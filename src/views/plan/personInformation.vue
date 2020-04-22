@@ -1,6 +1,9 @@
 <template>
     <div>
         <el-card>
+            <div style="text-align:right;padding-bottom:10px;">
+                <el-button size="mini" @click="dialogNewUserVisible=true">新建人员</el-button>
+            </div>
             <dytable
                 :columns="articlesReadyColumns"
                 :table-data="articlesReadytableData"
@@ -15,10 +18,28 @@
                 element-loading-text="加载中"
             ></dytable>
         </el-card>
+        <el-dialog
+            title="新建人员"
+            :visible.sync="dialogNewUserVisible"
+            width="50%"
+            :append-to-body="true"
+            v-if="dialogNewUserVisible"
+        >
+            <userinformation ref="sonNewuser" />
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogNewUserVisible=false">取 消</el-button>
+                <el-button type="primary" @click="getNewUserData">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
+import userinformation from '../../components/newUserinformation'
 export default {
+    components:{
+        userinformation
+    },
+    inject: ['reload'],
     data(){
         const { renderControlColumn} = this;     
         return{
@@ -39,6 +60,7 @@ export default {
                     title: '近30天占用情况',
                 },
             ],
+            dialogNewUserVisible:false,
             articlesReadytableData:[],
             pageNum: 1,
             pageSize: 10,
@@ -69,15 +91,17 @@ export default {
                     let proObject={};
                     proObject.employeeName=returndata[i].name;
                     if(returndata[i].roleId ==="1"){
-                        proObject.employeeCategory="实施";
+                        proObject.employeeCategory="项目组长";
                     } else if(returndata[i].roleId ==="2"){
-                        proObject.employeeCategory="开发";
+                        proObject.employeeCategory="实施人员";
                     }else if(returndata[i].roleId ==="3"){
-                        proObject.employeeCategory="测试";
+                        proObject.employeeCategory="开发人员";
                     }else if(returndata[i].roleId ==="4"){
-                        proObject.employeeCategory="打包人员";
+                        proObject.employeeCategory="测试人员";
+                    }else if(returndata[i].roleId ==="5"){
+                        proObject.employeeCategory="UI";
                     }else{
-                        proObject.employeeCategory="admin";
+                        proObject.employeeCategory="项目经理";
                     }
                     let projec=[];
                     let projectdet=returndata[i].workList;
@@ -107,7 +131,6 @@ export default {
     },
     methods: {
         onSelectionChange(val) {
-            console.log('多选', val);
             this.multipleSelection = val;
         },
         onSizeChange(val) {
@@ -115,6 +138,64 @@ export default {
         },
         onCurrentChange(val) {
             this.pageNum = val;
+        },
+        getNewUserData(){
+            var usernameS= this.$refs.sonNewuser.newUserForm.username;
+            if(!usernameS){
+                this.$message.success('请输入姓名!');
+                return false;
+            }
+            var usernameStrn=this.$refs.sonNewuser.newUserForm.usernameString;
+            if(!usernameStrn){
+                this.$message.success('请输入用户名!');
+                return false;
+            }else{
+                var reg = new RegExp(/^[a-zA-Z0-9]+$/);
+                if(!reg.test(usernameStrn)){
+                    this.$message.success('用户名只能输入字母和数字!');
+                    return false;
+                }
+            }
+            var userroleidS=this.$refs.sonNewuser.newUserForm.userroleid;
+            if(!userroleidS){
+                this.$message.success('请选择职位!');
+                return false;
+            }
+            var userauthidS=this.$refs.sonNewuser.newUserForm.userauthid;
+            if(!userauthidS){
+                this.$message.success('请选择权限!');
+                return false;
+            }
+            let userObject = {};
+            let worlest=[];
+            let todaydate=new Date();
+            userObject.id='';
+            userObject.name=this.$refs.sonNewuser.newUserForm.username;
+            userObject.username=this.$refs.sonNewuser.newUserForm.usernameString;
+            userObject.password='123456';
+            userObject.roleId=this.$refs.sonNewuser.newUserForm.userroleid;
+            userObject.authId=this.$refs.sonNewuser.newUserForm.userauthid;
+            userObject.state=0;
+            userObject.inserttime=todaydate;
+            userObject.updatetime=todaydate;
+            userObject.workList=worlest;
+            this.$api.task.newdataUser(userObject).then((response)=>{
+                var responsevalue=response;
+                if(responsevalue){
+                    if(responsevalue.data){
+                        this.$message.success('创建成功!默认密码:123456');
+                        this.dialogNewUserVisible = false;
+                        this.reload();
+                    }else{
+                        this.$message.success('用户已存在,请重新创建!');
+                        this.dialogNewUserVisible = true;
+                    }
+                }else{
+                    this.$message.success('创建错误,请重试!');
+                    this.dialogNewUserVisible = true;
+                }
+            })
+            
         },
         /**
          * 格式化时间

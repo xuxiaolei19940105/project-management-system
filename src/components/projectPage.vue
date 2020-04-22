@@ -79,14 +79,12 @@ export default {
         };
     },
     created() {
-        debugger;
     },
     methods: {
         handleClick(tab, event) {
             console.log(tab, event);
         },
         save() {
-            debugger;
             this.projectForm.id = this.$refs.sonlookproject.projectForm.id;
             this.projectForm.projectName = this.$refs.sonlookproject.projectForm.projectName;
             this.projectForm.projectNumber = this.$refs.sonlookproject.projectForm.projectNumber;

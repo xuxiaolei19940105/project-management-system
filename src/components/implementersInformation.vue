@@ -193,8 +193,6 @@ export default {
 
         // 确定新建工作任务
         saveNewImpltask() {
-            console.log();
-
             let savedata = {};
             let userData = JSON.parse(localStorage.getItem('ms_data'));
             savedata.userName = userData.name;

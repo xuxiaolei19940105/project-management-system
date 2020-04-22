@@ -81,10 +81,7 @@ export default {
         };
     },
     created() {
-        console.log(this.rowdata);
-        console.log(this.operationmode);
         if (this.operationmode == 'edit') {
-            console.log(this.rowdata.taskdetail)
             this.implrmrntForm.taskdetail = this.rowdata.workDescribe;
             this.implrmrntForm.implementStartDate = this.rowdata.starttime;
             this.implrmrntForm.implementEndDate = this.rowdata.endtime;

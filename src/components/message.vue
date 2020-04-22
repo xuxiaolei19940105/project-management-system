@@ -159,7 +159,6 @@ export default {
             this.dialogNewmesaagetaskVisible = true;
         },
         saveNewmesaage() {
-            console.log(this.$refs.sonNewmessinform.newmessageForm.title);
             this.dialogNewmesaagetaskVisible = false;
         }
     }
