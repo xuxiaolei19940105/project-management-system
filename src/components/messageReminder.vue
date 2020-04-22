@@ -66,6 +66,7 @@ export default {
     inject:['reload'],
     data(){
         const { renderControlColumn } = this;
+        const { rendermessagesender } = this;
         return{
             atctiveName: 'first',
             pageNum: 1,
@@ -85,7 +86,8 @@ export default {
                 {
                     key: 'publisher',
                     title: '发布者',
-                    width: '100'
+                    width: '100',
+                    render: rendermessagesender
                 },
                 {
                     key: 'publishdate',
@@ -115,6 +117,7 @@ export default {
                 {
                     key: 'publisher',
                     title: '发布者',
+                    render: rendermessagesender,
                     width: '100'
                 },
                 {
@@ -147,6 +150,7 @@ export default {
                 {
                     key: 'publisher',
                     title: '发布者',
+                    render: rendermessagesender,
                     width: '100'
                 },
                 {
@@ -181,7 +185,7 @@ export default {
                         let mdata={};
                         mdata.taskno=param[i].id;
                         mdata.taskname=param[i].messageName;
-                        mdata.publisher=param[i].sendUserName+"("+param[i].sendUserid+")";
+                        mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                         var senddate=param[i].inserttime;
                         senddate=senddate.split("T")[0];
                         mdata.publishdate=senddate;
@@ -214,7 +218,7 @@ export default {
                                 let mdata={};
                                 mdata.taskno=param[i].id;
                                 mdata.taskname=param[i].messageName;
-                                mdata.publisher=param[i].sendUserName+"("+param[i].sendUserid+")";
+                                mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                                 var senddate=param[i].inserttime;
                                 senddate=senddate.split("T")[0];
                                 mdata.publishdate=senddate;
@@ -240,7 +244,7 @@ export default {
                                 let mdata={};
                                 mdata.taskno=param[i].id;
                                 mdata.taskname=param[i].messageName;
-                                mdata.publisher=param[i].sendUserName+"("+param[i].sendUserid+")";
+                                mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                                 var senddate=param[i].inserttime;
                                 senddate=senddate.split("T")[0];
                                 mdata.publishdate=senddate;
@@ -267,7 +271,7 @@ export default {
                             let mdata={};
                             mdata.taskno=param[i].id;
                             mdata.taskname=param[i].messageName;
-                            mdata.publisher=param[i].sendUserName+"("+param[i].sendUserid+")";
+                            mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                             var senddate=param[i].inserttime;
                             senddate=senddate.split("T")[0];
                             mdata.publishdate=senddate;
@@ -304,8 +308,8 @@ export default {
              var userS=row.publisher;
              var userid ="";
              var userename="";
-            if(userS.indexOf("(")>-1){
-                userid=userS.split("(")[1];
+            if(userS.indexOf("-(")>-1){
+                userid=userS.split("-(")[1];
                 userid=userid.split(")")[0];
                 userename=userS.split("(")[0];
             }else{
@@ -341,6 +345,13 @@ export default {
                 this.$message.success('任务已确认.');
                 this.reload();
             });
+        },
+        rendermessagesender(v) {
+            if (v.row.publisher) {
+                var userid=v.row.publisher;
+                userid=userid.split("-(")[0];
+                return <div>{userid}</div>;
+            }
         },
         renderControlColumn({row}){
             const { onRowRefuseButtonClick, onRowAgreeButtonClick } = this;

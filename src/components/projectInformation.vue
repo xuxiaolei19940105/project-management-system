@@ -355,7 +355,6 @@ export default {
         },
 
         showPersonPage(openfrom) {
-            debugger;
             this.checkedPerson = [];
             this.openfrom = openfrom;
             this.dialogVisible = true;
@@ -372,7 +371,6 @@ export default {
             }
         },
         addPerson: function() {
-            debugger;
             this.dialogVisible = false;
             this.getval();
             if (this.openfrom == 1) {

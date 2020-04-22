@@ -119,23 +119,32 @@ export default {
                 if (responsevalue) {
                     let tabledata = [];
                     let returndata = responsevalue.data;
+                    console.log(returndata)
                     for (var i = 0; i < returndata.length; i++) {
                         if (returndata[i]) {
                             let proObject = {};
                             proObject.projectNo = returndata[i].proNum + '-(' + returndata[i].id + ')';
                             proObject.name = returndata[i].proName;
-                            proObject.state = returndata[i].proState;
+                            if (returndata[i].proState === 0) {
+                                proObject.state = '进行中';
+                            } else if (returndata[i].proState === 1) {
+                                proObject.state = '暂停';
+                            } else if (returndata[i].proState === 2) {
+                                proObject.state = '已作废';
+                            } else if (returndata[i].proState === 3) {
+                                proObject.state = '已完结';
+                            }
+                            //proObject.state = returndata[i].proState;
                             proObject.leader = '';
                             for (var j = 0; j < returndata[i].leaderUserList.length; j++) {
                                 if (returndata[i].leaderUserList[j]) {
                                     proObject.leader += returndata[i].leaderUserList[j].name + ',';
                                 }
                             }
-
                             var starttime = returndata[i].overallStartTime;
                             // starttime = starttime.split('T')[0];
                             proObject.starttime = starttime;
-                            var endtime = returndata[i].overallStartTime;
+                            var endtime = returndata[i].overallEndTime;
                             // endtime = endtime.split('T')[0];
                             proObject.endtime = endtime;
                             tabledata.push(proObject);
@@ -190,9 +199,38 @@ export default {
             projectObject.testTaskId = '';
             projectObject.guestbookId = '';
             projectObject.logId = '';
+            let userList=[];
+            let leaderList=this.$refs.sonNewproject.checkedLeaderId;
+            let effectList=this.$refs.sonNewproject.checkedImplementerId;
+            let exploitList=this.$refs.sonNewproject.checkedDeveloperId;
+            let testList=this.$refs.sonNewproject.checkedTesterId;
+            let packageList=this.$refs.sonNewproject.checkedPackagerId;
+            userList=userList.concat(leaderList,effectList,exploitList,testList,packageList);
+            let crueateid=localStorage.getItem('ms_id');
+            let crueatename=localStorage.getItem('ms_name');
+            let crueateusername=localStorage.getItem('ms_username');
             this.$api.task.setProject(projectObject).then(response => {
                 var responsevalue = response;
                 if (responsevalue) {
+                    var dates=new Date();
+                    if(userList.length > 0){
+                        for(var i=0;i<userList.length;i++){
+                            let messageObject={};
+                            messageObject.id='';
+                            messageObject.messageName="项目任务邀请";
+                            messageObject.messageDescribe=crueatename+"邀请你进入"+this.$refs.sonNewproject.projectForm.projectName;
+                            messageObject.sendUserid=crueateid;
+                            messageObject.receiveUserid=userList[i];
+                            messageObject.state="0";
+                            messageObject.inserttime=dates;
+                            messageObject.updatetime=dates;
+                            messageObject.readTag="0";
+                            messageObject.sendUserName=crueateusername;
+                            messageObject.receiveUserName='';
+                            this.$api.task.newMessage(messageObject).then(()=>{
+                            }); 
+                        }
+                    }
                     this.$message.success('创建成功');
                     this.dialogNewprojectVisible = false;
                     this.reload();
