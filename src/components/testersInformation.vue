@@ -140,8 +140,29 @@ export default {
             this.projectForm.testEndDate = responseValue.testEndTime;
             this.projectForm.testers = responseValue.testUserIdList;
             this.projectForm.testers = '';
+            let testuser='';
             for (let i = 0; i < responseValue.taskList[2].userList.length; i++) {
-                this.projectForm.testers += responseValue.taskList[2].userList[i].name + ',';
+                testuser+= responseValue.taskList[2].userList[i].name + ',';
+            }
+            testuser=testuser.slice(0,testuser.length-1);
+            this.projectForm.testers += testuser;
+            //按钮权限
+            let disabled = localStorage.getItem('list');
+            this.disabled = JSON.parse(disabled);
+            let roleId = localStorage.getItem('ms_roleId');
+            let username = localStorage.getItem('ms_name');
+            if (roleId === '0' || roleId === '1' || roleId === '4') {
+                this.newtestshow = true;
+            } else {
+                if(testuser.indexOf(username)>-1){
+                    this.newtestshow =true;
+                }else{
+                    let sssd=JSON.parse(disabled)+"";
+                    if(sssd==="false"){
+                        this.disabled=true;
+                    }
+                    this.newtestshow =false;
+                }
             }
             //储存所属项目id和所属任务id
             this.belongProId = responseValue.id;

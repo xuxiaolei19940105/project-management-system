@@ -162,6 +162,10 @@ export default {
                 if(impleList.indexOf(username)>-1){
                     this.newimpshowhide =true;
                 }else{
+                    let sssd=JSON.parse(disabled)+"";
+                    if(sssd==="false"){
+                        this.disabled=true;
+                    }
                     this.newimpshowhide =false;
                 }
             }

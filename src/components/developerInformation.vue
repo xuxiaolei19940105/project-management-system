@@ -141,8 +141,29 @@ export default {
             this.projectForm.belongProId = responseValue.id;
             this.projectForm.belongTaskId = responseValue.taskList[1].id;
             this.projectForm.developers = '';
+            let userslsit='';
             for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
-                this.projectForm.developers += responseValue.taskList[1].userList[i].name + ',';
+                userslsit+= responseValue.taskList[1].userList[i].name + ',';
+            }
+            userslsit=userslsit.slice(0,userslsit.length-1);
+            this.projectForm.developers += userslsit;
+            //按钮权限
+            let disabled = localStorage.getItem('list');
+            this.disabled = JSON.parse(disabled);
+            let roleId = localStorage.getItem('ms_roleId');
+            let username = localStorage.getItem('ms_name');
+            if (roleId === '0' || roleId === '1') {
+                this.newdevelopshow = true;
+            } else {
+                if(userslsit.indexOf(username)>-1){
+                    this.newdevelopshow =true;
+                }else{
+                    let sssd=JSON.parse(disabled)+"";
+                    if(sssd==="false"){
+                        this.disabled=true;
+                    }
+                    this.newdevelopshow =false;
+                }
             }
         });
     },

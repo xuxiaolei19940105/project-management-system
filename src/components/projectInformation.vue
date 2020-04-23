@@ -345,7 +345,6 @@ export default {
         let disabled = localStorage.getItem('list');
         if(disabled === "false"){
             let roleId= localStorage.getItem('ms_roleId');
-            console.log(roleId)
             if(roleId ==="0" || roleId ==="1"){
                 this.disabled =false;
             }else{
