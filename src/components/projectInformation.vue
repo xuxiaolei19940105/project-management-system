@@ -247,6 +247,7 @@ export default {
         };
     },
     created() {
+        //获取人员
         this.$api.task.getAllUser().then(response => {
             let responsevalue = response.data;
             if (responsevalue) {
@@ -262,12 +263,12 @@ export default {
                 this.$message.success('请联系Admin!');
             }
         });
+        //添加项目信息
         let pro_id = localStorage.getItem('pro_id');
         let projectObjectId = {};
         projectObjectId.id = pro_id;
         if (pro_id) {
             this.$api.task.initProData(projectObjectId).then(response => {
-                debugger;
                 let responseValue = response.data;
                  this.projectForm.id = responseValue.id;
                 this.projectForm.projectName = responseValue.proName;
@@ -334,8 +335,19 @@ export default {
         }
     },
     mounted() {
+        //权限控制
         let disabled = localStorage.getItem('list');
-        this.disabled = JSON.parse(disabled);
+        if(disabled === "false"){
+            let roleId= localStorage.getItem('ms_roleId');
+            console.log(roleId)
+            if(roleId ==="0" || roleId ==="1"){
+                this.disabled =false;
+            }else{
+                this.disabled =true;
+            }
+        }else{
+            this.disabled = JSON.parse(disabled);
+        }
     },
     methods: {
         handleChange(value, direction, movedKeys) {

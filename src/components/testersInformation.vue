@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-card class="box-card">
-            <div slot="header" class="clearfix">
+            <div slot="header" class="clearfix" v-if="newtestshow">
                 <span>测试任务概况</span>
                 <el-button
                     style="float: right; padding: 3px 0"
@@ -113,7 +113,7 @@ export default {
     data() {
         return {
             disabled: false,
-
+            newtestshow: false,
             dialogNewtesttaskVisible: false,
             projectForm: {
                 testStartDate: '',
@@ -151,6 +151,12 @@ export default {
         //按钮权限
         let disabled = localStorage.getItem('list');
         this.disabled = JSON.parse(disabled);
+        let roleId= localStorage.getItem('ms_roleId');
+        if(roleId ==="0" || roleId ==="1" || roleId ==="4"){
+            this.newtestshow =true;
+        }else{
+            this.newtestshow =false;
+        }
     },
     methods: {
         //新建工作任务

@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-card class="box-card">
-            <div slot="header" class="clearfix">
+            <div slot="header" class="clearfix" v-if="newdevelopshow">
                 <span>开发任务概况</span>
                 <el-button
                     style="float: right; padding: 3px 0"
@@ -109,7 +109,7 @@ export default {
     data() {
         return {
             disabled: false,
-
+            newdevelopshow: false,
             dialogNewDeveltaskVisible: false,
             projectForm: {
                 developStartDate: '',
@@ -147,6 +147,12 @@ export default {
         //按钮权限
         let disabled = localStorage.getItem('list');
         this.disabled = JSON.parse(disabled);
+        let roleId= localStorage.getItem('ms_roleId');
+        if(roleId ==="0" || roleId ==="1"){
+            this.newdevelopshow =true;
+        }else{
+            this.newdevelopshow =false;
+        }
     },
     methods: {
         //新建工作任务
