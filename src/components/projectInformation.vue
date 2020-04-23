@@ -283,6 +283,8 @@ export default {
                 } else if (responseValue.proState === 3) {
                     this.projectForm.state = '已完结';
                 }
+                /*
+                //时间少一天
                 function updateDate(date){
                     let DateS=new Date(date);
                     let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate()-1)).toISOString().slice(0, 10);
@@ -291,6 +293,9 @@ export default {
                 //this.projectForm.projectStartDate = responseValue.overallStartTime;
                 this.projectForm.projectStartDate = updateDate(responseValue.overallStartTime);
                 this.projectForm.projectEndDate = updateDate(responseValue.overallEndTime);
+                */
+                this.projectForm.projectStartDate = responseValue.overallStartTime;
+                this.projectForm.projectEndDate = responseValue.overallEndTime;
                 this.projectForm.projectLeader = '';
                 for (let i = 0; i < responseValue.leaderUserList.length; i++) {
                     this.projectForm.projectLeader += responseValue.leaderUserList[i].name + ',';
