@@ -369,6 +369,36 @@ export default {
         showPersonPage(openfrom) {
             this.checkedPerson = [];
             this.openfrom = openfrom;
+            //获取相关权限人员
+            /*this.$api.task.getAllUser().then(response => {
+                let responsevalue = response.data;
+                if (responsevalue) {
+                    let personOptions = [];
+                    for (var i = 0; i < responsevalue.length; i++) {
+                        let proObject = {};
+                        if(openfrom === 1){
+                            if(responsevalue[i].roleId === "0" || responsevalue[i].roleId === "1"){
+                                proObject.id = responsevalue[i].id;
+                                proObject.name = responsevalue[i].name;
+                                personOptions.push(proObject);
+                            }
+                        }else if(openfrom === 5){
+                            proObject.id = responsevalue[i].id;
+                            proObject.name = responsevalue[i].name;
+                            personOptions.push(proObject);
+                        }else{
+                            if(responsevalue[i].roleId === openfrom.toString()){
+                                proObject.id = responsevalue[i].id;
+                                proObject.name = responsevalue[i].name;
+                                personOptions.push(proObject);
+                            }
+                        }
+                    }
+                    this.personOptions = personOptions;
+                } else {
+                    this.$message.success('请联系Admin!');
+                }
+            });*/
             this.dialogVisible = true;
             if (this.openfrom == 1 && this.projectForm.projectLeader) {
                 this.checkedPerson = this.checkedLeaderId;
