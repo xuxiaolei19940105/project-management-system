@@ -115,15 +115,17 @@ export default {
                     let projectdet=returndata[i].workList;
                     if(projectdet.length>0){
                         for(var j=0;j<projectdet.length;j++){
-                            let proObjectdet={};
-                            proObjectdet.projectname=projectdet[j].belongProId;
-                            var starttime = projectdet[j].starttime;
-                            starttime=starttime.split("T")[0];
-                            proObjectdet.projectstarttime=starttime;
-                            var endtime = projectdet[j].endtime;
-                            endtime=endtime.split("T")[0];
-                            proObjectdet.projectendtime=endtime;
-                            projec.push(proObjectdet);
+                            if(projectdet[j].starttime){
+                                let proObjectdet={};
+                                proObjectdet.projectname=projectdet[j].belongProId;
+                                var starttime = projectdet[j].starttime;
+                                starttime=starttime.split("T")[0];
+                                proObjectdet.projectstarttime=starttime;
+                                var endtime = projectdet[j].endtime;
+                                endtime=endtime.split("T")[0];
+                                proObjectdet.projectendtime=endtime;
+                                projec.push(proObjectdet);
+                            }
                         }
                         proObject.projectdetail=projec;
                     }else{

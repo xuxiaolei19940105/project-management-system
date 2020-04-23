@@ -270,7 +270,7 @@ export default {
         if (pro_id) {
             this.$api.task.initProData(projectObjectId).then(response => {
                 let responseValue = response.data;
-                 this.projectForm.id = responseValue.id;
+                this.projectForm.id = responseValue.id;
                 this.projectForm.projectName = responseValue.proName;
                 this.projectForm.projectNumber = responseValue.proNum;
 
@@ -283,8 +283,14 @@ export default {
                 } else if (responseValue.proState === 3) {
                     this.projectForm.state = '已完结';
                 }
-                this.projectForm.projectStartDate = responseValue.overallStartTime;
-                this.projectForm.projectEndDate = responseValue.overallEndTime;
+                function updateDate(date){
+                    let DateS=new Date(date);
+                    let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate()-1)).toISOString().slice(0, 10);
+                    return ovwerS;
+                }
+                //this.projectForm.projectStartDate = responseValue.overallStartTime;
+                this.projectForm.projectStartDate = updateDate(responseValue.overallStartTime);
+                this.projectForm.projectEndDate = updateDate(responseValue.overallEndTime);
                 this.projectForm.projectLeader = '';
                 for (let i = 0; i < responseValue.leaderUserList.length; i++) {
                     this.projectForm.projectLeader += responseValue.leaderUserList[i].name + ',';
