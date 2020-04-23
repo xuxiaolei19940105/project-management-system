@@ -20,13 +20,17 @@
                             height="250"
                             size="mini"
                         >
-                            <el-table-column prop="content" label="内容"></el-table-column>
-                            <el-table-column prop="name" label="人员" width="70"></el-table-column>
-                            <el-table-column prop="time" label="时间" width="100"></el-table-column>
+                            <el-table-column prop="guestbookTitle" label="标题"></el-table-column>
+                            <el-table-column prop="userName" label="人员" width="70"></el-table-column>
+                            <el-table-column prop="inserttime" label="时间">
+                                <template slot-scope="scope">
+                                    <span>{{ scope.row.insertTime.slice(0, 10)}}</span>
+                                </template>
+                            </el-table-column>
                             <el-table-column label="操作" width="70">
                                 <template slot-scope="scope">
                                     <el-button
-                                        @click="handleClick(scope.row)"
+                                        @click="handleClick(scope.row,scope.$index)"
                                         type="text"
                                         size="small"
                                     >查看</el-button>
@@ -48,11 +52,12 @@
             v-if="dialogNewmesaagetaskVisible"
             width="50%"
             :append-to-body="true"
-            :close-on-click-modal='false'
+            :close-on-click-modal="false"
         >
             <newmessagepage
                 ref="sonNewmessinform"
                 :rowdata="rowdata"
+                :index="index"
                 :operationmode="operationmode"
             ></newmessagepage>
             <span slot="footer" class="dialog-footer">
@@ -74,70 +79,18 @@ export default {
 
             dialogNewmesaagetaskVisible: false,
             rowdata: {},
+            index: '',
             operationmode: '',
-            tableData: [
-                {
-                    content: 'bug修改',
-                    time: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    content: 'bug修改',
-                    time: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    content: 'bug修改',
-                    time: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    content: 'bug修改',
-                    time: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    content: 'bug修改',
-                    time: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    content: 'bug修改',
-                    time: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    content: 'bug修改',
-                    time: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    content: 'bug修改',
-                    time: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    content: 'bug修改',
-                    time: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    content: 'bug修改',
-                    time: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    content: 'bug修改',
-                    time: '2016-05-02',
-                    name: '王小虎'
-                },
-                {
-                    content: 'bug修改',
-                    time: '2016-05-02',
-                    name: '王小虎'
-                }
-            ]
+            tableData: []
         };
+    },
+    created() {
+        let pro_id = localStorage.getItem('pro_id');
+        let projectObjectId = {};
+        projectObjectId.id = pro_id;
+        this.$api.task.initProData(projectObjectId).then(response => {
+            this.tableData = response.data.guestbookList;
+        });
     },
     mounted() {
         let disabled = localStorage.getItem('list');
@@ -149,8 +102,9 @@ export default {
             this.operationmode = 'new';
             this.dialogNewmesaagetaskVisible = true;
         },
-        handleClick(row) {
+        handleClick(row, index) {
             this.rowdata = row;
+            this.index = index;
             this.operationmode = 'consult';
             this.dialogNewmesaagetaskVisible = true;
         },
@@ -160,6 +114,18 @@ export default {
             this.dialogNewmesaagetaskVisible = true;
         },
         saveNewmesaage() {
+            let savedata = {};
+            savedata.guestbookTitle = this.$refs.sonNewmessinform.newmessageForm.title;
+            savedata.detail = this.$refs.sonNewmessinform.newmessageForm.comments;
+            savedata.belongProId = localStorage.getItem('pro_id');
+            this.$api.task.insertGuestbook(savedata).then(() => {
+                let pro_id = localStorage.getItem('pro_id');
+                let projectObjectId = {};
+                projectObjectId.id = pro_id;
+                this.$api.task.initProData(projectObjectId).then(response => {
+                    this.tableData = response.data.guestbookList;
+                });
+            });
             this.dialogNewmesaagetaskVisible = false;
         }
     }

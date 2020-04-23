@@ -67,6 +67,10 @@ const task = {
     //更新用户信息
     changedataUser(params) {
         return httpReqest.post('/api/User/updateUser', params);
+    },
+    //新建留言
+    insertGuestbook(params) {
+        return httpReqest.post('/api/Guestbook/insertGuestbook', params);
     }
 };
 
