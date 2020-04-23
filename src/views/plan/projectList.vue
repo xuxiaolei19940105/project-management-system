@@ -208,12 +208,23 @@ export default {
             projectObject.guestbookId = '';
             projectObject.logId = '';
             let userList=[];
+            let alluser=[];
             let leaderList=this.$refs.sonNewproject.checkedLeaderId;
             let effectList=this.$refs.sonNewproject.checkedImplementerId;
             let exploitList=this.$refs.sonNewproject.checkedDeveloperId;
             let testList=this.$refs.sonNewproject.checkedTesterId;
             let packageList=this.$refs.sonNewproject.checkedPackagerId;
             userList=userList.concat(leaderList,effectList,exploitList,testList,packageList);
+            if(userList.length >0){
+                userList = userList.sort();
+                var arrry= [userList[0]];
+                for (var i = 1; i < userList.length; i++) {
+                    if (userList[i] !== userList[i-1]) {
+                        arrry.push(userList[i]);
+                    }
+                }
+            }
+            alluser=arrry;
             let crueateid=localStorage.getItem('ms_id');
             let crueatename=localStorage.getItem('ms_name');
             let crueateusername=localStorage.getItem('ms_username');
@@ -221,14 +232,14 @@ export default {
                 var responsevalue = response;
                 if (responsevalue) {
                     var dates=new Date();
-                    if(userList.length > 0){
-                        for(var i=0;i<userList.length;i++){
+                    if(alluser.length > 0){
+                        for(var i=0;i<alluser.length;i++){
                             let messageObject={};
                             messageObject.id='';
                             messageObject.messageName="项目任务邀请";
                             messageObject.messageDescribe=crueatename+"邀请你进入"+this.$refs.sonNewproject.projectForm.projectName;
                             messageObject.sendUserid=crueateid;
-                            messageObject.receiveUserid=userList[i];
+                            messageObject.receiveUserid=alluser[i];
                             messageObject.state="0";
                             messageObject.inserttime=dates;
                             messageObject.updatetime=dates;
