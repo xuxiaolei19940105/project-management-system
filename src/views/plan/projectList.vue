@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-card>
-            <div style="text-align:right;padding-bottom:10px;">
+            <div style="text-align:right;padding-bottom:10px;" v-if="showNewProject">
                 <el-button size="mini" @click="newprojectVisible">新建项目</el-button>
             </div>
             <dytable
@@ -62,6 +62,7 @@ export default {
         const { renderprojectNo } = this;
         return {
             operationmode: '',
+            showNewProject: false,
             dialogVisible: false,
             dialogNewprojectVisible: false,
             dialogNewImpltaskVisible: false,
@@ -112,6 +113,12 @@ export default {
         };
     },
     created() {
+        //创建项目权限控制
+        let roleId= localStorage.getItem('ms_roleId');
+        if(roleId ==='0' || roleId ==='1'){
+            this.showNewProject=true;
+        }
+        //项目列表加载
         let userData = localStorage.getItem('ms_data');
         if (userData) {
             this.$api.task.getProjectMess(userData).then(response => {
@@ -119,7 +126,6 @@ export default {
                 if (responsevalue) {
                     let tabledata = [];
                     let returndata = responsevalue.data;
-                    console.log(returndata)
                     for (var i = 0; i < returndata.length; i++) {
                         if (returndata[i]) {
                             let proObject = {};
@@ -242,10 +248,7 @@ export default {
             });
         },
         geteditProjectData() {
-            
             this.$refs.sonEditproject.save()
-
-            debugger
             let projectObject = {};
             projectObject.id = this.$refs.sonEditproject.projectForm.id;
             projectObject.proName = this.$refs.sonEditproject.projectForm.projectName;

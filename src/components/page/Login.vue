@@ -62,6 +62,7 @@ export default {
                             localStorage.setItem('ms_name',  returndata.name);
                             localStorage.setItem('ms_id',  returndata.id);
                             localStorage.setItem('ms_username',  returndata.username);
+                            localStorage.setItem('ms_roleId',  returndata.roleId);
                             this.$router.push('/');
                             this.$message.success('登录成功');
                         }else{

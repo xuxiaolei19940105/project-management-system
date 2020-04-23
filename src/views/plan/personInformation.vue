@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-card>
-            <div style="text-align:right;padding-bottom:10px;">
+            <div style="text-align:right;padding-bottom:10px;" v-if="showNewUser">
                 <el-button size="mini" @click="dialogNewUserVisible=true">新建人员</el-button>
             </div>
             <dytable
@@ -65,6 +65,7 @@ export default {
             pageNum: 1,
             pageSize: 10,
             total: 10,
+            showNewUser:false,
             PresonOptions:[
                 {
                     value:'项目A',
@@ -82,6 +83,12 @@ export default {
         }
     },
     created() {
+        //新建人员权限控制
+        let roleId= localStorage.getItem('ms_roleId');
+        if(roleId ==='0'){
+            this.showNewUser=true;
+        }
+        //人员详情
         this.$api.task.getAllUser().then((response)=>{
             let responsevalue=response;
             if(responsevalue){

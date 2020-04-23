@@ -227,7 +227,8 @@ export default {
                             }
                         }
                         this.articlesReadytableData=paramReadydata;
-                        this.reload();
+                        //this.reload();
+                        this.atctiveName="first";
                     });
                 }else if(tabsname ==="second"){
                     //已办消息的已接收消息
@@ -253,35 +254,37 @@ export default {
                             }
                         }
                         this.articlesDonetableData=paramOKdata;
-                        this.reload();
+                        //this.reload();
+                        this.atctiveName="second";
+                    });
+                }else{
+                    //已拒绝消息
+                    let userid = localStorage.getItem('ms_id');
+                    let paramdatare={};
+                    paramdatare.receiveUserid=userid;
+                    paramdatare.state=2;
+                    this.$api.task.getMessagelist(paramdatare).then((response)=>{
+                        let paramrejdata=[];
+                        let param=[];
+                        param=response.data;
+                        if(param.length > 0){
+                            for(var i=0;i<param.length;i++){
+                                let mdata={};
+                                mdata.taskno=param[i].id;
+                                mdata.taskname=param[i].messageName;
+                                mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
+                                var senddate=param[i].inserttime;
+                                senddate=senddate.split("T")[0];
+                                mdata.publishdate=senddate;
+                                mdata.taskdetail=param[i].messageDescribe;
+                                paramrejdata.push(mdata);
+                            }
+                        }
+                        this.articlesRejecttableData=paramrejdata;
+                        this.atctiveName="Third";
+                        //this.reload();
                     });
                 }
-            }else{
-                //已拒绝消息
-                let userid = localStorage.getItem('ms_id');
-                let paramdatare={};
-                paramdatare.receiveUserid=userid;
-                paramdatare.state=2;
-                this.$api.task.getMessagelist(paramdatare).then((response)=>{
-                    let paramrejdata=[];
-                    let param=[];
-                    param=response.data;
-                    if(param.length > 0){
-                        for(var i=0;i<param.length;i++){
-                            let mdata={};
-                            mdata.taskno=param[i].id;
-                            mdata.taskname=param[i].messageName;
-                            mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
-                            var senddate=param[i].inserttime;
-                            senddate=senddate.split("T")[0];
-                            mdata.publishdate=senddate;
-                            mdata.taskdetail=param[i].messageDescribe;
-                            paramrejdata.push(mdata);
-                        }
-                    }
-                    this.articlesRejecttableData=paramrejdata;
-                    this.reload();
-                });
             }
         },
         //分页
