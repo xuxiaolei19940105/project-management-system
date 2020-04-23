@@ -169,6 +169,8 @@ export default {
                 localStorage.removeItem('ms_data');
                 localStorage.removeItem('ms_id');
                 localStorage.removeItem('ms_username');
+                localStorage.removeItem('list');
+                localStorage.removeItem('pro_id');
                 this.$router.push('/login');
             } else if (command == 'change') {
                 this.dialogVisible = true;

@@ -42,7 +42,8 @@
                             height="250"
                             size="mini"
                         >
-                            <el-table-column prop="userName" label="人员" width="180"></el-table-column>
+                            <el-table-column prop="sendUserName" label="发布人" width="180"></el-table-column>
+                            <el-table-column prop="userName" label="执行人" width="180"></el-table-column>
                             <el-table-column prop="workDescribe" label="任务"></el-table-column>
                             <el-table-column label="开始时间">
                                 <template slot-scope="scope">
@@ -87,7 +88,7 @@
             v-if="dialogNewImpltaskVisible"
             width="50%"
             :append-to-body="true"
-            :close-on-click-modal='false'
+            :close-on-click-modal="false"
         >
             <newImpltaskpage
                 ref="sonNewimplement"
@@ -143,9 +144,26 @@ export default {
             this.belongProId = this.responseValue.id;
             this.belongTaskId = this.responseValue.taskList[0].id;
 
-            this.projectForm.implementers = '';
+            let implementerslsit='';
             for (let i = 0; i < this.responseValue.taskList[0].userList.length; i++) {
-                this.projectForm.implementers += this.responseValue.taskList[0].userList[i].name + ',';
+                implementerslsit+= this.responseValue.taskList[0].userList[i].name + ',';
+            }
+            implementerslsit=implementerslsit.slice(0,implementerslsit.length-1);
+            this.projectForm.implementers += implementerslsit;
+            //按钮权限
+            let disabled = localStorage.getItem('list');
+            this.disabled = JSON.parse(disabled);
+            let roleId= localStorage.getItem('ms_roleId');
+            let username = localStorage.getItem('ms_name');
+            let impleList = implementerslsit;
+            if(roleId ==="0" || roleId ==="1"){
+                this.newimpshowhide =true;
+            }else{
+                if(impleList.indexOf(username)>-1){
+                    this.newimpshowhide =true;
+                }else{
+                    this.newimpshowhide =false;
+                }
             }
         });
     },
@@ -185,29 +203,32 @@ export default {
             this.index = index;
             this.rowdata = row;
             this.operationmode = 'delete';
-            this.tableData[this.index].deleteFlg=1;
-            this.$api.task.updataWork( this.tableData[this.index]).then(() => {
-                    //刷新表
-                    let pro_id = localStorage.getItem('pro_id');
-                    let projectObjectId = {};
-                    projectObjectId.id = pro_id;
-                    this.$api.task.initProData(projectObjectId).then(response => {
-                        this.responseValue = response.data;
-                        this.tableData = this.responseValue.taskList[0].workList;
-                    });
+            this.tableData[this.index].deleteFlg = 1;
+            this.$api.task.updataWork(this.tableData[this.index]).then(() => {
+                //刷新表
+                let pro_id = localStorage.getItem('pro_id');
+                let projectObjectId = {};
+                projectObjectId.id = pro_id;
+                this.$api.task.initProData(projectObjectId).then(response => {
+                    this.responseValue = response.data;
+                    this.tableData = this.responseValue.taskList[0].workList;
                 });
+            });
         },
 
         // 确定新建工作任务
         saveNewImpltask() {
             let savedata = {};
             let userData = JSON.parse(localStorage.getItem('ms_data'));
-            savedata.userName = userData.name;
+            savedata.sendUserId = userData.id;
+            savedata.userId = this.$refs.sonNewimplement.checkedimplrmrntId.toString();
+            savedata.workName = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
             savedata.workDescribe = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
             savedata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
             savedata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
             savedata.belongProId = this.belongProId;
             savedata.belongTaskId = this.belongTaskId;
+            savedata.deleteFlg = 0;
             if (this.operationmode == 'new') {
                 this.$api.task.newWork(savedata).then(() => {
                     //刷新表
@@ -221,7 +242,7 @@ export default {
                 });
             } else if (this.operationmode == 'edit') {
                 let savedata = this.tableData[this.index];
-                savedata.workDescribe = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
+                savedata.workName = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
                 savedata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
                 savedata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
                 this.$api.task.updataWork(savedata).then(() => {
@@ -234,7 +255,7 @@ export default {
                         this.tableData = this.responseValue.taskList[0].workList;
                     });
                 });
-            } 
+            }
 
             this.dialogNewImpltaskVisible = false;
         }
