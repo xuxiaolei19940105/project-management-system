@@ -87,6 +87,7 @@
             v-if="dialogNewImpltaskVisible"
             width="50%"
             :append-to-body="true"
+            :close-on-click-modal='false'
         >
             <newImpltaskpage
                 ref="sonNewimplement"

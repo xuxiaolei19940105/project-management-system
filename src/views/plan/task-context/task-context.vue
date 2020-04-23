@@ -42,7 +42,7 @@
                 element-loading-text="加载中"
             ></dytable>
         </el-card>
-        <el-dialog title="任务结构编制" :visible.sync="dialogVisible" width="70%" class="dialog-show">
+        <el-dialog title="任务结构编制" :visible.sync="dialogVisible" width="70%" class="dialog-show" :close-on-click-modal='false'>
             <el-form
                 label-width="100px"
                 v-model="dialogformdata"

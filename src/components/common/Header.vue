@@ -45,23 +45,94 @@
                         <!-- <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
                             <el-dropdown-item>项目仓库</el-dropdown-item>
                         </a>-->
+                        <el-dropdown-item divided command="change">修改密码</el-dropdown-item>
                         <el-dropdown-item divided command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
         </div>
+        <el-dialog
+            title="修改密码"
+            :visible.sync="dialogVisible"
+            width="50%"
+            :close-on-click-modal="false"
+        >
+            <el-form
+                :model="ruleForm"
+                status-icon
+                :rules="rules"
+                ref="ruleForm"
+                label-width="100px"
+                class="demo-ruleForm"
+            >
+                <el-form-item label="旧密码" prop="oldpass">
+                    <el-input v-model.number="ruleForm.oldpass"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="pass">
+                    <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" prop="checkPass">
+                    <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
 export default {
     data() {
+        var validateoldpass = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('密码不能为空'));
+            } else if (JSON.parse(localStorage.getItem('ms_data')).password != value) {
+                return callback(new Error('密码错误'));
+            } else {
+                callback();
+            }
+        };
+        var validatePass = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请输入密码'));
+            } else {
+                if (this.ruleForm.checkPass !== '') {
+                    this.$refs.ruleForm.validateField('checkPass');
+                }
+                callback();
+            }
+        };
+        var validatePass2 = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请再次输入密码'));
+            } else if (value !== this.ruleForm.pass) {
+                callback(new Error('两次输入密码不一致!'));
+            } else {
+                callback();
+            }
+        };
         return {
+            dialogVisible: false,
+
             collapse: false,
             fullscreen: false,
             name: '系统管理员',
-            message: 2
+            message: 2,
+            ruleForm: {
+                pass: '',
+                checkPass: '',
+                oldpass: ''
+            },
+            rules: {
+                pass: [{ validator: validatePass, trigger: 'blur' }],
+                checkPass: [{ validator: validatePass2, trigger: 'blur' }],
+                oldpass: [{ validator: validateoldpass, trigger: 'blur' }]
+            }
         };
     },
+
     inject: ['bus'],
     computed: {
         username() {
@@ -70,6 +141,27 @@ export default {
         }
     },
     methods: {
+        //修改密码上传
+        submitForm(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    let userdata = JSON.parse(localStorage.getItem('ms_data'));
+                    userdata.password = this.ruleForm.checkPass;
+                    userdata.workList = [];
+                    this.$api.task.changedataUser(userdata).then(() => {
+                        localStorage.removeItem('ms_name');
+                        localStorage.removeItem('ms_data');
+                        localStorage.removeItem('ms_id');
+                        localStorage.removeItem('ms_username');
+                        this.$router.push('/login');
+                    });
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
@@ -78,6 +170,8 @@ export default {
                 localStorage.removeItem('ms_id');
                 localStorage.removeItem('ms_username');
                 this.$router.push('/login');
+            } else if (command == 'change') {
+                this.dialogVisible = true;
             }
         },
         // 侧边栏折叠

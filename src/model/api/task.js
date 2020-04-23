@@ -63,6 +63,10 @@ const task = {
     //创建用户
     newdataUser(params) {
         return httpReqest.post('/api/User/insertUser', params);
+    },
+    //更新用户信息
+    changedataUser(params) {
+        return httpReqest.post('/api/User/updateUser', params);
     }
 };
 

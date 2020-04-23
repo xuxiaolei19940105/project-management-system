@@ -90,6 +90,7 @@
             v-if="dialogNewtesttaskVisible"
             width="50%"
             :append-to-body="true"
+            :close-on-click-modal='false'
         >
             <newtesttaskpage
                 ref="sonNewtestinform"

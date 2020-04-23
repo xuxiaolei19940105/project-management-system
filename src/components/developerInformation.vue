@@ -90,6 +90,7 @@
             :visible.sync="dialogNewDeveltaskVisible"
             width="50%"
             :append-to-body="true"
+            :close-on-click-modal='false'
         >
             <newdeveloppage ref="sonNewdevop" :rowdata="rowdata" :operationmode="operationmode"></newdeveloppage>
             <span slot="footer" class="dialog-footer">

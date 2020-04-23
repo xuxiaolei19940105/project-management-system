@@ -24,6 +24,7 @@
             width="50%"
             :append-to-body="true"
             v-if="dialogNewUserVisible"
+            :close-on-click-modal='false'
         >
             <userinformation ref="sonNewuser" />
             <span slot="footer" class="dialog-footer">

@@ -24,6 +24,7 @@
             width="80%"
             :append-to-body="true"
             v-if="dialogVisible"
+            :close-on-click-modal='false'
         >
             <projectPage ref="sonEditproject" ></projectPage>
             <span slot="footer" class="dialog-footer">
@@ -37,6 +38,7 @@
             width="80%"
             :append-to-body="true"
             v-if="dialogNewprojectVisible"
+            :close-on-click-modal='false'
         >
             <project-information ref="sonNewproject" />
             <span slot="footer" class="dialog-footer">

@@ -122,7 +122,7 @@
                 </el-row>
             </el-form>
         </el-card>
-        <el-dialog title="人员选择" :visible.sync="dialogVisible" width="680px" :append-to-body="true">
+        <el-dialog title="人员选择" :visible.sync="dialogVisible" width="680px" :append-to-body="true" :close-on-click-modal='false'>
             <el-card>
                 <el-transfer
                     filterable
