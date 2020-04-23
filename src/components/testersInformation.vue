@@ -43,7 +43,8 @@
                             height="250"
                             size="mini"
                         >
-                            <el-table-column prop="userName" label="人员" width="100"></el-table-column>
+                            <el-table-column prop="sendUserName" label="发布人" width="180"></el-table-column>
+                            <el-table-column prop="userName" label="执行人" width="180"></el-table-column>
                             <el-table-column prop="workDescribe" label="任务"></el-table-column>
                             <el-table-column label="开始时间">
                                 <template slot-scope="scope">
@@ -85,12 +86,12 @@
             </el-row>
         </el-card>
         <el-dialog
-            title="新建实施任务"
+            title="新建测试任务"
             :visible.sync="dialogNewtesttaskVisible"
             v-if="dialogNewtesttaskVisible"
             width="50%"
             :append-to-body="true"
-            :close-on-click-modal='false'
+            :close-on-click-modal="false"
         >
             <newtesttaskpage
                 ref="sonNewtestinform"
@@ -151,11 +152,11 @@ export default {
         //按钮权限
         let disabled = localStorage.getItem('list');
         this.disabled = JSON.parse(disabled);
-        let roleId= localStorage.getItem('ms_roleId');
-        if(roleId ==="0" || roleId ==="1" || roleId ==="4"){
-            this.newtestshow =true;
-        }else{
-            this.newtestshow =false;
+        let roleId = localStorage.getItem('ms_roleId');
+        if (roleId === '0' || roleId === '1' || roleId === '4') {
+            this.newtestshow = true;
+        } else {
+            this.newtestshow = false;
         }
     },
     methods: {
@@ -180,13 +181,28 @@ export default {
         },
         //删除工作任务
         deleteClick(row, index) {
-            this.tableData.splice(index, 1);
+            this.index = index;
+            this.rowdata = row;
+            this.operationmode = 'delete';
+            this.tableData[this.index].deleteFlg = 1;
+            this.$api.task.updataWork(this.tableData[this.index]).then(() => {
+                //刷新表
+                let pro_id = localStorage.getItem('pro_id');
+                let projectObjectId = {};
+                projectObjectId.id = pro_id;
+                this.$api.task.initProData(projectObjectId).then(response => {
+                    this.responseValue = response.data;
+                    this.tableData = this.responseValue.taskList[2].workList;
+                });
+            });
         },
         // 确定新建工作任务
         savenewTester() {
             let savedata = {};
             let userData = JSON.parse(localStorage.getItem('ms_data'));
-            savedata.userName = userData.name;
+            savedata.sendUserId = userData.id;
+            savedata.userId = this.$refs.sonNewtestinform.checkedUseNameId.toString();
+            savedata.workName = this.$refs.sonNewtestinform.newtesterForm.taskdetail;
             savedata.workDescribe = this.$refs.sonNewtestinform.newtesterForm.taskdetail;
             savedata.starttime = this.$refs.sonNewtestinform.newtesterForm.testerStartDate;
             savedata.endtime = this.$refs.sonNewtestinform.newtesterForm.testerEndDate;
@@ -194,17 +210,35 @@ export default {
             savedata.belongTaskId = this.belongTaskId;
             savedata.want = this.$refs.sonNewtestinform.newtesterForm.expectedresults;
             savedata.actual = this.$refs.sonNewtestinform.newtesterForm.actualresults;
-            this.$api.task.newWork(savedata).then(() => {
-                //刷新表
-                debugger;
-                let pro_id = localStorage.getItem('pro_id');
-                let projectObjectId = {};
-                projectObjectId.id = pro_id;
-                this.$api.task.initProData(projectObjectId).then(response => {
-                    this.responseValue = response.data;
-                    this.tableData = this.responseValue.taskList[1].workList;
+
+            debugger;
+            if (this.operationmode == 'new') {
+                this.$api.task.newWork(savedata).then(() => {
+                    //刷新表
+                    let pro_id = localStorage.getItem('pro_id');
+                    let projectObjectId = {};
+                    projectObjectId.id = pro_id;
+                    this.$api.task.initProData(projectObjectId).then(response => {
+                        this.responseValue = response.data;
+                        this.tableData = this.responseValue.taskList[2].workList;
+                    });
                 });
-            });
+            } else if (this.operationmode == 'edit') {
+                let savedata = this.tableData[this.index];
+                savedata.workName = this.$refs.sonNewtestinform.newtesterForm.taskdetail;
+                savedata.starttime = this.$refs.sonNewtestinform.newtesterForm.implementStartDate;
+                savedata.endtime = this.$refs.sonNewtestinform.newtesterForm.implementEndDate;
+                this.$api.task.updataWork(savedata).then(() => {
+                    //刷新表
+                    let pro_id = localStorage.getItem('pro_id');
+                    let projectObjectId = {};
+                    projectObjectId.id = pro_id;
+                    this.$api.task.initProData(projectObjectId).then(response => {
+                        this.responseValue = response.data;
+                        this.tableData = this.responseValue.taskList[2].workList;
+                    });
+                });
+            }
             //关闭弹窗
             this.dialogNewtesttaskVisible = false;
         }

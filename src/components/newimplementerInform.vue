@@ -159,6 +159,8 @@ export default {
                 }
             });
         } else if (this.operationmode == 'consult') {
+            this.implrmrntForm.userName = this.rowdata.userName;
+            this.implrmrntForm.sendUserName = this.rowdata.sendUserName;
             this.implrmrntForm.taskdetail = this.rowdata.workDescribe;
             this.implrmrntForm.implementStartDate = this.rowdata.starttime;
             this.implrmrntForm.implementEndDate = this.rowdata.endtime;

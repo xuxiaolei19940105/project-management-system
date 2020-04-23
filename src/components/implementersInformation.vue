@@ -141,8 +141,8 @@ export default {
             this.projectForm.implStartDate = this.responseValue.effectStartTime;
             this.projectForm.implEndDate = this.responseValue.effectEndTime;
             //储存所属项目id和所属任务id
-            this.belongProId = this.responseValue.id;
-            this.belongTaskId = this.responseValue.taskList[0].id;
+            this.projectForm.belongProId = this.responseValue.id;
+            this.projectForm.belongTaskId = this.responseValue.taskList[0].id;
 
             let implementerslsit='';
             for (let i = 0; i < this.responseValue.taskList[0].userList.length; i++) {
@@ -226,8 +226,8 @@ export default {
             savedata.workDescribe = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
             savedata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
             savedata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
-            savedata.belongProId = this.belongProId;
-            savedata.belongTaskId = this.belongTaskId;
+            savedata.belongProId = this.projectForm.belongProId;
+            savedata.belongTaskId = this.projectForm.belongTaskId;
             savedata.deleteFlg = 0;
             if (this.operationmode == 'new') {
                 this.$api.task.newWork(savedata).then(() => {

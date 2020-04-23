@@ -10,6 +10,23 @@
             >
                 <el-row>
                     <el-col :span="11">
+                        <el-form-item label="发布人">
+                            <el-input v-model="newtesterForm.sendUserName" disabled></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="11" :offset="2">
+                        <el-form-item label="执行人">
+                            <el-input
+                                v-bind:disabled="disabled"
+                                prefix-icon="el-icon-search"
+                                v-model="newtesterForm.userName"
+                                @focus="showPersonPage(1)"
+                            ></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="11">
                         <el-form-item label="任务详情">
                             <el-input v-model="newtesterForm.taskdetail" v-bind:disabled="disabled"></el-input>
                         </el-form-item>
@@ -75,7 +92,7 @@
                                 v-bind:disabled="disabled"
                                 prefix-icon="el-icon-search"
                                 v-model="newtesterForm.developers"
-                                @focus="showPersonPage"
+                                @focus="showPersonPage(2)"
                             ></el-input>
                         </el-form-item>
                     </el-col>
@@ -122,7 +139,13 @@
                 </el-row>
             </el-form>
         </el-card>
-        <el-dialog title="人员选择" :visible.sync="dialogVisible" width="680px" :append-to-body="true" :close-on-click-modal='false'>
+        <el-dialog
+            title="人员选择"
+            :visible.sync="dialogVisible"
+            width="680px"
+            :append-to-body="true"
+            :close-on-click-modal="false"
+        >
             <el-card>
                 <el-transfer
                     filterable
@@ -155,12 +178,17 @@ export default {
                 { id: 3, name: '测试3' }
             ],
             checkedPerson: [],
-            checkedDevelopersId: [],
+            checkedUseNameId: [],
+            checkedPsotId: [],
             checkedPersonValue: [],
             openfrom: '',
 
             disabled: false,
             newtesterForm: {
+                sendUserid: '',
+                sendUserName: '',
+                userid: '',
+                userName: '',
                 taskdetail: '',
                 expectedresults: '',
                 actualresults: '',
@@ -198,6 +226,8 @@ export default {
             }
         });
         if (this.operationmode == 'edit') {
+            this.newtesterForm.sendUserName = localStorage.getItem('ms_name');
+            this.newtesterForm.userName = this.rowdata.userName;
             this.newtesterForm.taskdetail = this.rowdata.workDescribe;
             this.newtesterForm.expectedresults = this.rowdata.want;
             this.newtesterForm.actualresults = this.rowdata.actual;
@@ -205,13 +235,18 @@ export default {
             this.newtesterForm.testerEndDate = this.rowdata.endtime;
             this.disabled = false;
         } else if (this.operationmode == 'consult') {
-            this.newtesterForm.taskdetail = this.rowdata.task;
+            this.newtesterForm.sendUserName = localStorage.getItem('ms_name');
+            this.newtesterForm.userName = this.rowdata.userName;
+            this.newtesterForm.taskdetail = this.rowdata.workDescribe;
             this.newtesterForm.expectedresults = this.rowdata.want;
             this.newtesterForm.actualresults = this.rowdata.actual;
             this.newtesterForm.testerStartDate = this.rowdata.starttime;
             this.newtesterForm.testerEndDate = this.rowdata.endtime;
             this.disabled = true;
         } else if (this.operationmode == 'new') {
+            this.newtesterForm.sendUserName = localStorage.getItem('ms_name');
+            this.newtesterForm.sendUserid = '';
+            this.newtesterForm.userid = '';
             this.newtesterForm.taskdetail = '';
             this.newtesterForm.expectedresults = '';
             this.newtesterForm.actualresults = '';
@@ -257,16 +292,26 @@ export default {
             this.checkedPerson = [];
             this.openfrom = openfrom;
             this.dialogVisible = true;
-            if (this.newtesterForm.developers) {
-                this.checkedPerson = this.checkedDevelopersId;
+            if (this.openfrom == 1) {
+                if (this.newtesterForm.userName) {
+                    this.checkedPerson = this.checkedDeveloperId;
+                }
+            } else {
+                if (this.newtesterForm.developers) {
+                    this.checkedPerson = this.checkedDeveloperId;
+                }
             }
         },
         addPerson: function() {
             this.dialogVisible = false;
             this.getval();
-            console.log(this.checkedPerson);
-            this.checkedDevelopersId = this.checkedPerson;
-            this.newtesterForm.developers = this.checkedPersonValue.toString();
+            if (this.openfrom == 1) {
+                this.checkedUseNameId = this.checkedPerson;
+                this.newtesterForm.userName = this.checkedPersonValue.toString();
+            } else {
+                this.checkedPostId = this.checkedPerson;
+                this.newtesterForm.developers = this.checkedPersonValue.toString();
+            }
         }
     }
 };

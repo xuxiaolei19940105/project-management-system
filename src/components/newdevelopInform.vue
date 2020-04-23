@@ -9,6 +9,23 @@
                 :label-position="labelPosition"
             >
                 <el-row>
+                    <el-col :span="11">
+                        <el-form-item label="发布人">
+                            <el-input v-model="newdevelopForm.sendUserName" disabled></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="11">
+                        <el-form-item label="执行人">
+                            <el-input
+                                v-bind:disabled="disabled"
+                                prefix-icon="el-icon-search"
+                                v-model="newdevelopForm.userName"
+                                @focus="showPersonPage(1)"
+                            ></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
                     <el-col :span="24">
                         <el-form-item label="任务概述">
                             <el-input
@@ -45,7 +62,7 @@
                                 v-bind:disabled="disabled"
                                 prefix-icon="el-icon-search"
                                 v-model="newdevelopForm.testers"
-                                @focus="showPersonPage"
+                                @focus="showPersonPage(2)"
                             ></el-input>
                         </el-form-item>
                     </el-col>
@@ -70,7 +87,13 @@
                 </el-row>
             </el-form>
         </el-card>
-        <el-dialog title="人员选择" :visible.sync="dialogVisible" width="680px" :append-to-body="true" :close-on-click-modal='false'>
+        <el-dialog
+            title="人员选择"
+            :visible.sync="dialogVisible"
+            width="680px"
+            :append-to-body="true"
+            :close-on-click-modal="false"
+        >
             <el-card>
                 <el-transfer
                     filterable
@@ -103,12 +126,17 @@ export default {
                 { id: 3, name: '测试3' }
             ],
             checkedPerson: [],
-            checkedDeveloperId: [],
+            checkedUseNameId: [],
+            checkedPsotId: [],
             checkedPersonValue: [],
             openfrom: '',
 
             disabled: false,
             newdevelopForm: {
+                sendUserid: '',
+                sendUserName: '',
+                userid: '',
+                userName: '',
                 taskdetail: '',
                 developStartDate: '',
                 developEndDate: '',
@@ -126,6 +154,8 @@ export default {
 
     created() {
         if (this.operationmode == 'edit') {
+            this.newdevelopForm.sendUserName = localStorage.getItem('ms_name');
+            this.newdevelopForm.userName = this.rowdata.userName;
             this.newdevelopForm.taskdetail = this.rowdata.workDescribe;
             this.newdevelopForm.developStartDate = this.rowdata.starttime;
             this.newdevelopForm.developEndDate = this.rowdata.endtime;
@@ -147,15 +177,36 @@ export default {
                 }
             });
         } else if (this.operationmode == 'consult') {
-            this.newdevelopForm.taskdetail = this.rowdata.task;
+            this.newdevelopForm.userName = this.rowdata.userName;
+            this.newdevelopForm.sendUserName = this.rowdata.sendUserName;
+            this.newdevelopForm.taskdetail = this.rowdata.workDescribe;
             this.disabledtaskdetail = true;
             this.newdevelopForm.developStartDate = this.rowdata.starttime;
             this.disabled = true;
         } else if (this.operationmode == 'new') {
+            this.newdevelopForm.sendUserName = localStorage.getItem('ms_name');
+            this.newdevelopForm.sendUserid = '';
+            this.newdevelopForm.userid = '';
             this.newdevelopForm.taskdetail = '';
             this.newdevelopForm.developStartDate = '';
             this.newdevelopForm.developEndDate = '';
             this.disabled = false;
+            //人员选择
+            this.$api.task.getAllUser().then(response => {
+                let responsevalue = response.data;
+                if (responsevalue) {
+                    let personOptions = [];
+                    for (var i = 0; i < responsevalue.length; i++) {
+                        let proObject = {};
+                        proObject.id = responsevalue[i].id;
+                        proObject.name = responsevalue[i].name;
+                        personOptions.push(proObject);
+                    }
+                    this.personOptions = personOptions;
+                } else {
+                    this.$message.success('请联系Admin!');
+                }
+            });
         } else {
             this.newdevelopForm.taskdetail = '';
             this.newdevelopForm.developStartDate = '';
@@ -199,17 +250,27 @@ export default {
             this.checkedPerson = [];
             this.openfrom = openfrom;
             this.dialogVisible = true;
-            if (this.newdevelopForm.testers) {
-                this.checkedPerson = this.checkedDeveloperId;
+            if (this.openfrom == 1) {
+                if (this.newdevelopForm.userName) {
+                    this.checkedPerson = this.checkedDeveloperId;
+                }
+            } else {
+                if (this.newdevelopForm.testers) {
+                    this.checkedPerson = this.checkedDeveloperId;
+                }
             }
         },
         addPerson: function() {
             this.dialogVisible = false;
             this.getval();
-            console.log(this.checkedPerson);
-            this.checkedDeveloperId = this.checkedPerson;
-            this.newdevelopForm.testers = this.checkedPersonValue.toString();
-           
+
+            if (this.openfrom == 1) {
+                this.checkedUseNameId = this.checkedPerson;
+                this.newdevelopForm.userName = this.checkedPersonValue.toString();
+            } else {
+                this.checkedPostId = this.checkedPerson;
+                this.newdevelopForm.testers = this.checkedPersonValue.toString();
+            }
         }
     }
 };
