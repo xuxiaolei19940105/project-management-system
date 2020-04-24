@@ -45,16 +45,8 @@
                             <el-table-column prop="sendUserName" label="发布人" width="180"></el-table-column>
                             <el-table-column prop="userName" label="执行人" width="180"></el-table-column>
                             <el-table-column prop="workDescribe" label="任务"></el-table-column>
-                            <el-table-column label="开始时间">
-                                <template slot-scope="scope">
-                                    <span>{{ scope.row.starttime.slice(0, 10) }}</span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="endtime" label="结束时间时间">
-                                <template slot-scope="scope">
-                                    <span>{{ scope.row.endtime.slice(0, 10) }}</span>
-                                </template>
-                            </el-table-column>
+                            <el-table-column prop="starttime" label="开始时间"></el-table-column>
+                            <el-table-column prop="endtime" label="结束时间"></el-table-column>
                             <el-table-column label="操作" width="100">
                                 <template slot-scope="scope">
                                     <el-button
@@ -68,7 +60,7 @@
                                         size="small"
                                         @click="editleclick(scope.row , scope.$index)"
                                         :disabled="disabled"
-                                    >编辑</el-button> -->
+                                    >编辑</el-button>-->
                                     <el-button
                                         type="text"
                                         size="small"
@@ -135,6 +127,20 @@ export default {
             //初始化表
             let responseValue = response.data;
             //初始化基本信息
+            //时间转换
+            for (let i = 0; i < responseValue.taskList[1].workList.length; i++) {
+                let startDateS = new Date(responseValue.taskList[1].workList[i].starttime);
+                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                    .toISOString()
+                    .slice(0, 10);
+                responseValue.taskList[1].workList[i].starttime = startOvwerS;
+
+                let endDateS = new Date(responseValue.taskList[1].workList[i].endtime);
+                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                    .toISOString()
+                    .slice(0, 10);
+                responseValue.taskList[1].workList[i].endtime = endOvwerS;
+            }
             this.tableData = responseValue.taskList[1].workList;
 
             this.projectForm.implStartDate = responseValue.effectStartTime;
@@ -143,29 +149,29 @@ export default {
             this.projectForm.belongProId = responseValue.id;
             this.projectForm.belongTaskId = responseValue.taskList[1].id;
 
-            let implementerslsit='';
+            let implementerslsit = '';
             for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
-                implementerslsit+= responseValue.taskList[1].userList[i].name + ',';
+                implementerslsit += responseValue.taskList[1].userList[i].name + ',';
             }
-            implementerslsit=implementerslsit.slice(0,implementerslsit.length-1);
+            implementerslsit = implementerslsit.slice(0, implementerslsit.length - 1);
             this.projectForm.implementers += implementerslsit;
             //按钮权限
             let disabled = localStorage.getItem('list');
             this.disabled = JSON.parse(disabled);
-            let roleId= localStorage.getItem('ms_roleId');
+            let roleId = localStorage.getItem('ms_roleId');
             let username = localStorage.getItem('ms_name');
             let impleList = implementerslsit;
-            if(roleId ==="0" || roleId ==="1"){
-                this.newimpshowhide =true;
-            }else{
-                if(impleList.indexOf(username)>-1){
-                    this.newimpshowhide =true;
-                }else{
-                    let sssd=JSON.parse(disabled)+"";
-                    if(sssd==="false"){
-                        this.disabled=true;
+            if (roleId === '0' || roleId === '1') {
+                this.newimpshowhide = true;
+            } else {
+                if (impleList.indexOf(username) > -1) {
+                    this.newimpshowhide = true;
+                } else {
+                    let sssd = JSON.parse(disabled) + '';
+                    if (sssd === 'false') {
+                        this.disabled = true;
                     }
-                    this.newimpshowhide =false;
+                    this.newimpshowhide = false;
                 }
             }
         });
@@ -174,11 +180,11 @@ export default {
         //按钮权限
         let disabled = localStorage.getItem('list');
         this.disabled = JSON.parse(disabled);
-        let roleId= localStorage.getItem('ms_roleId');
-        if(roleId ==="0" || roleId ==="1"){
-            this.newimpshowhide =true;
-        }else{
-            this.newimpshowhide =false;
+        let roleId = localStorage.getItem('ms_roleId');
+        if (roleId === '0' || roleId === '1') {
+            this.newimpshowhide = true;
+        } else {
+            this.newimpshowhide = false;
         }
     },
     methods: {
@@ -213,7 +219,21 @@ export default {
                 let projectObjectId = {};
                 projectObjectId.id = pro_id;
                 this.$api.task.initProData(projectObjectId).then(response => {
-                    this.tableData = response.data.taskList[1].workList;
+                    let responseValue = response.data;
+                    for (let i = 0; i < responseValue.taskList[1].workList.length; i++) {
+                        let startDateS = new Date(responseValue.taskList[1].workList[i].starttime);
+                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                            .toISOString()
+                            .slice(0, 10);
+                        responseValue.taskList[1].workList[i].starttime = startOvwerS;
+
+                        let endDateS = new Date(responseValue.taskList[1].workList[i].endtime);
+                        let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                            .toISOString()
+                            .slice(0, 10);
+                        responseValue.taskList[1].workList[i].endtime = endOvwerS;
+                    }
+                    this.tableData = responseValue.taskList[1].workList;
                 });
             });
         },
@@ -239,7 +259,21 @@ export default {
                     let projectObjectId = {};
                     projectObjectId.id = pro_id;
                     this.$api.task.initProData(projectObjectId).then(response => {
-                        this.tableData = response.data.taskList[1].workList;
+                        let responseValue = response.data;
+                        for (let i = 0; i < responseValue.taskList[1].workList.length; i++) {
+                            let startDateS = new Date(responseValue.taskList[1].workList[i].starttime);
+                            let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                .toISOString()
+                                .slice(0, 10);
+                            responseValue.taskList[1].workList[i].starttime = startOvwerS;
+
+                            let endDateS = new Date(responseValue.taskList[1].workList[i].endtime);
+                            let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                .toISOString()
+                                .slice(0, 10);
+                            responseValue.taskList[1].workList[i].endtime = endOvwerS;
+                        }
+                        this.tableData = responseValue.taskList[1].workList;
                     });
                 });
             } else if (this.operationmode == 'edit') {
@@ -253,7 +287,21 @@ export default {
                     let projectObjectId = {};
                     projectObjectId.id = pro_id;
                     this.$api.task.initProData(projectObjectId).then(response => {
-                        this.tableData = response.data.taskList[1].workList;
+                        let responseValue = response.data;
+                        for (let i = 0; i < responseValue.taskList[1].workList.length; i++) {
+                            let startDateS = new Date(responseValue.taskList[1].workList[i].starttime);
+                            let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                .toISOString()
+                                .slice(0, 10);
+                            responseValue.taskList[1].workList[i].starttime = startOvwerS;
+
+                            let endDateS = new Date(responseValue.taskList[1].workList[i].endtime);
+                            let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                .toISOString()
+                                .slice(0, 10);
+                            responseValue.taskList[1].workList[i].endtime = endOvwerS;
+                        }
+                        this.tableData = responseValue.taskList[1].workList;
                     });
                 });
             }

@@ -46,16 +46,8 @@
                             <el-table-column prop="sendUserName" label="发布人" width="180"></el-table-column>
                             <el-table-column prop="userName" label="执行人" width="180"></el-table-column>
                             <el-table-column prop="workDescribe" label="任务"></el-table-column>
-                            <el-table-column label="开始时间">
-                                <template slot-scope="scope">
-                                    <span>{{ scope.row.starttime.slice(0, 10) }}</span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="endtime" label="结束时间时间">
-                                <template slot-scope="scope">
-                                    <span>{{ scope.row.endtime.slice(0, 10) }}</span>
-                                </template>
-                            </el-table-column>
+                            <el-table-column prop="starttime" label="开始时间"></el-table-column>
+                            <el-table-column prop="endtime" label="结束时间"></el-table-column>
                             <el-table-column prop="want" label="预计结果"></el-table-column>
                             <el-table-column prop="actual" label="实际结果"></el-table-column>
                             <el-table-column label="操作" width="100">
@@ -71,7 +63,7 @@
                                         size="small"
                                         @click="editleclick(scope.row,scope.$index)"
                                         :disabled="disabled"
-                                    >编辑</el-button> -->
+                                    >编辑</el-button>-->
                                     <el-button
                                         type="text"
                                         size="small"
@@ -134,7 +126,22 @@ export default {
         this.$api.task.initProData(projectObjectId).then(response => {
             let responseValue = response.data;
             // 初始化表
+            //时间转换
+            for (let i = 0; i < responseValue.taskList[3].workList.length; i++) {
+                let startDateS = new Date(responseValue.taskList[3].workList[i].starttime);
+                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                    .toISOString()
+                    .slice(0, 10);
+                responseValue.taskList[3].workList[i].starttime = startOvwerS;
+
+                let endDateS = new Date(responseValue.taskList[3].workList[i].endtime);
+                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                    .toISOString()
+                    .slice(0, 10);
+                responseValue.taskList[3].workList[i].endtime = endOvwerS;
+            }
             this.tableData = responseValue.taskList[3].workList;
+
             //初始化基本信息
             this.projectForm.testStartDate = responseValue.testStartTime;
             this.projectForm.testEndDate = responseValue.testEndTime;
@@ -212,7 +219,21 @@ export default {
                 let projectObjectId = {};
                 projectObjectId.id = pro_id;
                 this.$api.task.initProData(projectObjectId).then(response => {
-                    this.tableData = response.data.taskList[3].workList;
+                    let responseValue = response.data;
+                    for (let i = 0; i < responseValue.taskList[3].workList.length; i++) {
+                        let startDateS = new Date(responseValue.taskList[3].workList[i].starttime);
+                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                            .toISOString()
+                            .slice(0, 10);
+                        responseValue.taskList[3].workList[i].starttime = startOvwerS;
+
+                        let endDateS = new Date(responseValue.taskList[3].workList[i].endtime);
+                        let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                            .toISOString()
+                            .slice(0, 10);
+                        responseValue.taskList[3].workList[i].endtime = endOvwerS;
+                    }
+                    this.tableData = responseValue.taskList[3].workList;
                 });
             });
         },
@@ -232,24 +253,24 @@ export default {
             savedata.want = this.$refs.sonNewtestinform.newtesterForm.expectedresults;
             savedata.actual = this.$refs.sonNewtestinform.newtesterForm.actualresults;
             //抄送人ID
-            let chaosongID=[];
-            chaosongID= this.$refs.sonNewtestinform.checkedPostId;
+            let chaosongID = [];
+            chaosongID = this.$refs.sonNewtestinform.checkedPostId;
             //登录用户
-            let crueateid=localStorage.getItem('ms_id');
-            let crueatename=localStorage.getItem('ms_name');
-            let crueateusername=localStorage.getItem('ms_username');
-            var dates=new Date();
+            let crueateid = localStorage.getItem('ms_id');
+            let crueatename = localStorage.getItem('ms_name');
+            let crueateusername = localStorage.getItem('ms_username');
+            var dates = new Date();
             let radioValue = this.$refs.sonNewtestinform.newtesterForm.radio;
-            let taskdetail="";
-            let meesagetype="";
-            if(radioValue ==="Yes"){
-                taskdetail= this.$refs.sonNewtestinform.newtesterForm.bugtital;
-                taskdetail="测试BUG:"+taskdetail;
-                meesagetype='1';
-            }else{
-                taskdetail= this.$refs.sonNewtestinform.newtesterForm.taskdetail;
-                taskdetail="测试任务邀请:"+taskdetail;
-                meesagetype='0';
+            let taskdetail = '';
+            let meesagetype = '';
+            if (radioValue === 'Yes') {
+                taskdetail = this.$refs.sonNewtestinform.newtesterForm.bugtital;
+                taskdetail = '测试BUG:' + taskdetail;
+                meesagetype = '1';
+            } else {
+                taskdetail = this.$refs.sonNewtestinform.newtesterForm.taskdetail;
+                taskdetail = '测试任务邀请:' + taskdetail;
+                meesagetype = '0';
             }
             if (this.operationmode == 'new') {
                 this.$api.task.newWork(savedata).then(() => {
@@ -258,27 +279,40 @@ export default {
                     let projectObjectId = {};
                     projectObjectId.id = pro_id;
                     this.$api.task.initProData(projectObjectId).then(response => {
-                        this.tableData = response.data.taskList[3].workList;
+                        let responseValue = response.data;
+                        for (let i = 0; i < responseValue.taskList[3].workList.length; i++) {
+                            let startDateS = new Date(responseValue.taskList[3].workList[i].starttime);
+                            let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                .toISOString()
+                                .slice(0, 10);
+                            responseValue.taskList[3].workList[i].starttime = startOvwerS;
+
+                            let endDateS = new Date(responseValue.taskList[3].workList[i].endtime);
+                            let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                .toISOString()
+                                .slice(0, 10);
+                            responseValue.taskList[3].workList[i].endtime = endOvwerS;
+                        }
+                        this.tableData = responseValue.taskList[3].workList;
                     });
                     //发任务消息
-                    if(chaosongID.length > 0){
-                        for(var i=0;i<chaosongID.length;i++){
-                            if(chaosongID[i]){
-                                let messageObject={};
-                                messageObject.id='';
-                                messageObject.messageType=meesagetype;
-                                messageObject.messageName=taskdetail;
-                                messageObject.messageDescribe=crueatename+"给你配发任务.";
-                                messageObject.sendUserid=crueateid;
-                                messageObject.receiveUserid=chaosongID[i];
-                                messageObject.state="0";
-                                messageObject.inserttime=dates;
-                                messageObject.updatetime=dates;
-                                messageObject.readTag="0";
-                                messageObject.sendUserName=crueateusername;
-                                messageObject.receiveUserName='';
-                                this.$api.task.newMessage(messageObject).then(()=>{
-                                }); 
+                    if (chaosongID.length > 0) {
+                        for (var i = 0; i < chaosongID.length; i++) {
+                            if (chaosongID[i]) {
+                                let messageObject = {};
+                                messageObject.id = '';
+                                messageObject.messageType = meesagetype;
+                                messageObject.messageName = taskdetail;
+                                messageObject.messageDescribe = crueatename + '给你配发任务.';
+                                messageObject.sendUserid = crueateid;
+                                messageObject.receiveUserid = chaosongID[i];
+                                messageObject.state = '0';
+                                messageObject.inserttime = dates;
+                                messageObject.updatetime = dates;
+                                messageObject.readTag = '0';
+                                messageObject.sendUserName = crueateusername;
+                                messageObject.receiveUserName = '';
+                                this.$api.task.newMessage(messageObject).then(() => {});
                             }
                         }
                     }
@@ -294,27 +328,40 @@ export default {
                     let projectObjectId = {};
                     projectObjectId.id = pro_id;
                     this.$api.task.initProData(projectObjectId).then(response => {
-                        this.tableData = response.data.taskList[3].workList;
+                        let responseValue = response.data;
+                        for (let i = 0; i < responseValue.taskList[3].workList.length; i++) {
+                            let startDateS = new Date(responseValue.taskList[3].workList[i].starttime);
+                            let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                .toISOString()
+                                .slice(0, 10);
+                            responseValue.taskList[3].workList[i].starttime = startOvwerS;
+
+                            let endDateS = new Date(responseValue.taskList[3].workList[i].endtime);
+                            let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                .toISOString()
+                                .slice(0, 10);
+                            responseValue.taskList[3].workList[i].endtime = endOvwerS;
+                        }
+                        this.tableData = responseValue.taskList[3].workList;
                     });
                     //发任务消息
-                    if(chaosongID.length > 0){
-                        for(var i=0;i<chaosongID.length;i++){
-                            if(chaosongID[i]){
-                                let messageObject={};
-                                messageObject.id='';
-                                messageObject.messageType=meesagetype;
-                                messageObject.messageName=taskdetail;
-                                messageObject.messageDescribe=crueatename+"给你配发任务.";
-                                messageObject.sendUserid=crueateid;
-                                messageObject.receiveUserid=chaosongID[i];
-                                messageObject.state="0";
-                                messageObject.inserttime=dates;
-                                messageObject.updatetime=dates;
-                                messageObject.readTag="0";
-                                messageObject.sendUserName=crueateusername;
-                                messageObject.receiveUserName='';
-                                this.$api.task.newMessage(messageObject).then(()=>{
-                                }); 
+                    if (chaosongID.length > 0) {
+                        for (var i = 0; i < chaosongID.length; i++) {
+                            if (chaosongID[i]) {
+                                let messageObject = {};
+                                messageObject.id = '';
+                                messageObject.messageType = meesagetype;
+                                messageObject.messageName = taskdetail;
+                                messageObject.messageDescribe = crueatename + '给你配发任务.';
+                                messageObject.sendUserid = crueateid;
+                                messageObject.receiveUserid = chaosongID[i];
+                                messageObject.state = '0';
+                                messageObject.inserttime = dates;
+                                messageObject.updatetime = dates;
+                                messageObject.readTag = '0';
+                                messageObject.sendUserName = crueateusername;
+                                messageObject.receiveUserName = '';
+                                this.$api.task.newMessage(messageObject).then(() => {});
                             }
                         }
                     }
