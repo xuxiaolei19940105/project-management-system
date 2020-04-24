@@ -58,7 +58,7 @@
                                     <span>{{ scope.row.endtime.slice(0, 10) }}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="操作" width="150">
+                            <el-table-column label="操作" width="100">
                                 <template slot-scope="scope">
                                     <el-button
                                         @click="handleClick(scope.row)"
@@ -66,12 +66,12 @@
                                         size="small"
                                         :disabled="disabled"
                                     >查看</el-button>
-                                    <el-button
+                                    <!-- <el-button
                                         type="text"
                                         size="small"
                                         @click="editleclick(scope.row, scope.$index)"
                                         :disabled="disabled"
-                                    >编辑</el-button>
+                                    >编辑</el-button> -->
                                     <el-button
                                         type="text"
                                         size="small"

@@ -98,6 +98,7 @@
 <script>
 export default {
     props: {
+        index: Number,
         rowdata: Object,
         operationmode: String
     },
@@ -139,11 +140,24 @@ export default {
     },
     created() {
         if (this.operationmode == 'edit') {
-            this.implrmrntForm.sendUserName = localStorage.getItem('ms_name');
-            this.implrmrntForm.userName = this.rowdata.userName;
-            this.implrmrntForm.taskdetail = this.rowdata.workDescribe;
-            this.implrmrntForm.implementStartDate = this.rowdata.starttime;
-            this.implrmrntForm.implementEndDate = this.rowdata.endtime;
+            let pro_id = localStorage.getItem('pro_id');
+            let projectObjectId = {};
+            projectObjectId.id = pro_id;
+            let _this = this;
+            this.$api.task.initProData(projectObjectId).then(response => {
+                let rowdata = response.data.taskList[1].workList[_this.index];
+                _this.implrmrntForm.id = rowdata.id;
+                _this.implrmrntForm.userId = rowdata.userId;
+                _this.implrmrntForm.userName = rowdata.userName;
+                _this.implrmrntForm.sendUserId = rowdata.sendUserId;
+                _this.implrmrntForm.sendUserName = rowdata.sendUserName;
+                _this.implrmrntForm.taskdetail = rowdata.workDescribe;
+                _this.implrmrntForm.implementStartDate = rowdata.starttime;
+                _this.implrmrntForm.implementEndDate = rowdata.endtime;
+                _this.implrmrntForm.belongProId = rowdata.belongProId;
+                _this.implrmrntForm.belongTaskId = rowdata.belongTaskId;
+            });
+
             this.disabled = false;
 
             this.$api.task.getAllUser().then(response => {
@@ -173,8 +187,8 @@ export default {
             this.implrmrntForm.userName = localStorage.getItem('ms_name');
             this.implrmrntForm.userid = localStorage.getItem('ms_id');
             this.implrmrntForm.sendUserid = localStorage.getItem('ms_id');
-            if (localStorage.getItem('level') == 0) {
-                this.disabledlevel = true;
+           if (JSON.parse(localStorage.getItem('ms_data')).authId == 0 || JSON.parse(localStorage.getItem('ms_data')).authId == 1) {
+                this.disabledlevel = false;
             }
             this.implrmrntForm.taskdetail = '';
             this.implrmrntForm.implementStartDate = '';
@@ -241,8 +255,8 @@ export default {
         addPerson: function() {
             this.dialogVisible = false;
             this.getval();
-            console.log(this.checkedPerson);
             this.checkedimplrmrntId = this.checkedPerson;
+            this.implrmrntForm.userid = this.checkedPerson.toString();
             this.implrmrntForm.userName = this.checkedPersonValue.toString();
         }
     }
