@@ -207,6 +207,8 @@ export default {
             projectObject.testTaskId = '';
             projectObject.guestbookId = '';
             projectObject.logId = '';
+            /*
+            //新建项目发消息
             let userList=[];
             let alluser=[];
             let leaderList=this.$refs.sonNewproject.checkedLeaderId;
@@ -228,9 +230,12 @@ export default {
             let crueateid=localStorage.getItem('ms_id');
             let crueatename=localStorage.getItem('ms_name');
             let crueateusername=localStorage.getItem('ms_username');
+            */
             this.$api.task.setProject(projectObject).then(response => {
                 var responsevalue = response;
                 if (responsevalue) {
+                    /*
+                    //新建项目发消息
                     var dates=new Date();
                     if(alluser.length > 0){
                         for(var i=0;i<alluser.length;i++){
@@ -250,6 +255,7 @@ export default {
                             }); 
                         }
                     }
+                    */
                     this.$message.success('创建成功');
                     this.dialogNewprojectVisible = false;
                     this.reload();

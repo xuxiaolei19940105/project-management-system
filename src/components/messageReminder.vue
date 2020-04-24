@@ -67,6 +67,7 @@ export default {
     data(){
         const { renderControlColumn } = this;
         const { rendermessagesender } = this;
+        const { rendermessagetaskid } = this;
         return{
             atctiveName: 'first',
             pageNum: 1,
@@ -76,7 +77,8 @@ export default {
                 {
                     key: 'taskno',
                     title: '编号',
-                    width: '100'
+                    width: '100',
+                    render:rendermessagetaskid
                 },
                 {
                     key: 'taskname',
@@ -107,7 +109,8 @@ export default {
                 {
                     key: 'taskno',
                     title: '编号',
-                    width: '100'
+                    width: '100',
+                    render:rendermessagetaskid
                 },
                 {
                     key: 'taskname',
@@ -140,7 +143,8 @@ export default {
                 {
                     key: 'taskno',
                     title: '编号',
-                    width: '100'
+                    width: '100',
+                    render:rendermessagetaskid
                 },
                 {
                     key: 'taskname',
@@ -183,7 +187,7 @@ export default {
                 if(param.length > 0){
                     for(var i=0;i<param.length;i++){
                         let mdata={};
-                        mdata.taskno=param[i].id;
+                        mdata.taskno=param[i].id+"-("+param[i].taskId+")";
                         mdata.taskname=param[i].messageName;
                         mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                         var senddate=param[i].inserttime;
@@ -216,7 +220,7 @@ export default {
                         if(param.length > 0){
                             for(var i=0;i<param.length;i++){
                                 let mdata={};
-                                mdata.taskno=param[i].id;
+                                mdata.taskno=param[i].id+"-("+param[i].taskId+")";
                                 mdata.taskname=param[i].messageName;
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                                 var senddate=param[i].inserttime;
@@ -243,7 +247,7 @@ export default {
                         if(param.length > 0){
                             for(var i=0;i<param.length;i++){
                                 let mdata={};
-                                mdata.taskno=param[i].id;
+                                mdata.taskno=param[i].id+"-("+param[i].taskId+")";
                                 mdata.taskname=param[i].messageName;
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                                 var senddate=param[i].inserttime;
@@ -270,7 +274,7 @@ export default {
                         if(param.length > 0){
                             for(var i=0;i<param.length;i++){
                                 let mdata={};
-                                mdata.taskno=param[i].id;
+                                mdata.taskno=param[i].id+"-("+param[i].taskId+")";
                                 mdata.taskname=param[i].messageName;
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                                 var senddate=param[i].inserttime;
@@ -303,7 +307,17 @@ export default {
         //拒绝
         onRowRefuseButtonClick(row) {
             let paramdata={};
-            paramdata.id=row.taskno;
+            let TID=row.taskno;
+            let taskid="";
+            if(TID.indexOf("-(")>-1){
+                paramdata.id=TID.split("-(")[0];
+                taskid=TID.split("-(")[1];
+                taskid=taskid.split(")")[0];
+                paramdata.taskId=taskid;
+            }else{
+                paramdata.id=row.taskno;
+                paramdata.taskId=taskid;
+            }
             paramdata.state='2';
             let crueateid=localStorage.getItem('ms_id');
             let crueatename=localStorage.getItem('ms_name');
@@ -314,7 +328,7 @@ export default {
             if(userS.indexOf("-(")>-1){
                 userid=userS.split("-(")[1];
                 userid=userid.split(")")[0];
-                userename=userS.split("(")[0];
+                userename=userS.split("-(")[0];
             }else{
                 userid=row.publisher;
                 userename=row.publisher;
@@ -322,6 +336,7 @@ export default {
             var dates=new Date();
             let messageObject={};
             messageObject.id=row.taskno;
+            messageObject.taskId=taskid;
             messageObject.messageName=crueatename+" 已经拒绝了任务: "+row.taskname;
             messageObject.messageDescribe=row.taskdetail;
             messageObject.sendUserid=crueateid;
@@ -342,7 +357,17 @@ export default {
         //确认
         onRowAgreeButtonClick(row) {
             let paramdata={};
-            paramdata.id=row.taskno;
+            let TID=row.taskno;
+            let taskid="";
+            if(TID.indexOf("-(")>-1){
+                paramdata.id=TID.split("-(")[0];
+                taskid=TID.split("-(")[1];
+                taskid=taskid.split(")")[0];
+                paramdata.taskId=taskid;
+            }else{
+                paramdata.id=row.taskno;
+                paramdata.taskId=taskid;
+            }
             paramdata.state='1';
             this.$api.task.rejectOrconfirmMessage(paramdata).then(()=>{
                 this.$message.success('任务已确认.');
@@ -354,6 +379,15 @@ export default {
                 var userid=v.row.publisher;
                 userid=userid.split("-(")[0];
                 return <div>{userid}</div>;
+            }
+        },
+        rendermessagetaskid(v) {
+            if (v.row.taskno) {
+                var uid=v.row.taskno;
+                if(uid.indexOf("-(")>-1){
+                    uid=uid.split("-(")[0];
+                }
+                return <div>{uid}</div>;
             }
         },
         renderControlColumn({row}){

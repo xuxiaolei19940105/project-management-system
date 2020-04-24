@@ -14,7 +14,7 @@
                             <el-input v-model="newdevelopForm.sendUserName" disabled></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="11">
+                    <el-col :span="11" :offset="2">
                         <el-form-item label="执行人">
                             <el-input
                                 v-bind:disabled="disabled"
@@ -36,7 +36,7 @@
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="12">
+                    <el-col :span="11">
                         <el-form-item label="开始时间">
                             <el-date-picker
                                 v-model="newdevelopForm.developStartDate"
@@ -45,7 +45,7 @@
                             ></el-date-picker>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="12">
+                    <el-col :span="11" :offset="2">
                         <el-form-item label="结束时间">
                             <el-date-picker
                                 v-model="newdevelopForm.developEndDate"

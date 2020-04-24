@@ -228,19 +228,55 @@ export default {
             savedata.belongProId = this.projectForm.belongProId;
             savedata.belongTaskId = this.projectForm.belongTaskId;
             savedata.deleteFlg = 0;
-            debugger;
             if (this.operationmode == 'new') {
+                //抄送人ID
+                let chaosongID=[];
+                chaosongID= this.$refs.sonNewdevop.checkedPostId;
+                //登录用户
+                let crueateid=localStorage.getItem('ms_id');
+                let crueatename=localStorage.getItem('ms_name');
+                let crueateusername=localStorage.getItem('ms_username');
+                var dates=new Date();
                 this.$api.task.newWork(savedata).then(() => {
                     //刷新表
                     let pro_id = localStorage.getItem('pro_id');
                     let projectObjectId = {};
                     projectObjectId.id = pro_id;
                     this.$api.task.initProData(projectObjectId).then(response => {
-                        this.responseValue = response.data;
-                        this.tableData = this.responseValue.taskList[1].workList;
+                        let responseValue = response.data;
+                        this.tableData = responseValue.taskList[1].workList;
                     });
+                    //发任务消息
+                    if(chaosongID.length > 0){
+                        for(var i=0;i<chaosongID.length;i++){
+                            if(chaosongID[i]){
+                                let messageObject={};
+                                messageObject.id='';
+                                messageObject.messageName="任务邀请:"+this.$refs.sonNewdevop.newdevelopForm.taskdetail;
+                                messageObject.messageDescribe=crueatename+"给你配发任务.";
+                                messageObject.sendUserid=crueateid;
+                                messageObject.receiveUserid=chaosongID[i];
+                                messageObject.state="0";
+                                messageObject.inserttime=dates;
+                                messageObject.updatetime=dates;
+                                messageObject.readTag="0";
+                                messageObject.sendUserName=crueateusername;
+                                messageObject.receiveUserName='';
+                                this.$api.task.newMessage(messageObject).then(()=>{
+                                }); 
+                            }
+                        }
+                    }
                 });
             } else if (this.operationmode == 'edit') {
+                //抄送人ID
+                let chaosongID=[];
+                chaosongID= this.$refs.sonNewdevop.checkedPostId;
+                //登录用户
+                let crueateid=localStorage.getItem('ms_id');
+                let crueatename=localStorage.getItem('ms_name');
+                let crueateusername=localStorage.getItem('ms_username');
+                var dates1=new Date();
                 let savedata = this.tableData[this.index];
                 savedata.workName = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
                 savedata.starttime = this.$refs.sonNewdevop.newdevelopForm.implementStartDate;
@@ -251,9 +287,30 @@ export default {
                     let projectObjectId = {};
                     projectObjectId.id = pro_id;
                     this.$api.task.initProData(projectObjectId).then(response => {
-                        this.responseValue = response.data;
-                        this.tableData = this.responseValue.taskList[1].workList;
+                        let responseValue = response.data;
+                        this.tableData = responseValue.taskList[1].workList;
                     });
+                    //发任务消息
+                    if(chaosongID.length > 0){
+                        for(var i=0;i<chaosongID.length;i++){
+                            if(chaosongID[i]){
+                                let messageObject={};
+                                messageObject.id='';
+                                messageObject.messageName="任务邀请:"+this.$refs.sonNewdevop.newdevelopForm.taskdetail;
+                                messageObject.messageDescribe=crueatename+"给你配发任务.";
+                                messageObject.sendUserid=crueateid;
+                                messageObject.receiveUserid=chaosongID[i];
+                                messageObject.state="0";
+                                messageObject.inserttime=dates1;
+                                messageObject.updatetime=dates1;
+                                messageObject.readTag="0";
+                                messageObject.sendUserName=crueateusername;
+                                messageObject.receiveUserName='';
+                                this.$api.task.newMessage(messageObject).then(()=>{
+                                }); 
+                            }
+                        }
+                    }
                 });
             }
             //关闭弹窗
