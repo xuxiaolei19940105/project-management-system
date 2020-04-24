@@ -17,7 +17,7 @@
                     <el-col :span="11" :offset="2">
                         <el-form-item label="执行人">
                             <el-input
-                                v-bind:disabled="disabled"
+                                  v-bind:disabled="disabledlevel"
                                 prefix-icon="el-icon-search"
                                 v-model="newtesterForm.userName"
                                 @focus="showPersonPage(1)"
@@ -183,6 +183,7 @@ export default {
             checkedPersonValue: [],
             openfrom: '',
 
+            disabledlevel:true,
             disabled: false,
             newtesterForm: {
                 sendUserid: '',
@@ -245,8 +246,9 @@ export default {
             this.disabled = true;
         } else if (this.operationmode == 'new') {
             this.newtesterForm.sendUserName = localStorage.getItem('ms_name');
-            this.newtesterForm.sendUserid = '';
-            this.newtesterForm.userid = '';
+            this.newtesterForm.userName = localStorage.getItem('ms_name');
+            this.newtesterForm.userid = localStorage.getItem('ms_id');
+            this.newtesterForm.sendUserid = localStorage.getItem('ms_id');
             this.newtesterForm.taskdetail = '';
             this.newtesterForm.expectedresults = '';
             this.newtesterForm.actualresults = '';

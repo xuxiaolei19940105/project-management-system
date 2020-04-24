@@ -134,16 +134,16 @@ export default {
             //初始化表
             let responseValue = response.data;
             //初始化基本信息
-            this.tableData = responseValue.taskList[1].workList;
+            this.tableData = responseValue.taskList[2].workList;
             this.projectForm.developStartDate = responseValue.exploitStartTime;
             this.projectForm.developEndDate = responseValue.exploitEndTime;
             //储存所属项目id和所属任务id
             this.projectForm.belongProId = responseValue.id;
-            this.projectForm.belongTaskId = responseValue.taskList[1].id;
+            this.projectForm.belongTaskId = responseValue.taskList[2].id;
             this.projectForm.developers = '';
             let userslsit='';
-            for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
-                userslsit+= responseValue.taskList[1].userList[i].name + ',';
+            for (let i = 0; i < responseValue.taskList[2].userList.length; i++) {
+                userslsit+= responseValue.taskList[2].userList[i].name + ',';
             }
             userslsit=userslsit.slice(0,userslsit.length-1);
             this.projectForm.developers += userslsit;
@@ -220,7 +220,7 @@ export default {
                 projectObjectId.id = pro_id;
                 this.$api.task.initProData(projectObjectId).then(response => {
                     this.responseValue = response.data;
-                    this.tableData = this.responseValue.taskList[1].workList;
+                    this.tableData = this.responseValue.taskList[2].workList;
                 });
                 //发任务消息
                 if(chaosongID.length > 0){
@@ -251,7 +251,8 @@ export default {
             let savedata = {};
             let userData = JSON.parse(localStorage.getItem('ms_data'));
             savedata.sendUserId = userData.id;
-            savedata.userId = this.$refs.sonNewdevop.checkedUseNameId.toString();
+            // savedata.userId = this.$refs.sonNewdevop.checkedUseNameId.toString();
+            savedata.userId = this.$refs.sonNewdevop.newdevelopForm.userid;
             savedata.workName = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
             savedata.workDescribe = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
             savedata.starttime = this.$refs.sonNewdevop.newdevelopForm.developStartDate;
@@ -276,7 +277,7 @@ export default {
                     projectObjectId.id = pro_id;
                     this.$api.task.initProData(projectObjectId).then(response => {
                         let responseValue = response.data;
-                        this.tableData = responseValue.taskList[1].workList;
+                        this.tableData = responseValue.taskList[2].workList;
                     });
                     //发任务消息
                     if(chaosongID.length > 0){
@@ -322,7 +323,7 @@ export default {
                     projectObjectId.id = pro_id;
                     this.$api.task.initProData(projectObjectId).then(response => {
                         let responseValue = response.data;
-                        this.tableData = responseValue.taskList[1].workList;
+                        this.tableData = responseValue.taskList[2].workList;
                     });
                     //发任务消息
                     if(chaosongID.length > 0){

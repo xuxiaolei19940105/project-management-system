@@ -17,7 +17,7 @@
                     <el-col :span="11" :offset="2">
                         <el-form-item label="执行人">
                             <el-input
-                                v-bind:disabled="disabled"
+                                v-bind:disabled="disabledlevel"
                                 prefix-icon="el-icon-search"
                                 v-model="newdevelopForm.userName"
                                 @focus="showPersonPage(1)"
@@ -131,6 +131,7 @@ export default {
             checkedPersonValue: [],
             openfrom: '',
 
+            disabledlevel:true,
             disabled: false,
             newdevelopForm: {
                 sendUserid: '',
@@ -184,9 +185,11 @@ export default {
             this.newdevelopForm.developStartDate = this.rowdata.starttime;
             this.disabled = true;
         } else if (this.operationmode == 'new') {
-            this.newdevelopForm.sendUserName = localStorage.getItem('ms_name');
-            this.newdevelopForm.sendUserid = '';
-            this.newdevelopForm.userid = '';
+            debugger
+             this.newdevelopForm.sendUserName = localStorage.getItem('ms_name');
+            this.newdevelopForm.userName = localStorage.getItem('ms_name');
+            this.newdevelopForm.userid = localStorage.getItem('ms_id');
+            this.newdevelopForm.sendUserid = localStorage.getItem('ms_id');
             this.newdevelopForm.taskdetail = '';
             this.newdevelopForm.developStartDate = '';
             this.newdevelopForm.developEndDate = '';

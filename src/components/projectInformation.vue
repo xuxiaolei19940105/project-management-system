@@ -164,7 +164,13 @@
             </div>
         </el-card>
 
-        <el-dialog title="人员选择" :visible.sync="dialogVisible" width="680px" :append-to-body="true" :close-on-click-modal='false'>
+        <el-dialog
+            title="人员选择"
+            :visible.sync="dialogVisible"
+            width="680px"
+            :append-to-body="true"
+            :close-on-click-modal="false"
+        >
             <el-card>
                 <el-transfer
                     filterable
@@ -204,7 +210,7 @@ export default {
             openfrom: '',
 
             projectForm: {
-                id:'',
+                id: '',
                 projectName: '',
                 projectCategory: '',
                 // comments:'',
@@ -297,50 +303,37 @@ export default {
                 this.projectForm.projectStartDate = responseValue.overallStartTime;
                 this.projectForm.projectEndDate = responseValue.overallEndTime;
                 this.projectForm.projectLeader = '';
-                for (let i = 0; i < responseValue.leaderUserList.length; i++) {
-                    this.projectForm.projectLeader += responseValue.leaderUserList[i].name + ',';
-                }
-                for (let i = 0; i < responseValue.leaderUserList.length; i++) {
-                    this.checkedLeaderId.push(responseValue.leaderUserList[i].id);
-                }
 
+                for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
+                    this.projectForm.projectLeader += responseValue.taskList[0].userList[i].name + ',';
+                    this.checkedLeaderId.push(responseValue.taskList[0].userList[i].name.id);
+                }
                 this.projectForm.implStartDate = responseValue.effectStartTime;
                 this.projectForm.implEndDate = responseValue.effectEndTime;
                 this.projectForm.implementers = '';
-                for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
-                    this.projectForm.implementers += responseValue.taskList[0].userList[i].name + ',';
+                for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
+                    this.projectForm.implementers += responseValue.taskList[1].userList[i].name + ',';
+                    this.checkedImplementerId.push(responseValue.taskList[1].userList[i].id);
                 }
-                for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
-                    this.checkedImplementerId.push(responseValue.taskList[0].userList[i].id);
-                }
-
                 this.projectForm.develStartDate = responseValue.exploitStartTime;
                 this.projectForm.develEndDate = responseValue.exploitEndTime;
                 this.projectForm.developers = '';
-                for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
-                    this.projectForm.developers += responseValue.taskList[1].userList[i].name + ',';
+                for (let i = 0; i < responseValue.taskList[2].userList.length; i++) {
+                    this.projectForm.developers += responseValue.taskList[2].userList[i].name + ',';
+                    this.checkedDeveloperId.push(responseValue.taskList[2].userList[i].id);
                 }
-                for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
-                    this.checkedDeveloperId.push(responseValue.taskList[1].userList[i].id);
-                }
-
                 this.projectForm.testerStartDate = responseValue.testStartTime;
                 this.projectForm.testerEndDate = responseValue.testEndTime;
                 this.projectForm.testers = '';
-                for (let i = 0; i < responseValue.taskList[2].userList.length; i++) {
-                    this.projectForm.testers += responseValue.taskList[2].userList[i].name + ',';
+                for (let i = 0; i < responseValue.taskList[3].userList.length; i++) {
+                    this.projectForm.testers += responseValue.taskList[3].userList[i].name + ',';
+                    this.checkedTesterId.push(responseValue.taskList[3].userList[i].id);
                 }
-                for (let i = 0; i < responseValue.taskList[2].userList.length; i++) {
-                    this.checkedTesterId.push(responseValue.taskList[2].userList[i].id);
-                }
-
                 this.projectForm.packagerStartDate = responseValue.packageTime;
                 this.projectForm.packagers = '';
-                for (let i = 0; i < responseValue.taskList[3].userList.length; i++) {
-                    this.projectForm.packagers += responseValue.taskList[3].userList[i].name + ',';
-                }
-                 for (let i = 0; i < responseValue.taskList[3].userList.length; i++) {
-                    this.checkedPackagerId.push(responseValue.taskList[3].userList[i].id);
+                for (let i = 0; i < responseValue.taskList[4].userList.length; i++) {
+                    this.projectForm.packagers += responseValue.taskList[4].userList[i].name + ',';
+                    this.checkedPackagerId.push(responseValue.taskList[4].userList[i].id);
                 }
             });
         }
@@ -348,14 +341,14 @@ export default {
     mounted() {
         //权限控制
         let disabled = localStorage.getItem('list');
-        if(disabled === "false"){
-            let roleId= localStorage.getItem('ms_roleId');
-            if(roleId ==="0" || roleId ==="1"){
-                this.disabled =false;
-            }else{
-                this.disabled =true;
+        if (disabled === 'false') {
+            let roleId = localStorage.getItem('ms_roleId');
+            if (roleId === '0' || roleId === '1') {
+                this.disabled = false;
+            } else {
+                this.disabled = true;
             }
-        }else{
+        } else {
             this.disabled = JSON.parse(disabled);
         }
     },

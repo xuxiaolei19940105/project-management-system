@@ -134,17 +134,17 @@ export default {
         this.$api.task.initProData(projectObjectId).then(response => {
             let responseValue = response.data;
             // 初始化表
-            this.tableData = responseValue.taskList[2].workList;
+            this.tableData = responseValue.taskList[3].workList;
             //初始化基本信息
             this.projectForm.testStartDate = responseValue.testStartTime;
             this.projectForm.testEndDate = responseValue.testEndTime;
             this.projectForm.testers = responseValue.testUserIdList;
             this.projectForm.testers = '';
-            let testuser='';
-            for (let i = 0; i < responseValue.taskList[2].userList.length; i++) {
-                testuser+= responseValue.taskList[2].userList[i].name + ',';
+            let testuser = '';
+            for (let i = 0; i < responseValue.taskList[3].userList.length; i++) {
+                testuser += responseValue.taskList[3].userList[i].name + ',';
             }
-            testuser=testuser.slice(0,testuser.length-1);
+            testuser = testuser.slice(0, testuser.length - 1);
             this.projectForm.testers += testuser;
             //按钮权限
             let disabled = localStorage.getItem('list');
@@ -154,19 +154,19 @@ export default {
             if (roleId === '0' || roleId === '1' || roleId === '4') {
                 this.newtestshow = true;
             } else {
-                if(testuser.indexOf(username)>-1){
-                    this.newtestshow =true;
-                }else{
-                    let sssd=JSON.parse(disabled)+"";
-                    if(sssd==="false"){
-                        this.disabled=true;
+                if (testuser.indexOf(username) > -1) {
+                    this.newtestshow = true;
+                } else {
+                    let sssd = JSON.parse(disabled) + '';
+                    if (sssd === 'false') {
+                        this.disabled = true;
                     }
-                    this.newtestshow =false;
+                    this.newtestshow = false;
                 }
             }
             //储存所属项目id和所属任务id
             this.belongProId = responseValue.id;
-            this.belongTaskId = responseValue.taskList[2].id;
+            this.belongTaskId = responseValue.taskList[3].id;
         });
     },
     mounted() {
@@ -212,8 +212,7 @@ export default {
                 let projectObjectId = {};
                 projectObjectId.id = pro_id;
                 this.$api.task.initProData(projectObjectId).then(response => {
-                    this.responseValue = response.data;
-                    this.tableData = this.responseValue.taskList[2].workList;
+                    this.tableData = response.data.taskList[3].workList;
                 });
             });
         },
@@ -222,7 +221,8 @@ export default {
             let savedata = {};
             let userData = JSON.parse(localStorage.getItem('ms_data'));
             savedata.sendUserId = userData.id;
-            savedata.userId = this.$refs.sonNewtestinform.checkedUseNameId.toString();
+            savedata.userId = this.$refs.sonNewtestinform.newtesterForm.userid;
+            // savedata.userId = this.$refs.sonNewtestinform.checkedUseNameId.toString();
             savedata.workName = this.$refs.sonNewtestinform.newtesterForm.taskdetail;
             savedata.workDescribe = this.$refs.sonNewtestinform.newtesterForm.taskdetail;
             savedata.starttime = this.$refs.sonNewtestinform.newtesterForm.testerStartDate;
@@ -240,8 +240,7 @@ export default {
                     let projectObjectId = {};
                     projectObjectId.id = pro_id;
                     this.$api.task.initProData(projectObjectId).then(response => {
-                        this.responseValue = response.data;
-                        this.tableData = this.responseValue.taskList[2].workList;
+                        this.tableData = response.data.taskList[3].workList;
                     });
                 });
             } else if (this.operationmode == 'edit') {
@@ -255,8 +254,7 @@ export default {
                     let projectObjectId = {};
                     projectObjectId.id = pro_id;
                     this.$api.task.initProData(projectObjectId).then(response => {
-                        this.responseValue = response.data;
-                        this.tableData = this.responseValue.taskList[2].workList;
+                        this.tableData = response.data.taskList[3].workList;
                     });
                 });
             }

@@ -124,7 +124,6 @@ export default {
             operationmode: '',
             tableData: [],
             dialogNewImpltaskVisible: false,
-            responseValue: '',
             index: ''
         };
     },
@@ -134,19 +133,19 @@ export default {
         projectObjectId.id = pro_id;
         this.$api.task.initProData(projectObjectId).then(response => {
             //初始化表
-            this.responseValue = response.data;
+            let responseValue = response.data;
             //初始化基本信息
-            this.tableData = this.responseValue.taskList[0].workList;
+            this.tableData = responseValue.taskList[1].workList;
 
-            this.projectForm.implStartDate = this.responseValue.effectStartTime;
-            this.projectForm.implEndDate = this.responseValue.effectEndTime;
+            this.projectForm.implStartDate = responseValue.effectStartTime;
+            this.projectForm.implEndDate = responseValue.effectEndTime;
             //储存所属项目id和所属任务id
-            this.projectForm.belongProId = this.responseValue.id;
-            this.projectForm.belongTaskId = this.responseValue.taskList[0].id;
+            this.projectForm.belongProId = responseValue.id;
+            this.projectForm.belongTaskId = responseValue.taskList[1].id;
 
             let implementerslsit='';
-            for (let i = 0; i < this.responseValue.taskList[0].userList.length; i++) {
-                implementerslsit+= this.responseValue.taskList[0].userList[i].name + ',';
+            for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
+                implementerslsit+= responseValue.taskList[1].userList[i].name + ',';
             }
             implementerslsit=implementerslsit.slice(0,implementerslsit.length-1);
             this.projectForm.implementers += implementerslsit;
@@ -214,8 +213,7 @@ export default {
                 let projectObjectId = {};
                 projectObjectId.id = pro_id;
                 this.$api.task.initProData(projectObjectId).then(response => {
-                    this.responseValue = response.data;
-                    this.tableData = this.responseValue.taskList[0].workList;
+                    this.tableData = response.data.taskList[1].workList;
                 });
             });
         },
@@ -225,7 +223,8 @@ export default {
             let savedata = {};
             let userData = JSON.parse(localStorage.getItem('ms_data'));
             savedata.sendUserId = userData.id;
-            savedata.userId = this.$refs.sonNewimplement.checkedimplrmrntId.toString();
+            //  savedata.userId = this.$refs.sonNewimplement.checkedimplrmrntId.toString();
+            savedata.userId = this.$refs.sonNewimplement.implrmrntForm.userid;
             savedata.workName = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
             savedata.workDescribe = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
             savedata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
@@ -240,8 +239,7 @@ export default {
                     let projectObjectId = {};
                     projectObjectId.id = pro_id;
                     this.$api.task.initProData(projectObjectId).then(response => {
-                        this.responseValue = response.data;
-                        this.tableData = this.responseValue.taskList[0].workList;
+                        this.tableData = response.data.taskList[1].workList;
                     });
                 });
             } else if (this.operationmode == 'edit') {
@@ -255,8 +253,7 @@ export default {
                     let projectObjectId = {};
                     projectObjectId.id = pro_id;
                     this.$api.task.initProData(projectObjectId).then(response => {
-                        this.responseValue = response.data;
-                        this.tableData = this.responseValue.taskList[0].workList;
+                        this.tableData = response.data.taskList[1].workList;
                     });
                 });
             }

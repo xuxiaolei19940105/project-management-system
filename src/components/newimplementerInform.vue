@@ -17,7 +17,7 @@
                     <el-col :span="12">
                         <el-form-item label="执行人">
                             <el-input
-                                v-bind:disabled="disabled"
+                                v-bind:disabled="disabledlevel"
                                 prefix-icon="el-icon-search"
                                 v-model="implrmrntForm.userName"
                                 @focus="showPersonPage"
@@ -103,6 +103,9 @@ export default {
     },
     data() {
         return {
+            //执行人选择权限level
+            disabledlevel: true,
+
             disabled: false,
             implrmrntForm: {
                 sendUserid: '',
@@ -167,8 +170,13 @@ export default {
             this.disabled = true;
         } else if (this.operationmode == 'new') {
             this.implrmrntForm.sendUserName = localStorage.getItem('ms_name');
-            this.implrmrntForm.sendUserid = '';
-            this.implrmrntForm.userid = '';
+            this.implrmrntForm.userName = localStorage.getItem('ms_name');
+            this.implrmrntForm.userid = localStorage.getItem('ms_id');
+            this.implrmrntForm.sendUserid = localStorage.getItem('ms_id');
+            debugger;
+            if (localStorage.getItem('level') == 0) {
+                this.disabledlevel = true;
+            }
             this.implrmrntForm.taskdetail = '';
             this.implrmrntForm.implementStartDate = '';
             this.implrmrntForm.implementEndDate = '';
