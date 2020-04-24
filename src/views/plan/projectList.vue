@@ -360,12 +360,16 @@ export default {
         },
         renderStartTimeDate(v) {
             if (v.row.starttime) {
-                return <div>{v.row.starttime.slice(0, 10)}</div>;
+                let DateS=new Date(v.row.starttime);
+                let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
+                return <div>{ovwerS}</div>;
             }
         },
         renderEndTimeDate(v) {
             if (v.row.endtime) {
-                return <div>{v.row.endtime.slice(0, 10)}</div>;
+                let DateS=new Date(v.row.endtime);
+                let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
+                return <div>{ovwerS}</div>;
             }
         },
         renderprojectNo(v) {
