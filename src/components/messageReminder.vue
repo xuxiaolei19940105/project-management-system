@@ -319,6 +319,7 @@ export default {
                 paramdata.taskId=taskid;
             }
             paramdata.state='2';
+            paramdata.messageType='0';
             let crueateid=localStorage.getItem('ms_id');
             let crueatename=localStorage.getItem('ms_name');
             let crueateusername=localStorage.getItem('ms_username');
@@ -347,6 +348,7 @@ export default {
             messageObject.readTag="0";
             messageObject.sendUserName=crueateusername;
             messageObject.receiveUserName=userename;
+            messageObject.messageType='0';
             this.$api.task.rejectOrconfirmMessage(paramdata).then(()=>{
                 this.$api.task.newMessage(messageObject).then(()=>{
                     this.$message.success('任务已拒绝.');
@@ -369,6 +371,7 @@ export default {
                 paramdata.taskId=taskid;
             }
             paramdata.state='1';
+            paramdata.messageType='0';
             this.$api.task.rejectOrconfirmMessage(paramdata).then(()=>{
                 this.$message.success('任务已确认.');
                 this.reload();
