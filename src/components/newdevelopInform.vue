@@ -183,6 +183,7 @@ export default {
             this.newdevelopForm.taskdetail = this.rowdata.workDescribe;
             this.disabledtaskdetail = true;
             this.newdevelopForm.developStartDate = this.rowdata.starttime;
+            this.newdevelopForm.developEndDate = this.rowdata.endtime;
             this.disabled = true;
         } else if (this.operationmode == 'new') {
             this.newdevelopForm.sendUserName = localStorage.getItem('ms_name');

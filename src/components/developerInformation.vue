@@ -142,7 +142,7 @@ export default {
                 responseValue.taskList[2].workList[i].endtime = endOvwerS;
             }
             this.tableData = responseValue.taskList[2].workList;
-            debugger;
+     
 
             this.projectForm.developStartDate = responseValue.exploitStartTime;
             this.projectForm.developEndDate = responseValue.exploitEndTime;
