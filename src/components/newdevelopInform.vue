@@ -131,7 +131,7 @@ export default {
             checkedPersonValue: [],
             openfrom: '',
 
-            disabledlevel:true,
+            disabledlevel: true,
             disabled: false,
             newdevelopForm: {
                 sendUserid: '',
@@ -185,11 +185,13 @@ export default {
             this.newdevelopForm.developStartDate = this.rowdata.starttime;
             this.disabled = true;
         } else if (this.operationmode == 'new') {
-            debugger
-             this.newdevelopForm.sendUserName = localStorage.getItem('ms_name');
+            this.newdevelopForm.sendUserName = localStorage.getItem('ms_name');
             this.newdevelopForm.userName = localStorage.getItem('ms_name');
             this.newdevelopForm.userid = localStorage.getItem('ms_id');
             this.newdevelopForm.sendUserid = localStorage.getItem('ms_id');
+            if (JSON.parse(localStorage.getItem('ms_data')).authId == 0 || JSON.parse(localStorage.getItem('ms_data')).authId == 1) {
+                this.disabledlevel = false;
+            }
             this.newdevelopForm.taskdetail = '';
             this.newdevelopForm.developStartDate = '';
             this.newdevelopForm.developEndDate = '';
@@ -269,6 +271,7 @@ export default {
 
             if (this.openfrom == 1) {
                 this.checkedUseNameId = this.checkedPerson;
+                this.newdevelopForm.userid = this.checkedPerson.toString();
                 this.newdevelopForm.userName = this.checkedPersonValue.toString();
             } else {
                 this.checkedPostId = this.checkedPerson;
