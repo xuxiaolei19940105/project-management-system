@@ -204,15 +204,6 @@ export default {
             this.rowdata = row;
             this.operationmode = 'delete';
             this.tableData[this.index].deleteFlg = 1;
-            //抄送人ID
-            let chaosongID=[];
-            chaosongID= this.$refs.sonNewdevop.checkedPostId;
-            //登录用户
-            let crueateid=localStorage.getItem('ms_id');
-            let crueatename=localStorage.getItem('ms_name');
-            let crueateusername=localStorage.getItem('ms_username');
-            var dates=new Date();
-            let taskdetail= this.$refs.sonNewdevop.newdevelopForm.taskdetail;
             this.$api.task.updataWork(this.tableData[this.index]).then(() => {
                 //刷新表
                 let pro_id = localStorage.getItem('pro_id');
@@ -222,28 +213,6 @@ export default {
                     this.responseValue = response.data;
                     this.tableData = this.responseValue.taskList[2].workList;
                 });
-                //发任务消息
-                if(chaosongID.length > 0){
-                    for(var i=0;i<chaosongID.length;i++){
-                        if(chaosongID[i]){
-                            let messageObject={};
-                            messageObject.id='';
-                            messageObject.taskType='0';
-                            messageObject.messageName="任务:"+taskdetail;
-                            messageObject.messageDescribe=crueatename+"已删除此任务.";
-                            messageObject.sendUserid=crueateid;
-                            messageObject.receiveUserid=chaosongID[i];
-                            messageObject.state="0";
-                            messageObject.inserttime=dates;
-                            messageObject.updatetime=dates;
-                            messageObject.readTag="0";
-                            messageObject.sendUserName=crueateusername;
-                            messageObject.receiveUserName='';
-                            this.$api.task.newMessage(messageObject).then(()=>{
-                            }); 
-                        }
-                    }
-                }
             });
         },
         // 确定新建工作任务
@@ -285,7 +254,7 @@ export default {
                             if(chaosongID[i]){
                                 let messageObject={};
                                 messageObject.id='';
-                                messageObject.taskType='0';
+                                messageObject.messageType='0';
                                 messageObject.messageName="任务邀请:"+taskdetail;
                                 messageObject.messageDescribe=crueatename+"给你配发任务.";
                                 messageObject.sendUserid=crueateid;
@@ -331,7 +300,7 @@ export default {
                             if(chaosongID[i]){
                                 let messageObject={};
                                 messageObject.id='';
-                                messageObject.taskType='0';
+                                messageObject.messageType='0';
                                 messageObject.messageName="任务邀请:"+taskdetail1;
                                 messageObject.messageDescribe=crueatename+"给你配发任务.";
                                 messageObject.sendUserid=crueateid;

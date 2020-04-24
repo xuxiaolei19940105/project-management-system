@@ -231,8 +231,26 @@ export default {
             savedata.belongTaskId = this.belongTaskId;
             savedata.want = this.$refs.sonNewtestinform.newtesterForm.expectedresults;
             savedata.actual = this.$refs.sonNewtestinform.newtesterForm.actualresults;
-
-            debugger;
+            //抄送人ID
+            let chaosongID=[];
+            chaosongID= this.$refs.sonNewtestinform.checkedPostId;
+            //登录用户
+            let crueateid=localStorage.getItem('ms_id');
+            let crueatename=localStorage.getItem('ms_name');
+            let crueateusername=localStorage.getItem('ms_username');
+            var dates=new Date();
+            let radioValue = this.$refs.sonNewtestinform.newtesterForm.radio;
+            let taskdetail="";
+            let meesagetype="";
+            if(radioValue ==="Yes"){
+                taskdetail= this.$refs.sonNewtestinform.newtesterForm.bugtital;
+                taskdetail="测试BUG:"+taskdetail;
+                meesagetype='1';
+            }else{
+                taskdetail= this.$refs.sonNewtestinform.newtesterForm.taskdetail;
+                taskdetail="测试任务邀请:"+taskdetail;
+                meesagetype='0';
+            }
             if (this.operationmode == 'new') {
                 this.$api.task.newWork(savedata).then(() => {
                     //刷新表
@@ -242,6 +260,28 @@ export default {
                     this.$api.task.initProData(projectObjectId).then(response => {
                         this.tableData = response.data.taskList[3].workList;
                     });
+                    //发任务消息
+                    if(chaosongID.length > 0){
+                        for(var i=0;i<chaosongID.length;i++){
+                            if(chaosongID[i]){
+                                let messageObject={};
+                                messageObject.id='';
+                                messageObject.messageType=meesagetype;
+                                messageObject.messageName=taskdetail;
+                                messageObject.messageDescribe=crueatename+"给你配发任务.";
+                                messageObject.sendUserid=crueateid;
+                                messageObject.receiveUserid=chaosongID[i];
+                                messageObject.state="0";
+                                messageObject.inserttime=dates;
+                                messageObject.updatetime=dates;
+                                messageObject.readTag="0";
+                                messageObject.sendUserName=crueateusername;
+                                messageObject.receiveUserName='';
+                                this.$api.task.newMessage(messageObject).then(()=>{
+                                }); 
+                            }
+                        }
+                    }
                 });
             } else if (this.operationmode == 'edit') {
                 let savedata = this.tableData[this.index];
@@ -256,6 +296,28 @@ export default {
                     this.$api.task.initProData(projectObjectId).then(response => {
                         this.tableData = response.data.taskList[3].workList;
                     });
+                    //发任务消息
+                    if(chaosongID.length > 0){
+                        for(var i=0;i<chaosongID.length;i++){
+                            if(chaosongID[i]){
+                                let messageObject={};
+                                messageObject.id='';
+                                messageObject.messageType=meesagetype;
+                                messageObject.messageName=taskdetail;
+                                messageObject.messageDescribe=crueatename+"给你配发任务.";
+                                messageObject.sendUserid=crueateid;
+                                messageObject.receiveUserid=chaosongID[i];
+                                messageObject.state="0";
+                                messageObject.inserttime=dates;
+                                messageObject.updatetime=dates;
+                                messageObject.readTag="0";
+                                messageObject.sendUserName=crueateusername;
+                                messageObject.receiveUserName='';
+                                this.$api.task.newMessage(messageObject).then(()=>{
+                                }); 
+                            }
+                        }
+                    }
                 });
             }
             //关闭弹窗

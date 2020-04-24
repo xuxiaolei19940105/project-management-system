@@ -173,7 +173,6 @@ export default {
             this.implrmrntForm.userName = localStorage.getItem('ms_name');
             this.implrmrntForm.userid = localStorage.getItem('ms_id');
             this.implrmrntForm.sendUserid = localStorage.getItem('ms_id');
-            debugger;
             if (localStorage.getItem('level') == 0) {
                 this.disabledlevel = true;
             }

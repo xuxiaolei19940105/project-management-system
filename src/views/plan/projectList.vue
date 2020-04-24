@@ -172,7 +172,6 @@ export default {
             localStorage.setItem('list', JSON.stringify(false));
             localStorage.removeItem('pro_id');
         },
-
         // 新建确定
         getNewProjectData() {
             let projectObject = {};
@@ -266,8 +265,13 @@ export default {
                 }
             });
         },
+        timecomparison(){
+            
+        },
         geteditProjectData() {
-            this.$refs.sonEditproject.save()
+            this.$refs.sonEditproject.save();
+            //必填项校验
+            //项目名
             let projectObject = {};
             projectObject.id = this.$refs.sonEditproject.projectForm.id;
             projectObject.proName = this.$refs.sonEditproject.projectForm.projectName;

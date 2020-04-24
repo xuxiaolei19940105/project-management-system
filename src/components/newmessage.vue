@@ -68,7 +68,6 @@ export default {
             let projectObjectId = {};
             projectObjectId.id = pro_id;
             this.$api.task.initProData(projectObjectId).then(response => {
-                debugger;
                 this.newmessageForm.title = response.data.guestbookList[index].guestbookTitle;
                 this.newmessageForm.comments = response.data.guestbookList[index].detail;
             });
