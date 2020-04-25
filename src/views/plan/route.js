@@ -1,8 +1,9 @@
-const Projectlist = () => import(/* webpackChunkName: "task-context" */ './projectList.vue');
-const Projectlibrary = () => import(/* webpackChunkName: "task-context" */ './projectLibrary.vue');
+const Projectlist = () =>
+    import ( /* webpackChunkName: "task-context" */ './projectList.vue');
+const Projectlibrary = () =>
+    import ( /* webpackChunkName: "task-context" */ './projectLibrary.vue');
 
-const PROJECT = [
-    {
+const PROJECT = [{
         path: 'projectList',
         name: 'projectList',
         component: Projectlist,

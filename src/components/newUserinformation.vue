@@ -10,7 +10,7 @@
             >
                 <el-row>
                     <el-col :span="12">
-                        <el-form-item label="员工姓名">
+                        <el-form-item label="员工姓名" >
                             <el-input
                                 v-model="newUserForm.username"
                             ></el-input>
@@ -33,9 +33,9 @@
                             <el-select v-model="newUserForm.userroleid" placeholder="请选择">
                                 <el-option
                                     v-for="item in roleoptions"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
+                                    :key="item.id"
+                                    :label="item.roleName"
+                                    :value="item.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -47,9 +47,9 @@
                             <el-select v-model="newUserForm.userauthid" placeholder="请选择">
                                 <el-option
                                     v-for="item in authoptions"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
+                                    :key="item.id"
+                                    :label="item.authName"
+                                    :value="item.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -70,51 +70,28 @@ export default {
                 userauthid: '',
                 usernameString:''
             },
-            roleoptions: [
-                {
-                    value: '0',
-                    label: '项目经理'
-                },
-                {
-                    value: '1',
-                    label: '项目组长'
-                },
-                {
-                    value: '2',
-                    label: '实施人员'
-                },
-                {
-                    value: '3',
-                    label: '开发人员'
-                },
-                {
-                    value: '4',
-                    label: '测试人员'
-                },
-                {
-                    value: '5',
-                    label: 'UI'
-                }
-            ],
-            authoptions: [
-                {
-                    value: '0',
-                    label: '管理员权限'
-                },
-                {
-                    value: '1',
-                    label: '项目管理权限'
-                },
-                {
-                    value: '2',
-                    label: '普通权限'
-                },
-                {
-                    value: '3',
-                    label: '只读权限'
-                }
-            ],
+            roleoptions: [],
+            authoptions: [],
         }
+    },
+    created() {
+        //获取人员角色
+        this.$api.task.getUserRole().then(response => {
+            let responsevalue = response.data;
+            if (responsevalue) {
+                this.roleoptions=responsevalue;
+            }else {
+                this.$message.success('请联系Admin!');
+            }
+        })
+        this.$api.task.getUserAuth().then(response => {
+            let responsevalue = response.data;
+            if (responsevalue) {
+               this.authoptions=responsevalue;
+            }else {
+                this.$message.success('请联系Admin!');
+            }
+        })
     }
 }
 </script>

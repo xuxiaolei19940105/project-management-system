@@ -25,8 +25,16 @@ export default {
     },
     data() {
         return {
-            innerData: ITEM
+            innerData:[]
         };
+    },
+    created() {
+        let roleId= localStorage.getItem('ms_roleId');
+        if(roleId ==='0' || roleId ==='1'){
+            this.innerData=new ITEM().ITEMAdmin;
+        }else{
+            this.innerData=new ITEM().ITEMother;
+        }
     },
     props: ['onRoutes', 'collapse']
 };

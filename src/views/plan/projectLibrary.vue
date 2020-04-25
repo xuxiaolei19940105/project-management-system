@@ -4,19 +4,64 @@
             <div style="text-align:right;padding-bottom:10px;" v-if="showNewProject">
                 <el-button size="mini" @click="newprojectVisible">新建项目</el-button>
             </div>
-            <dytable
-                :columns="columns"
-                :table-data="table"
-                :total="total"
-                ref="multipleTable"
-                :page-num="pageNum"
-                :page-size="pageSize"
-                @current-change="onCurrentChange"
-                @on-selection-change="onSelectionChange"
-                @size-change="onSizeChange"
-                v-loading="false"
-                element-loading-text="加载中"
-            ></dytable>
+            <div>
+                <el-table
+                    :data="tableData"
+                    row-key="id"
+                    border
+                    :default-expand-all="defaultexpand"
+                    :tree-props="{children: 'proList'}">
+                    <el-table-column
+                        prop="proName"
+                        label="项目名称"
+                        sortable
+                        height="40">
+                    </el-table-column>
+                    <el-table-column
+                        prop="proNum"
+                        label="项目编号"
+                        :formatter="renderprojectNo"
+                        sortable
+                       height="40">
+                    </el-table-column>
+                    <el-table-column
+                        prop="proState"
+                        label="项目状态"
+                        :formatter="renderproState"
+                        height="40">
+                    </el-table-column>
+                    <el-table-column
+                        prop="leaderUserIdList"
+                        label="项目负责人"
+                        :formatter="renderleaderUserIdList"
+                        height="40">
+                    </el-table-column>
+                    <el-table-column
+                        prop="overallStartTime"
+                        label="项目开始时间"
+                        :formatter="renderStartTimeDate"
+                        height="40">
+                    </el-table-column>
+                    <el-table-column
+                        prop="overallEndTime"
+                        label="项目结束时间"
+                        :formatter="renderEndTimeDate" 
+                        height="40">
+                    </el-table-column>
+                    <el-table-column
+                        label="操作"
+                        height="40">
+                        <template slot-scope="scope">
+                            <el-button type="text" icon="el-icon-folder-opened" @click="onRowLookButtonClick(scope.row)">
+                                查看
+                            </el-button>
+                            <el-button type="text" icon="el-icon-edit" @click="onRowUpdateButtonClick(scope.row)" >
+                                编辑
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
         </el-card>
         <el-dialog
             title="项目信息"
@@ -58,50 +103,14 @@ export default {
     },
     inject: ['reload'],
     data() {
-        const { renderControlColumn } = this;
-        const { renderStartTimeDate } = this;
-        const { renderEndTimeDate } = this;
-        const { renderprojectNo } = this;
         return {
             operationmode: '',
             showNewProject: false,
             dialogVisible: false,
+            defaultexpand: false,
             dialogNewprojectVisible: false,
             dialogNewImpltaskVisible: false,
-            columns: [
-                {
-                    key: 'projectNo',
-                    title: '项目编号',
-                    render: renderprojectNo
-                },
-                {
-                    key: 'name',
-                    title: '项目名称'
-                },
-                {
-                    key: 'state',
-                    title: '项目状态'
-                },
-                {
-                    key: 'leader',
-                    title: '项目负责人'
-                },
-                {
-                    key: 'starttime',
-                    title: '项目开始时间',
-                    render: renderStartTimeDate
-                },
-                {
-                    key: 'endtime',
-                    title: '项目结束时间',
-                    render: renderEndTimeDate
-                },
-                {
-                    title: '操作',
-                    render: renderControlColumn,
-                    width: '150px'
-                }
-            ],
+            tableData: [],
             table: [],
             pageNum: 1,
             pageSize: 10,
@@ -123,46 +132,16 @@ export default {
         //项目列表加载
         let userData = localStorage.getItem('ms_data');
         if (userData) {
-            this.$api.task.getProjectMess(userData).then(response => {
+            this.$api.task.getprojectTree(userData).then(response => {
                 let responsevalue = response;
                 if (responsevalue) {
-                    let tabledata = [];
                     let returndata = responsevalue.data;
-                    for (var i = 0; i < returndata.length; i++) {
-                        if (returndata[i]) {
-                            let proObject = {};
-                            proObject.projectNo = returndata[i].proNum + '-(' + returndata[i].id + ')';
-                            proObject.name = returndata[i].proName;
-                            if (returndata[i].proState === 0) {
-                                proObject.state = '进行中';
-                            } else if (returndata[i].proState === 1) {
-                                proObject.state = '暂停';
-                            } else if (returndata[i].proState === 2) {
-                                proObject.state = '已作废';
-                            } else if (returndata[i].proState === 3) {
-                                proObject.state = '已完结';
-                            }
-                            //proObject.state = returndata[i].proState;
-                            proObject.leader = '';
-                            for (var j = 0; j < returndata[i].leaderUserList.length; j++) {
-                                if (returndata[i].leaderUserList[j]) {
-                                    proObject.leader += returndata[i].leaderUserList[j].name + ',';
-                                }
-                            }
-                            var starttime = returndata[i].overallStartTime;
-                            // starttime = starttime.split('T')[0];
-                            proObject.starttime = starttime;
-                            var endtime = returndata[i].overallEndTime;
-                            // endtime = endtime.split('T')[0];
-                            proObject.endtime = endtime;
-                            tabledata.push(proObject);
-                        }
-                    }
-                    this.table = tabledata;
+                    this.tableData = returndata;
                 } else {
                     this.$message.success('没有权限,请联系Admin!');
                 }
             });
+            
         }
     },
     methods: {
@@ -266,11 +245,9 @@ export default {
             });
         },
         timecomparison(){
-            
         },
         geteditProjectData() {
             this.$refs.sonEditproject.save();
-            //必填项校验
             //项目名
             let projectObject = {};
             projectObject.id = this.$refs.sonEditproject.projectForm.id;
@@ -320,27 +297,16 @@ export default {
         // 查看
         onRowLookButtonClick(row) {
             localStorage.setItem('list', JSON.stringify(true));
-            let projectS = row.projectNo;
-            let projectIdS = projectS.split('-(')[1];
-            projectIdS = projectIdS.split(')')[0];
+            let projectIdS = row.id;
+             localStorage.setItem('pro_id', projectIdS);
             this.dialogVisible = true;
-            // let projectObjectId = {};
-            // projectObjectId.id = row.id;
-            localStorage.setItem('pro_id', projectIdS);
-            // this.$api.task.initProData(projectObjectId).then(response => {
-            //     debugger
-            //     this.rowdata = response;
-            //     console.log(this.rowdata);
-            // });
         },
         //编辑
         onRowUpdateButtonClick(row) {
             localStorage.setItem('list', JSON.stringify(false));
-            this.dialogVisible = true;
-            let projectS = row.projectNo;
-            let projectIdS = projectS.split('-(')[1];
-            projectIdS = projectIdS.split(')')[0];
+            let projectIdS = row.id;
             localStorage.setItem('pro_id', projectIdS);
+            this.dialogVisible = true;
         },
 
         closeDialogVisible() {
@@ -358,58 +324,73 @@ export default {
         onCurrentChange(val) {
             this.pageNum = val;
         },
-        renderStartTimeDate(v) {
-            if (v.row.starttime) {
-                let DateS=new Date(v.row.starttime);
+        renderproState(row) {
+            let state='';
+            if (row.proState === 0) {
+                state = '进行中';
+            } else if (row.proState === 1) {
+                state = '暂停';
+            } else if (row.proState === 2) {
+                state = '已作废';
+            } else if (row.proState === 3) {
+                state = '已完结';
+            }
+            return <div>{state}</div>;
+        },
+        renderleaderUserIdList(row){
+            let leadername='';
+            if(row.leaderUserList){
+                let leaderS='';
+                let ledaerArr=row.leaderUserList;
+                if(ledaerArr.length >0){
+                    for(var i=0;i<ledaerArr.length;i++){
+                        if(ledaerArr[i].name){
+                            leaderS+=ledaerArr[i].name+",";
+                        }
+                    }
+                }
+                if(leaderS.indexOf(",")>-1){
+                    leadername=leaderS.slice(0,leaderS.length -1)
+                }else{
+                    leadername=leaderS;
+                }
+            }
+            return <div>{leadername}</div>;
+        },
+        renderStartTimeDate(row) {
+            if (row.overallStartTime) {
+                let DateS=new Date(row.overallStartTime);
                 let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
                 return <div>{ovwerS}</div>;
             }
         },
-        renderEndTimeDate(v) {
-            if (v.row.endtime) {
-                let DateS=new Date(v.row.endtime);
+        renderEndTimeDate(row) {
+            if (row.overallEndTime) {
+                let DateS=new Date(row.overallEndTime);
                 let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
                 return <div>{ovwerS}</div>;
             }
         },
-        renderprojectNo(v) {
-            if (v.row.projectNo) {
-                let projectNoS = v.row.projectNo;
-                projectNoS = projectNoS.split('-(')[0];
+        renderprojectNo(row) {
+            if (row.proNum) {
+                let projectNoS = row.proNum;
                 return <div>{projectNoS}</div>;
             }
         },
-        renderControlColumn({ row }) {
-            const { onRowLookButtonClick, onRowUpdateButtonClick } = this;
-            const ret = [];
-            ret.push(
-                <div>
-                    <el-button type="text" icon="el-icon-folder-opened" onClick={() => onRowLookButtonClick(row)}>
-                        查看
-                    </el-button>
-                    <el-button type="text" icon="el-icon-edit" onClick={() => onRowUpdateButtonClick(row)}>
-                        编辑
-                    </el-button>
-                </div>
-            );
-            return <div>{ret}</div>;
-        }
     }
 };
 </script>
-<style scoped>
-</style>
-<style>
-textarea {
-    height: 100%;
+<style lang="scss">
+.handle-box {
+    margin-bottom: 20px;
 }
-.titalS {
-    font-size: 15px;
-    height: 40px;
-    width: 100%;
+
+.handle-select {
+    width: 120px;
 }
-.el-dialog__body {
-    max-height: 500px;
-    overflow: auto;
+
+.handle-input {
+    width: 300px;
+    display: inline-block;
 }
 </style>

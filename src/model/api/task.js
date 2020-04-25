@@ -71,6 +71,18 @@ const task = {
     //新建留言
     insertGuestbook(params) {
         return httpReqest.post('/api/Guestbook/insertGuestbook', params);
+    },
+    //获取项目树
+    getprojectTree(params) {
+        return httpReqest.post('/api/Project/getProTree', params);
+    },
+    //获取人员角色
+    getUserRole() {
+        return httpReqest.post('/api/Role/getRoleList');
+    },
+    //获取人员权限
+    getUserAuth() {
+        return httpReqest.post('/api/Auth/getAuthList');
     }
 };
 
