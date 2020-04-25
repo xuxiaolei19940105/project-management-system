@@ -108,11 +108,11 @@ export default {
                                 proObjectdet.projectname=projectdet[j].belongProId;
                                 let starttime = projectdet[j].starttime;
                                 let DateS=new Date(starttime);
-                                let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toString().slice(0, 10);
+                                let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
                                 proObjectdet.projectstarttime=ovwerS;
                                 let endtime = projectdet[j].endtime;
                                 let endDateS=new Date(endtime);
-                                let endovwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toString().slice(0, 10);
+                                let endovwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
                                 proObjectdet.projectendtime=endovwerS;
                                 projec.push(proObjectdet);
                             }

@@ -419,14 +419,14 @@ export default {
         renderStartTimeDate(v) {
             if (v.row.starttime) {
                 let DateS=new Date(v.row.starttime);
-                let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toString().slice(0, 10);
+                let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
                 return <div>{ovwerS}</div>;
             }
         },
         renderEndTimeDate(v) {
             if (v.row.endtime) {
                 let DateS=new Date(v.row.endtime);
-                let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toString().slice(0, 10);
+                let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
                 return <div>{ovwerS}</div>;
             }
         },
