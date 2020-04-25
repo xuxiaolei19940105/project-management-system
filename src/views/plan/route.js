@@ -1,12 +1,21 @@
-const Project = () => import(/* webpackChunkName: "task-context" */ './projectList.vue');
+const Projectlist = () => import(/* webpackChunkName: "task-context" */ './projectList.vue');
+const Projectlibrary = () => import(/* webpackChunkName: "task-context" */ './projectLibrary.vue');
 
 const PROJECT = [
     {
         path: 'projectList',
-        name: 'project1',
-        component: Project,
+        name: 'projectList',
+        component: Projectlist,
         meta: {
             title: '项目列表'
+        }
+    },
+    {
+        path: 'projectlibrary',
+        name: 'projectlibrary',
+        component: Projectlibrary,
+        meta: {
+            title: '项目库'
         }
     },
 ];
