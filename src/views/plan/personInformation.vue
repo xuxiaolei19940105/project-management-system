@@ -98,19 +98,7 @@ export default {
                 for(var i=0;i<returndata.length;i++){
                     let proObject={};
                     proObject.employeeName=returndata[i].name;
-                    if(returndata[i].roleId ==="1"){
-                        proObject.employeeCategory="项目组长";
-                    } else if(returndata[i].roleId ==="2"){
-                        proObject.employeeCategory="实施人员";
-                    }else if(returndata[i].roleId ==="3"){
-                        proObject.employeeCategory="开发人员";
-                    }else if(returndata[i].roleId ==="4"){
-                        proObject.employeeCategory="测试人员";
-                    }else if(returndata[i].roleId ==="5"){
-                        proObject.employeeCategory="UI";
-                    }else{
-                        proObject.employeeCategory="项目经理";
-                    }
+                    proObject.employeeCategory=returndata[i].roleName;
                     let projec=[];
                     let projectdet=returndata[i].workList;
                     if(projectdet.length>0){
@@ -118,12 +106,14 @@ export default {
                             if(projectdet[j].starttime){
                                 let proObjectdet={};
                                 proObjectdet.projectname=projectdet[j].belongProId;
-                                var starttime = projectdet[j].starttime;
-                                starttime=starttime.split("T")[0];
-                                proObjectdet.projectstarttime=starttime;
-                                var endtime = projectdet[j].endtime;
-                                endtime=endtime.split("T")[0];
-                                proObjectdet.projectendtime=endtime;
+                                let starttime = projectdet[j].starttime;
+                                let DateS=new Date(starttime);
+                                let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toString().slice(0, 10);
+                                proObjectdet.projectstarttime=ovwerS;
+                                let endtime = projectdet[j].endtime;
+                                let endDateS=new Date(endtime);
+                                let endovwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toString().slice(0, 10);
+                                proObjectdet.projectendtime=endovwerS;
                                 projec.push(proObjectdet);
                             }
                         }
