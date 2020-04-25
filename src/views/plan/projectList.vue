@@ -102,6 +102,7 @@ export default {
                     width: '150px'
                 }
             ],
+            checkflag: true,
             table: [],
             pageNum: 1,
             pageSize: 10,
@@ -116,9 +117,9 @@ export default {
     },
     created() {
         //创建项目权限控制
-        let roleId= localStorage.getItem('ms_roleId');
-        if(roleId ==='0' || roleId ==='1'){
-            this.showNewProject=true;
+        let roleId = localStorage.getItem('ms_roleId');
+        if (roleId === '0' || roleId === '1') {
+            this.showNewProject = true;
         }
         //项目列表加载
         let userData = localStorage.getItem('ms_data');
@@ -172,41 +173,99 @@ export default {
             localStorage.setItem('list', JSON.stringify(false));
             localStorage.removeItem('pro_id');
         },
+
+        // 校验
+        check() {
+            if (this.$refs.sonNewproject.projectForm.projectName == '') {
+                this.$message.error('请输入项目名称');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.state == '') {
+                this.$message.error('请选择项目状态');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.projectStartDate == '') {
+                this.$message.error('请选择项目开始时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.projectEndDate == '') {
+                this.$message.error('请选择项目结束时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.checkedLeaderId == '') {
+                this.$message.error('请选择项目负责人');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.implStartDate == '') {
+                this.$message.error('请选择实施开始时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.implEndDate == '') {
+                this.$message.error('请选择实施结束时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.checkedImplementerId == '') {
+                this.$message.error('请选择实施人员');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.develStartDate == '') {
+                this.$message.error('请选择开发开始时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.develEndDate == '') {
+                this.$message.error('请选择开发结束时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.checkedDeveloperId == '') {
+                this.$message.error('请选择开发人员');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.testerStartDate == '') {
+                this.$message.error('请选择测试开始时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.testerEndDate == '') {
+                this.$message.error('请选择测试结束时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.checkedTesterId == '') {
+                this.$message.error('请选择测试人员');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.packagerStartDate == '') {
+                this.$message.error('请选择打包时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.checkedPackagerId == '') {
+                this.$message.error('请选择打包人员');
+                this.checkflag = false;
+            } else{
+                 this.checkflag = true;
+            }
+        },
+
         // 新建确定
         getNewProjectData() {
-            let projectObject = {};
-            projectObject.id = '';
-            projectObject.proName = this.$refs.sonNewproject.projectForm.projectName;
-            projectObject.proNum = this.$refs.sonNewproject.projectForm.projectNumber;
-            projectObject.leaderUserIdList = this.$refs.sonNewproject.checkedLeaderId;
-            projectObject.overallStartTime = this.$refs.sonNewproject.projectForm.projectStartDate;
-            projectObject.overallEndTime = this.$refs.sonNewproject.projectForm.projectEndDate;
-            if (this.$refs.sonNewproject.projectForm.state === '进行中') {
-                projectObject.proState = 0;
-            } else if (this.$refs.sonNewproject.projectForm.state === '暂停') {
-                projectObject.proState = 1;
-            } else if (this.$refs.sonNewproject.projectForm.state === '已作废') {
-                projectObject.proState = 2;
-            } else if (this.$refs.sonNewproject.projectForm.state === '已完结') {
-                projectObject.proState = 3;
-            }
-            projectObject.effectStartTime = this.$refs.sonNewproject.projectForm.implStartDate;
-            projectObject.effectEndTime = this.$refs.sonNewproject.projectForm.implEndDate;
-            projectObject.effectUserIdList = this.$refs.sonNewproject.checkedImplementerId;
-            projectObject.exploitStartTime = this.$refs.sonNewproject.projectForm.develStartDate;
-            projectObject.exploitEndTime = this.$refs.sonNewproject.projectForm.develEndDate;
-            projectObject.exploitUserIdList = this.$refs.sonNewproject.checkedDeveloperId;
-            projectObject.testStartTime = this.$refs.sonNewproject.projectForm.testerStartDate;
-            projectObject.testEndTime = this.$refs.sonNewproject.projectForm.testerEndDate;
-            projectObject.testUserIdList = this.$refs.sonNewproject.checkedTesterId;
-            projectObject.packageTime = this.$refs.sonNewproject.projectForm.packagerStartDate;
-            projectObject.packageUserIdList = this.$refs.sonNewproject.checkedPackagerId;
-            projectObject.effectTaskId = '';
-            projectObject.exploitTaskId = '';
-            projectObject.testTaskId = '';
-            projectObject.guestbookId = '';
-            projectObject.logId = '';
-            /*
+            this.check();
+            if (this.checkflag) {
+                let projectObject = {};
+                projectObject.id = '';
+                projectObject.proName = this.$refs.sonNewproject.projectForm.projectName;
+                projectObject.proNum = this.$refs.sonNewproject.projectForm.projectNumber;
+                projectObject.leaderUserIdList = this.$refs.sonNewproject.checkedLeaderId;
+                projectObject.overallStartTime = this.$refs.sonNewproject.projectForm.projectStartDate;
+                projectObject.overallEndTime = this.$refs.sonNewproject.projectForm.projectEndDate;
+                if (this.$refs.sonNewproject.projectForm.state === '进行中') {
+                    projectObject.proState = 0;
+                } else if (this.$refs.sonNewproject.projectForm.state === '暂停') {
+                    projectObject.proState = 1;
+                } else if (this.$refs.sonNewproject.projectForm.state === '已作废') {
+                    projectObject.proState = 2;
+                } else if (this.$refs.sonNewproject.projectForm.state === '已完结') {
+                    projectObject.proState = 3;
+                }
+                projectObject.effectStartTime = this.$refs.sonNewproject.projectForm.implStartDate;
+                projectObject.effectEndTime = this.$refs.sonNewproject.projectForm.implEndDate;
+                projectObject.effectUserIdList = this.$refs.sonNewproject.checkedImplementerId;
+                projectObject.exploitStartTime = this.$refs.sonNewproject.projectForm.develStartDate;
+                projectObject.exploitEndTime = this.$refs.sonNewproject.projectForm.develEndDate;
+                projectObject.exploitUserIdList = this.$refs.sonNewproject.checkedDeveloperId;
+                projectObject.testStartTime = this.$refs.sonNewproject.projectForm.testerStartDate;
+                projectObject.testEndTime = this.$refs.sonNewproject.projectForm.testerEndDate;
+                projectObject.testUserIdList = this.$refs.sonNewproject.checkedTesterId;
+                projectObject.packageTime = this.$refs.sonNewproject.projectForm.packagerStartDate;
+                projectObject.packageUserIdList = this.$refs.sonNewproject.checkedPackagerId;
+                projectObject.effectTaskId = '';
+                projectObject.exploitTaskId = '';
+                projectObject.testTaskId = '';
+                projectObject.guestbookId = '';
+                projectObject.logId = '';
+                /*
             //新建项目发消息
             let userList=[];
             let alluser=[];
@@ -230,10 +289,10 @@ export default {
             let crueatename=localStorage.getItem('ms_name');
             let crueateusername=localStorage.getItem('ms_username');
             */
-            this.$api.task.setProject(projectObject).then(response => {
-                var responsevalue = response;
-                if (responsevalue) {
-                    /*
+                this.$api.task.setProject(projectObject).then(response => {
+                    var responsevalue = response;
+                    if (responsevalue) {
+                        /*
                     //新建项目发消息
                     var dates=new Date();
                     if(alluser.length > 0){
@@ -255,19 +314,18 @@ export default {
                         }
                     }
                     */
-                    this.$message.success('创建成功');
-                    this.dialogNewprojectVisible = false;
-                    this.reload();
-                } else {
-                    this.$message.error('创建失败,请重新创建!');
-                    this.dialogNewprojectVisible = true;
-                    return false;
-                }
-            });
+                        this.$message.success('创建成功');
+                        this.dialogNewprojectVisible = false;
+                        this.reload();
+                    } else {
+                        this.$message.error('创建失败,请重新创建!');
+                        this.dialogNewprojectVisible = true;
+                        return false;
+                    }
+                });
+            }
         },
-        timecomparison(){
-            
-        },
+        timecomparison() {},
         geteditProjectData() {
             this.$refs.sonEditproject.save();
             //必填项校验

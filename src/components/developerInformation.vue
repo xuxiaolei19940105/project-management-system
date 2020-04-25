@@ -115,7 +115,8 @@ export default {
             rowdata: {},
             operationmode: '',
             tableData: [],
-            index: ''
+            index: '',
+            checkflag: true
         };
     },
     created() {
@@ -142,7 +143,6 @@ export default {
                 responseValue.taskList[2].workList[i].endtime = endOvwerS;
             }
             this.tableData = responseValue.taskList[2].workList;
-     
 
             this.projectForm.developStartDate = responseValue.exploitStartTime;
             this.projectForm.developEndDate = responseValue.exploitEndTime;
@@ -238,138 +238,160 @@ export default {
                 });
             });
         },
+
+        // 校验
+        check() {
+            if (this.$refs.sonNewdevop.newdevelopForm.userid == '') {
+                this.$message.error('请输入执行人');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewdevop.newdevelopForm.taskdetail == '') {
+                this.$message.error('请输入任务概述');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewdevop.newdevelopForm.developStartDate == '') {
+                this.$message.error('请选择开始时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewdevop.newdevelopForm.developEndDate == '') {
+                this.$message.error('请选择结束时间');
+                this.checkflag = false;
+            } else {
+                this.checkflag = true;
+            }
+        },
         // 确定新建工作任务
         savenewDevelop() {
-            let savedata = {};
-            let userData = JSON.parse(localStorage.getItem('ms_data'));
-            savedata.sendUserId = userData.id;
-            // savedata.userId = this.$refs.sonNewdevop.checkedUseNameId.toString();
-            savedata.userId = this.$refs.sonNewdevop.newdevelopForm.userid;
-            savedata.workName = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
-            savedata.workDescribe = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
-            savedata.starttime = this.$refs.sonNewdevop.newdevelopForm.developStartDate;
-            savedata.endtime = this.$refs.sonNewdevop.newdevelopForm.developEndDate;
-            savedata.belongProId = this.projectForm.belongProId;
-            savedata.belongTaskId = this.projectForm.belongTaskId;
-            savedata.deleteFlg = 0;
-            if (this.operationmode == 'new') {
-                //抄送人ID
-                let chaosongID = [];
-                chaosongID = this.$refs.sonNewdevop.checkedPostId;
-                //登录用户
-                let crueateid = localStorage.getItem('ms_id');
-                let crueatename = localStorage.getItem('ms_name');
-                let crueateusername = localStorage.getItem('ms_username');
-                var dates = new Date();
-                let taskdetail = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
-                this.$api.task.newWork(savedata).then(() => {
-                    //刷新表
-                    let pro_id = localStorage.getItem('pro_id');
-                    let projectObjectId = {};
-                    projectObjectId.id = pro_id;
-                    this.$api.task.initProData(projectObjectId).then(response => {
-                        let responseValue = response.data;
-                        //时间转换
-                        for (let i = 0; i < responseValue.taskList[2].workList.length; i++) {
-                            let startDateS = new Date(responseValue.taskList[2].workList[i].starttime);
-                            let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
-                                .toISOString()
-                                .slice(0, 10);
-                            responseValue.taskList[2].workList[i].starttime = startOvwerS;
-
-                            let endDateS = new Date(responseValue.taskList[2].workList[i].endtime);
-                            let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
-                                .toISOString()
-                                .slice(0, 10);
-                            responseValue.taskList[2].workList[i].endtime = endOvwerS;
-                        }
-                        this.tableData = responseValue.taskList[2].workList;
-                    });
-                    //发任务消息
-                    if (chaosongID.length > 0) {
-                        for (var i = 0; i < chaosongID.length; i++) {
-                            if (chaosongID[i]) {
-                                let messageObject = {};
-                                messageObject.id = '';
-                                messageObject.messageType = '0';
-                                messageObject.messageName = '任务邀请:' + taskdetail;
-                                messageObject.messageDescribe = crueatename + '给你配发任务.';
-                                messageObject.sendUserid = crueateid;
-                                messageObject.receiveUserid = chaosongID[i];
-                                messageObject.state = '0';
-                                messageObject.inserttime = dates;
-                                messageObject.updatetime = dates;
-                                messageObject.readTag = '0';
-                                messageObject.sendUserName = crueateusername;
-                                messageObject.receiveUserName = '';
-                                this.$api.task.newMessage(messageObject).then(() => {});
-                            }
-                        }
-                    }
-                });
-            } else if (this.operationmode == 'edit') {
-                //抄送人ID
-                let chaosongID = [];
-                chaosongID = this.$refs.sonNewdevop.checkedPostId;
-                //登录用户
-                let crueateid = localStorage.getItem('ms_id');
-                let crueatename = localStorage.getItem('ms_name');
-                let crueateusername = localStorage.getItem('ms_username');
-                var dates1 = new Date();
-                let savedata = this.tableData[this.index];
+            this.check();
+            if (this.checkflag) {
+                let savedata = {};
+                let userData = JSON.parse(localStorage.getItem('ms_data'));
+                savedata.sendUserId = userData.id;
+                // savedata.userId = this.$refs.sonNewdevop.checkedUseNameId.toString();
+                savedata.userId = this.$refs.sonNewdevop.newdevelopForm.userid;
                 savedata.workName = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
-                savedata.starttime = this.$refs.sonNewdevop.newdevelopForm.implementStartDate;
-                savedata.endtime = this.$refs.sonNewdevop.newdevelopForm.implementEndDate;
-                let taskdetail1 = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
-                this.$api.task.updataWork(savedata).then(() => {
-                    //刷新表
-                    let pro_id = localStorage.getItem('pro_id');
-                    let projectObjectId = {};
-                    projectObjectId.id = pro_id;
-                    this.$api.task.initProData(projectObjectId).then(response => {
-                        let responseValue = response.data;
+                savedata.workDescribe = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
+                savedata.starttime = this.$refs.sonNewdevop.newdevelopForm.developStartDate;
+                savedata.endtime = this.$refs.sonNewdevop.newdevelopForm.developEndDate;
+                savedata.belongProId = this.projectForm.belongProId;
+                savedata.belongTaskId = this.projectForm.belongTaskId;
+                savedata.deleteFlg = 0;
+                if (this.operationmode == 'new') {
+                    //抄送人ID
+                    let chaosongID = [];
+                    chaosongID = this.$refs.sonNewdevop.checkedPostId;
+                    //登录用户
+                    let crueateid = localStorage.getItem('ms_id');
+                    let crueatename = localStorage.getItem('ms_name');
+                    let crueateusername = localStorage.getItem('ms_username');
+                    var dates = new Date();
+                    let taskdetail = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
+                    this.$api.task.newWork(savedata).then(() => {
+                        //刷新表
+                        let pro_id = localStorage.getItem('pro_id');
+                        let projectObjectId = {};
+                        projectObjectId.id = pro_id;
+                        this.$api.task.initProData(projectObjectId).then(response => {
+                            let responseValue = response.data;
+                            //时间转换
+                            for (let i = 0; i < responseValue.taskList[2].workList.length; i++) {
+                                let startDateS = new Date(responseValue.taskList[2].workList[i].starttime);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
+                                responseValue.taskList[2].workList[i].starttime = startOvwerS;
 
-                        //时间转换
-                        for (let i = 0; i < responseValue.taskList[2].workList.length; i++) {
-                            let startDateS = new Date(responseValue.taskList[2].workList[i].starttime);
-                            let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
-                                .toISOString()
-                                .slice(0, 10);
-                            responseValue.taskList[2].workList[i].starttime = startOvwerS;
-
-                            let endDateS = new Date(responseValue.taskList[2].workList[i].endtime);
-                            let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
-                                .toISOString()
-                                .slice(0, 10);
-                            responseValue.taskList[2].workList[i].endtime = endOvwerS;
-                        }
-                        this.tableData = responseValue.taskList[2].workList;
-                    });
-                    //发任务消息
-                    if (chaosongID.length > 0) {
-                        for (var i = 0; i < chaosongID.length; i++) {
-                            if (chaosongID[i]) {
-                                let messageObject = {};
-                                messageObject.id = '';
-                                messageObject.messageType = '0';
-                                messageObject.messageName = '任务邀请:' + taskdetail1;
-                                messageObject.messageDescribe = crueatename + '给你配发任务.';
-                                messageObject.sendUserid = crueateid;
-                                messageObject.receiveUserid = chaosongID[i];
-                                messageObject.state = '0';
-                                messageObject.inserttime = dates1;
-                                messageObject.updatetime = dates1;
-                                messageObject.readTag = '0';
-                                messageObject.sendUserName = crueateusername;
-                                messageObject.receiveUserName = '';
-                                this.$api.task.newMessage(messageObject).then(() => {});
+                                let endDateS = new Date(responseValue.taskList[2].workList[i].endtime);
+                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
+                                responseValue.taskList[2].workList[i].endtime = endOvwerS;
+                            }
+                            this.tableData = responseValue.taskList[2].workList;
+                        });
+                        //发任务消息
+                        if (chaosongID.length > 0) {
+                            for (var i = 0; i < chaosongID.length; i++) {
+                                if (chaosongID[i]) {
+                                    let messageObject = {};
+                                    messageObject.id = '';
+                                    messageObject.messageType = '0';
+                                    messageObject.messageName = '任务邀请:' + taskdetail;
+                                    messageObject.messageDescribe = crueatename + '给你配发任务.';
+                                    messageObject.sendUserid = crueateid;
+                                    messageObject.receiveUserid = chaosongID[i];
+                                    messageObject.state = '0';
+                                    messageObject.inserttime = dates;
+                                    messageObject.updatetime = dates;
+                                    messageObject.readTag = '0';
+                                    messageObject.sendUserName = crueateusername;
+                                    messageObject.receiveUserName = '';
+                                    this.$api.task.newMessage(messageObject).then(() => {});
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                } else if (this.operationmode == 'edit') {
+                    //抄送人ID
+                    let chaosongID = [];
+                    chaosongID = this.$refs.sonNewdevop.checkedPostId;
+                    //登录用户
+                    let crueateid = localStorage.getItem('ms_id');
+                    let crueatename = localStorage.getItem('ms_name');
+                    let crueateusername = localStorage.getItem('ms_username');
+                    var dates1 = new Date();
+                    let savedata = this.tableData[this.index];
+                    savedata.workName = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
+                    savedata.starttime = this.$refs.sonNewdevop.newdevelopForm.implementStartDate;
+                    savedata.endtime = this.$refs.sonNewdevop.newdevelopForm.implementEndDate;
+                    let taskdetail1 = this.$refs.sonNewdevop.newdevelopForm.taskdetail;
+                    this.$api.task.updataWork(savedata).then(() => {
+                        //刷新表
+                        let pro_id = localStorage.getItem('pro_id');
+                        let projectObjectId = {};
+                        projectObjectId.id = pro_id;
+                        this.$api.task.initProData(projectObjectId).then(response => {
+                            let responseValue = response.data;
+
+                            //时间转换
+                            for (let i = 0; i < responseValue.taskList[2].workList.length; i++) {
+                                let startDateS = new Date(responseValue.taskList[2].workList[i].starttime);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
+                                responseValue.taskList[2].workList[i].starttime = startOvwerS;
+
+                                let endDateS = new Date(responseValue.taskList[2].workList[i].endtime);
+                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
+                                responseValue.taskList[2].workList[i].endtime = endOvwerS;
+                            }
+                            this.tableData = responseValue.taskList[2].workList;
+                        });
+                        //发任务消息
+                        if (chaosongID.length > 0) {
+                            for (var i = 0; i < chaosongID.length; i++) {
+                                if (chaosongID[i]) {
+                                    let messageObject = {};
+                                    messageObject.id = '';
+                                    messageObject.messageType = '0';
+                                    messageObject.messageName = '任务邀请:' + taskdetail1;
+                                    messageObject.messageDescribe = crueatename + '给你配发任务.';
+                                    messageObject.sendUserid = crueateid;
+                                    messageObject.receiveUserid = chaosongID[i];
+                                    messageObject.state = '0';
+                                    messageObject.inserttime = dates1;
+                                    messageObject.updatetime = dates1;
+                                    messageObject.readTag = '0';
+                                    messageObject.sendUserName = crueateusername;
+                                    messageObject.receiveUserName = '';
+                                    this.$api.task.newMessage(messageObject).then(() => {});
+                                }
+                            }
+                        }
+                    });
+                }
+                //关闭弹窗
+                this.dialogNewDeveltaskVisible = false;
             }
-            //关闭弹窗
-            this.dialogNewDeveltaskVisible = false;
         }
     }
 };

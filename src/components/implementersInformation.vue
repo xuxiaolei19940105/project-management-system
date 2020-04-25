@@ -112,6 +112,7 @@ export default {
                 belongProId: '',
                 belongTaskId: ''
             },
+            checkflag: true,
             rowdata: {},
             operationmode: '',
             tableData: [],
@@ -238,75 +239,96 @@ export default {
             });
         },
 
+        // 校验
+        check() {
+            if (this.$refs.sonNewimplement.implrmrntForm.userid == '') {
+                this.$message.error('请输入执行人');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewimplement.implrmrntForm.taskdetail == '') {
+                this.$message.error('请输入任务概述');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewimplement.implrmrntForm.implementStartDate == '') {
+                this.$message.error('请选择开始时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewimplement.implrmrntForm.implementEndDate == '') {
+                this.$message.error('请选择结束时间');
+                this.checkflag = false;
+            } else {
+                this.checkflag = true;
+            }
+        },
+
         // 确定新建工作任务
         saveNewImpltask() {
-            let savedata = {};
-            let userData = JSON.parse(localStorage.getItem('ms_data'));
-            savedata.sendUserId = userData.id;
-            //  savedata.userId = this.$refs.sonNewimplement.checkedimplrmrntId.toString();
-            savedata.userId = this.$refs.sonNewimplement.implrmrntForm.userid;
-            savedata.workName = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
-            savedata.workDescribe = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
-            savedata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
-            savedata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
-            savedata.belongProId = this.projectForm.belongProId;
-            savedata.belongTaskId = this.projectForm.belongTaskId;
-            savedata.deleteFlg = 0;
-            if (this.operationmode == 'new') {
-                this.$api.task.newWork(savedata).then(() => {
-                    //刷新表
-                    let pro_id = localStorage.getItem('pro_id');
-                    let projectObjectId = {};
-                    projectObjectId.id = pro_id;
-                    this.$api.task.initProData(projectObjectId).then(response => {
-                        let responseValue = response.data;
-                        for (let i = 0; i < responseValue.taskList[1].workList.length; i++) {
-                            let startDateS = new Date(responseValue.taskList[1].workList[i].starttime);
-                            let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
-                                .toISOString()
-                                .slice(0, 10);
-                            responseValue.taskList[1].workList[i].starttime = startOvwerS;
-
-                            let endDateS = new Date(responseValue.taskList[1].workList[i].endtime);
-                            let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
-                                .toISOString()
-                                .slice(0, 10);
-                            responseValue.taskList[1].workList[i].endtime = endOvwerS;
-                        }
-                        this.tableData = responseValue.taskList[1].workList;
-                    });
-                });
-            } else if (this.operationmode == 'edit') {
-                let savedata = this.tableData[this.index];
+            this.check();
+            if (this.checkflag) {
+                let savedata = {};
+                let userData = JSON.parse(localStorage.getItem('ms_data'));
+                savedata.sendUserId = userData.id;
+                //  savedata.userId = this.$refs.sonNewimplement.checkedimplrmrntId.toString();
+                savedata.userId = this.$refs.sonNewimplement.implrmrntForm.userid;
                 savedata.workName = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
+                savedata.workDescribe = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
                 savedata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
                 savedata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
-                this.$api.task.updataWork(savedata).then(() => {
-                    //刷新表
-                    let pro_id = localStorage.getItem('pro_id');
-                    let projectObjectId = {};
-                    projectObjectId.id = pro_id;
-                    this.$api.task.initProData(projectObjectId).then(response => {
-                        let responseValue = response.data;
-                        for (let i = 0; i < responseValue.taskList[1].workList.length; i++) {
-                            let startDateS = new Date(responseValue.taskList[1].workList[i].starttime);
-                            let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
-                                .toISOString()
-                                .slice(0, 10);
-                            responseValue.taskList[1].workList[i].starttime = startOvwerS;
+                savedata.belongProId = this.projectForm.belongProId;
+                savedata.belongTaskId = this.projectForm.belongTaskId;
+                savedata.deleteFlg = 0;
+                if (this.operationmode == 'new') {
+                    this.$api.task.newWork(savedata).then(() => {
+                        //刷新表
+                        let pro_id = localStorage.getItem('pro_id');
+                        let projectObjectId = {};
+                        projectObjectId.id = pro_id;
+                        this.$api.task.initProData(projectObjectId).then(response => {
+                            let responseValue = response.data;
+                            for (let i = 0; i < responseValue.taskList[1].workList.length; i++) {
+                                let startDateS = new Date(responseValue.taskList[1].workList[i].starttime);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
+                                responseValue.taskList[1].workList[i].starttime = startOvwerS;
 
-                            let endDateS = new Date(responseValue.taskList[1].workList[i].endtime);
-                            let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
-                                .toISOString()
-                                .slice(0, 10);
-                            responseValue.taskList[1].workList[i].endtime = endOvwerS;
-                        }
-                        this.tableData = responseValue.taskList[1].workList;
+                                let endDateS = new Date(responseValue.taskList[1].workList[i].endtime);
+                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
+                                responseValue.taskList[1].workList[i].endtime = endOvwerS;
+                            }
+                            this.tableData = responseValue.taskList[1].workList;
+                        });
                     });
-                });
-            }
+                } else if (this.operationmode == 'edit') {
+                    let savedata = this.tableData[this.index];
+                    savedata.workName = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
+                    savedata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
+                    savedata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
+                    this.$api.task.updataWork(savedata).then(() => {
+                        //刷新表
+                        let pro_id = localStorage.getItem('pro_id');
+                        let projectObjectId = {};
+                        projectObjectId.id = pro_id;
+                        this.$api.task.initProData(projectObjectId).then(response => {
+                            let responseValue = response.data;
+                            for (let i = 0; i < responseValue.taskList[1].workList.length; i++) {
+                                let startDateS = new Date(responseValue.taskList[1].workList[i].starttime);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
+                                responseValue.taskList[1].workList[i].starttime = startOvwerS;
 
-            this.dialogNewImpltaskVisible = false;
+                                let endDateS = new Date(responseValue.taskList[1].workList[i].endtime);
+                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
+                                responseValue.taskList[1].workList[i].endtime = endOvwerS;
+                            }
+                            this.tableData = responseValue.taskList[1].workList;
+                        });
+                    });
+                }
+                this.dialogNewImpltaskVisible = false;
+            }
         }
     }
 };
