@@ -3,7 +3,7 @@
         <el-card class="box-card">
             <div>
                 <el-form
-                    label-width="100px"
+                    label-width="150px"
                     v-model="projectForm"
                     class="dataForm"
                     :label-position="labelPosition"
@@ -12,11 +12,12 @@
                 >
                     <el-row>
                         <el-col :span="6">
-                            <el-form-item label="所属项目">
+                            <el-form-item label="所属项目" required>
                                 <el-select
                                     v-model="projectForm.belongPro"
                                     @change="selectGet"
                                     placeholder="请选择"
+                                    :disabled="belongdisabled"
                                 >
                                     <el-option
                                         v-for="item in proOptions"
@@ -34,18 +35,18 @@
 
                     <el-row>
                         <el-col :span="6">
-                            <el-form-item label="项目名称">
+                            <el-form-item label="项目名称" required>
                                 <el-input v-model="projectForm.projectName"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="6" :offset="2">
-                            <el-form-item label="项目编号">
+                            <el-form-item label="项目编号" required>
                                 <el-input v-model="projectForm.projectNumber" :disabled="true"></el-input>
                             </el-form-item>
                         </el-col>
 
                         <el-col :span="8" :offset="2">
-                            <el-form-item label="项目状态">
+                            <el-form-item label="项目状态" required>
                                 <el-select v-model="projectForm.state" placeholder="请选择项目状态">
                                     <el-option
                                         v-for="item in stateOptions"
@@ -59,7 +60,7 @@
                     </el-row>
                     <el-row>
                         <el-col :span="6">
-                            <el-form-item label="开始日期">
+                            <el-form-item label="开始日期" required>
                                 <el-date-picker
                                     v-model="projectForm.projectStartDate"
                                     placeholder="请选择"
@@ -67,7 +68,7 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="6" :offset="2">
-                            <el-form-item label="结束时间">
+                            <el-form-item label="结束时间" required>
                                 <el-date-picker
                                     v-model="projectForm.projectEndDate"
                                     placeholder="请选择"
@@ -75,7 +76,7 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="8" :offset="2">
-                            <el-form-item label="项目负责人">
+                            <el-form-item label="项目负责人" required>
                                 <el-input
                                     prefix-icon="el-icon-search"
                                     v-model="projectForm.projectLeader"
@@ -86,7 +87,7 @@
                     </el-row>
                     <el-row>
                         <el-col :span="6">
-                            <el-form-item label="实施开始时间">
+                            <el-form-item label="实施开始时间" required>
                                 <el-date-picker
                                     v-model="projectForm.implStartDate"
                                     placeholder="请选择"
@@ -94,12 +95,12 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="6" :offset="2">
-                            <el-form-item label="实施结束时间">
+                            <el-form-item label="实施结束时间" required>
                                 <el-date-picker v-model="projectForm.implEndDate" placeholder="请选择"></el-date-picker>
                             </el-form-item>
                         </el-col>
                         <el-col :span="8" :offset="2">
-                            <el-form-item label="实施人员">
+                            <el-form-item label="实施人员" required>
                                 <el-input
                                     prefix-icon="el-icon-search"
                                     v-model="projectForm.implementers"
@@ -110,7 +111,7 @@
                     </el-row>
                     <el-row>
                         <el-col :span="6">
-                            <el-form-item label="开发开始时间">
+                            <el-form-item label="开发开始时间" required>
                                 <el-date-picker
                                     v-model="projectForm.develStartDate"
                                     placeholder="请选择"
@@ -118,7 +119,7 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="6" :offset="2">
-                            <el-form-item label="开发结束时间">
+                            <el-form-item label="开发结束时间" required>
                                 <el-date-picker
                                     v-model="projectForm.develEndDate"
                                     placeholder="请选择"
@@ -127,7 +128,7 @@
                         </el-col>
 
                         <el-col :span="8" :offset="2">
-                            <el-form-item label="开发人员">
+                            <el-form-item label="开发人员" required>
                                 <el-input
                                     prefix-icon="el-icon-search"
                                     v-model="projectForm.developers"
@@ -138,7 +139,7 @@
                     </el-row>
                     <el-row>
                         <el-col :span="6">
-                            <el-form-item label="测试开始时间">
+                            <el-form-item label="测试开始时间" required>
                                 <el-date-picker
                                     v-model="projectForm.testerStartDate"
                                     placeholder="请选择"
@@ -146,7 +147,7 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="6" :offset="2">
-                            <el-form-item label="测试结束时间">
+                            <el-form-item label="测试结束时间" required>
                                 <el-date-picker
                                     v-model="projectForm.testerEndDate"
                                     placeholder="请选择"
@@ -154,7 +155,7 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="8" :offset="2">
-                            <el-form-item label="测试人员">
+                            <el-form-item label="测试人员" required>
                                 <el-input
                                     prefix-icon="el-icon-search"
                                     v-model="projectForm.testers"
@@ -165,7 +166,7 @@
                     </el-row>
                     <el-row>
                         <el-col :span="6">
-                            <el-form-item label="打包时间">
+                            <el-form-item label="打包时间" required>
                                 <el-date-picker
                                     v-model="projectForm.packagerStartDate"
                                     placeholder="请选择"
@@ -173,7 +174,7 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="8" :offset="10">
-                            <el-form-item label="打包人员">
+                            <el-form-item label="打包人员" required>
                                 <el-input
                                     prefix-icon="el-icon-search"
                                     v-model="projectForm.packagers"
@@ -256,6 +257,7 @@ export default {
                 belongProId: ''
             },
             labelPosition: 'left',
+            belongdisabled: false,
             stateOptions: [
                 {
                     value: '进行中',
@@ -277,6 +279,7 @@ export default {
         };
     },
     created() {
+        this.belongdisabled = false;
         //获取人员
         this.$api.task.getAllUser().then(response => {
             let responsevalue = response.data;
@@ -304,6 +307,8 @@ export default {
             this.$api.task.initProData(projectObjectId).then(response => {
                 let responseValue = response.data;
                 this.projectForm.id = responseValue.id;
+                this.projectForm.belongPro = responseValue.belongProName;
+                this.belongdisabled = true;
                 this.projectForm.projectName = responseValue.proName;
                 this.projectForm.projectNumber = responseValue.proNum;
 
@@ -485,7 +490,12 @@ export default {
                 return item.id === vId; //筛选出匹配数据
             });
             //获取level
-            this.projectForm.level = obj.level;
+            if (this.projectForm.id == '无') {
+                this.projectForm.level = 0;
+            } else {
+                debugger;
+                this.projectForm.level = obj.level + 1;
+            }
         }
     }
 };

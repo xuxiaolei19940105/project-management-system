@@ -2,7 +2,7 @@
     <div>
         <el-card>
             <el-form
-                label-width="70px"
+                label-width="100px"
                 v-model="implrmrntForm"
                 ref="implrmrntForm"
                 class="dataForm"
@@ -10,12 +10,12 @@
             >
                 <el-row>
                     <el-col :span="12">
-                        <el-form-item label="发布人">
+                        <el-form-item label="发布人" required>
                             <el-input v-model="implrmrntForm.sendUserName" disabled></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="执行人">
+                        <el-form-item label="执行人" required>
                             <el-input
                                 v-bind:disabled="disabledlevel"
                                 prefix-icon="el-icon-search"
@@ -27,14 +27,14 @@
                 </el-row>
                 <el-row>
                     <el-col :span="24">
-                        <el-form-item label="任务概述">
+                        <el-form-item label="任务概述" required>
                             <el-input v-model="implrmrntForm.taskdetail" v-bind:disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="12">
-                        <el-form-item label="开始时间">
+                        <el-form-item label="开始时间" required>
                             <el-date-picker
                                 v-model="implrmrntForm.implementStartDate"
                                 placeholder="请选择"
@@ -43,7 +43,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="结束时间">
+                        <el-form-item label="结束时间" required>
                             <el-date-picker
                                 v-model="implrmrntForm.implementEndDate"
                                 placeholder="请选择"

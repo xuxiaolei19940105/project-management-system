@@ -14,8 +14,8 @@
                             height="250"
                             size="mini"
                         >
-                            <el-table-column prop="operationDescribe" label="内容"></el-table-column>
                             <el-table-column prop="operationUserName" label="人员" width="180"></el-table-column>
+                            <el-table-column prop="operationDescribe" label="内容"></el-table-column>
                             <el-table-column prop="inserttime" label="时间"></el-table-column>
                         </el-table>
                     </div>
