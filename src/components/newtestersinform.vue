@@ -26,12 +26,12 @@
                     </el-col>
                 </el-row>
                 <el-row>
-                    <el-col :span="11">
-                        <el-form-item label="任务详情" required>
+                    <el-col :span="24">
+                        <el-form-item label="任务概述" required>
                             <el-input v-model="newtesterForm.taskdetail" v-bind:disabled="disabled"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="11" :offset="2">
+                    <!-- <el-col :span="11" :offset="2">
                         <el-form-item label="是否bug">
                             <el-radio
                                 v-model="newtesterForm.radio"
@@ -44,10 +44,10 @@
                                 v-bind:disabled="disabled"
                             ></el-radio>
                         </el-form-item>
-                    </el-col>
+                    </el-col>-->
                 </el-row>
                 <el-row>
-                    <el-col :span="11">
+                    <el-col :span="24">
                         <el-form-item label="预计结果">
                             <el-input
                                 v-model="newtesterForm.estimatedResult"
@@ -55,13 +55,21 @@
                             ></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="11" :offset="2">
-                        <el-form-item label="bug标题">
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <!-- <el-form-item label="bug标题">
                             <el-input v-model="newtesterForm.bugtital" v-bind:disabled="disabled"></el-input>
+                        </el-form-item>-->
+                        <el-form-item label="实际结果">
+                            <el-input
+                                v-model="newtesterForm.actualResult"
+                                v-bind:disabled="disabled"
+                            ></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row>
+                <!-- <el-row>
                     <el-col :span="11">
                         <el-form-item label="实际结果">
                             <el-input
@@ -75,7 +83,7 @@
                             <el-input v-model="newtesterForm.bugnumber" disabled></el-input>
                         </el-form-item>
                     </el-col>
-                </el-row>
+                </el-row>-->
                 <el-row>
                     <el-col :span="11">
                         <el-form-item label="开始时间" required>
@@ -86,7 +94,19 @@
                             ></el-date-picker>
                         </el-form-item>
                     </el-col>
+
                     <el-col :span="11" :offset="2">
+                        <el-form-item label="结束时间" required>
+                            <el-date-picker
+                                v-model="newtesterForm.testerEndDate"
+                                placeholder="请选择"
+                                v-bind:disabled="disabled"
+                            ></el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
                         <el-form-item label="抄送">
                             <el-input
                                 v-bind:disabled="disabled"
@@ -96,9 +116,7 @@
                             ></el-input>
                         </el-form-item>
                     </el-col>
-                </el-row>
-                <el-row>
-                    <el-col :span="11">
+                    <!-- <el-col :span="11">
                         <el-form-item label="结束时间" required>
                             <el-date-picker
                                 v-model="newtesterForm.testerEndDate"
@@ -106,8 +124,8 @@
                                 v-bind:disabled="disabled"
                             ></el-date-picker>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="11" :offset="2">
+                    </el-col>-->
+                    <!-- <el-col :span="11" :offset="2">
                         <el-form-item label="bug说明">
                             <el-input
                                 type="textarea"
@@ -116,7 +134,7 @@
                                 :rows="8"
                             ></el-input>
                         </el-form-item>
-                    </el-col>
+                    </el-col>-->
                 </el-row>
                 <el-row>
                     <el-col>
@@ -238,7 +256,7 @@ export default {
         } else if (this.operationmode == 'consult') {
             this.newtesterForm.sendUserName = localStorage.getItem('ms_name');
             this.newtesterForm.userName = this.rowdata.userName;
-            debugger
+            debugger;
             this.newtesterForm.taskdetail = this.rowdata.workDescribe;
             this.newtesterForm.estimatedResult = this.rowdata.estimatedResult;
             this.newtesterForm.actualResult = this.rowdata.actualResult;
