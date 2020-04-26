@@ -10,54 +10,52 @@
                     row-key="id"
                     border
                     :default-expand-all="defaultexpand"
-                    :tree-props="{children: 'proList'}">
-                    <el-table-column
-                        prop="proName"
-                        label="项目名称"
-                        sortable
-                        height="40">
-                    </el-table-column>
+                    :tree-props="{children: 'proList'}"
+                >
+                    <el-table-column prop="proName" label="项目名称" sortable height="40"></el-table-column>
                     <el-table-column
                         prop="proNum"
                         label="项目编号"
                         :formatter="renderprojectNo"
                         sortable
-                       height="40">
-                    </el-table-column>
+                        height="40"
+                    ></el-table-column>
                     <el-table-column
                         prop="proState"
                         label="项目状态"
                         :formatter="renderproState"
-                        height="40">
-                    </el-table-column>
+                        height="40"
+                    ></el-table-column>
                     <el-table-column
                         prop="leaderUserIdList"
                         label="项目负责人"
                         :formatter="renderleaderUserIdList"
-                        height="40">
-                    </el-table-column>
+                        height="40"
+                    ></el-table-column>
                     <el-table-column
                         prop="overallStartTime"
                         label="项目开始时间"
                         :formatter="renderStartTimeDate"
-                        height="40">
-                    </el-table-column>
+                        height="40"
+                    ></el-table-column>
                     <el-table-column
                         prop="overallEndTime"
                         label="项目结束时间"
-                        :formatter="renderEndTimeDate" 
-                        height="40">
-                    </el-table-column>
-                    <el-table-column
-                        label="操作"
-                        height="40">
+                        :formatter="renderEndTimeDate"
+                        height="40"
+                    ></el-table-column>
+                    <el-table-column label="操作" height="40">
                         <template slot-scope="scope">
-                            <el-button type="text" icon="el-icon-folder-opened" @click="onRowLookButtonClick(scope.row)">
-                                查看
-                            </el-button>
-                            <el-button type="text" icon="el-icon-edit" @click="onRowUpdateButtonClick(scope.row)" >
-                                编辑
-                            </el-button>
+                            <el-button
+                                type="text"
+                                icon="el-icon-folder-opened"
+                                @click="onRowLookButtonClick(scope.row)"
+                            >查看</el-button>
+                            <el-button
+                                type="text"
+                                icon="el-icon-edit"
+                                @click="onRowUpdateButtonClick(scope.row)"
+                            >编辑</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -69,9 +67,9 @@
             width="80%"
             :append-to-body="true"
             v-if="dialogVisible"
-            :close-on-click-modal='false'
+            :close-on-click-modal="false"
         >
-            <projectPage ref="sonEditproject" ></projectPage>
+            <projectPage ref="sonEditproject"></projectPage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="closeDialogVisible">取 消</el-button>
                 <el-button type="primary" @click="geteditProjectData">确 定</el-button>
@@ -83,9 +81,9 @@
             width="80%"
             :append-to-body="true"
             v-if="dialogNewprojectVisible"
-            :close-on-click-modal='false'
+            :close-on-click-modal="false"
         >
-            <project-information ref="sonNewproject" />
+            <project-information ref="sonNewproject" :proOptions="proOptions" />
             <span slot="footer" class="dialog-footer">
                 <el-button @click="closeDialogVisible">取 消</el-button>
                 <el-button type="primary" @click="getNewProjectData">确 定</el-button>
@@ -120,14 +118,16 @@ export default {
                     projectName: ''
                 }
             ],
-            NewprojectVisibleFlag: ''
+            NewprojectVisibleFlag: '',
+            proOptions: [],
+            checkflag: true
         };
     },
     created() {
         //创建项目权限控制
-        let roleId= localStorage.getItem('ms_roleId');
-        if(roleId ==='0' || roleId ==='1'){
-            this.showNewProject=true;
+        let roleId = localStorage.getItem('ms_roleId');
+        if (roleId === '0' || roleId === '1') {
+            this.showNewProject = true;
         }
         //项目列表加载
         let userData = localStorage.getItem('ms_data');
@@ -141,7 +141,38 @@ export default {
                     this.$message.success('没有权限,请联系Admin!');
                 }
             });
-            
+        }
+
+        //所属项目加载
+        userData = localStorage.getItem('ms_data');
+        if (userData) {
+            this.$api.task.getProjectMess(userData).then(response => {
+                let responsevalue = response;
+                debugger;
+                if (responsevalue) {
+                    let returndata = responsevalue.data;
+                    let proObject = {};
+                    proObject.id = '无';
+                    proObject.name = '该项目为主项目';
+                    proObject.value = '无';
+                    proObject.label = '该项目为主项目';
+                    proObject.level = 0;
+                    this.proOptions.push(proObject);
+                    for (var i = 0; i < returndata.length; i++) {
+                        if (returndata[i]) {
+                            let proObject = {};
+                            proObject.id = returndata[i].id;
+                            proObject.name = returndata[i].proName;
+                            proObject.value = returndata[i].id;
+                            proObject.label = returndata[i].proName;
+                            proObject.level = returndata[i].projectLv;
+                            this.proOptions.push(proObject);
+                        }
+                    }
+                } else {
+                    this.$message.success('所属项目加载失败');
+                }
+            });
         }
     },
     methods: {
@@ -151,41 +182,102 @@ export default {
             localStorage.setItem('list', JSON.stringify(false));
             localStorage.removeItem('pro_id');
         },
+
+        // 校验
+        check() {
+            if (this.$refs.sonNewproject.projectForm.projectName == '') {
+                this.$message.error('请输入项目名称');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.state == '') {
+                this.$message.error('请选择项目状态');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.projectStartDate == '') {
+                this.$message.error('请选择项目开始时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.projectEndDate == '') {
+                this.$message.error('请选择项目结束时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.checkedLeaderId == '') {
+                this.$message.error('请选择项目负责人');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.implStartDate == '') {
+                this.$message.error('请选择实施开始时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.implEndDate == '') {
+                this.$message.error('请选择实施结束时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.checkedImplementerId == '') {
+                this.$message.error('请选择实施人员');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.develStartDate == '') {
+                this.$message.error('请选择开发开始时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.develEndDate == '') {
+                this.$message.error('请选择开发结束时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.checkedDeveloperId == '') {
+                this.$message.error('请选择开发人员');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.testerStartDate == '') {
+                this.$message.error('请选择测试开始时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.testerEndDate == '') {
+                this.$message.error('请选择测试结束时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.checkedTesterId == '') {
+                this.$message.error('请选择测试人员');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.packagerStartDate == '') {
+                this.$message.error('请选择打包时间');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.checkedPackagerId == '') {
+                this.$message.error('请选择打包人员');
+                this.checkflag = false;
+            } else {
+                this.checkflag = true;
+            }
+        },
+
         // 新建确定
         getNewProjectData() {
-            let projectObject = {};
-            projectObject.id = '';
-            projectObject.proName = this.$refs.sonNewproject.projectForm.projectName;
-            projectObject.proNum = this.$refs.sonNewproject.projectForm.projectNumber;
-            projectObject.leaderUserIdList = this.$refs.sonNewproject.checkedLeaderId;
-            projectObject.overallStartTime = this.$refs.sonNewproject.projectForm.projectStartDate;
-            projectObject.overallEndTime = this.$refs.sonNewproject.projectForm.projectEndDate;
-            if (this.$refs.sonNewproject.projectForm.state === '进行中') {
-                projectObject.proState = 0;
-            } else if (this.$refs.sonNewproject.projectForm.state === '暂停') {
-                projectObject.proState = 1;
-            } else if (this.$refs.sonNewproject.projectForm.state === '已作废') {
-                projectObject.proState = 2;
-            } else if (this.$refs.sonNewproject.projectForm.state === '已完结') {
-                projectObject.proState = 3;
-            }
-            projectObject.effectStartTime = this.$refs.sonNewproject.projectForm.implStartDate;
-            projectObject.effectEndTime = this.$refs.sonNewproject.projectForm.implEndDate;
-            projectObject.effectUserIdList = this.$refs.sonNewproject.checkedImplementerId;
-            projectObject.exploitStartTime = this.$refs.sonNewproject.projectForm.develStartDate;
-            projectObject.exploitEndTime = this.$refs.sonNewproject.projectForm.develEndDate;
-            projectObject.exploitUserIdList = this.$refs.sonNewproject.checkedDeveloperId;
-            projectObject.testStartTime = this.$refs.sonNewproject.projectForm.testerStartDate;
-            projectObject.testEndTime = this.$refs.sonNewproject.projectForm.testerEndDate;
-            projectObject.testUserIdList = this.$refs.sonNewproject.checkedTesterId;
-            projectObject.packageTime = this.$refs.sonNewproject.projectForm.packagerStartDate;
-            projectObject.packageUserIdList = this.$refs.sonNewproject.checkedPackagerId;
-            projectObject.effectTaskId = '';
-            projectObject.exploitTaskId = '';
-            projectObject.testTaskId = '';
-            projectObject.guestbookId = '';
-            projectObject.logId = '';
-            /*
+            this.check();
+
+            if (this.checkflag) {
+                let projectObject = {};
+                projectObject.id = '';
+                projectObject.projectLv = this.$refs.sonNewproject.projectForm.level;
+                projectObject.belongProId = this.$refs.sonNewproject.projectForm.belongPro;
+                projectObject.proName = this.$refs.sonNewproject.projectForm.projectName;
+                projectObject.proNum = this.$refs.sonNewproject.projectForm.projectNumber;
+                projectObject.leaderUserIdList = this.$refs.sonNewproject.checkedLeaderId;
+                projectObject.overallStartTime = this.$refs.sonNewproject.projectForm.projectStartDate;
+                projectObject.overallEndTime = this.$refs.sonNewproject.projectForm.projectEndDate;
+                if (this.$refs.sonNewproject.projectForm.state === '进行中') {
+                    projectObject.proState = 0;
+                } else if (this.$refs.sonNewproject.projectForm.state === '暂停') {
+                    projectObject.proState = 1;
+                } else if (this.$refs.sonNewproject.projectForm.state === '已作废') {
+                    projectObject.proState = 2;
+                } else if (this.$refs.sonNewproject.projectForm.state === '已完结') {
+                    projectObject.proState = 3;
+                }
+                projectObject.effectStartTime = this.$refs.sonNewproject.projectForm.implStartDate;
+                projectObject.effectEndTime = this.$refs.sonNewproject.projectForm.implEndDate;
+                projectObject.effectUserIdList = this.$refs.sonNewproject.checkedImplementerId;
+                projectObject.exploitStartTime = this.$refs.sonNewproject.projectForm.develStartDate;
+                projectObject.exploitEndTime = this.$refs.sonNewproject.projectForm.develEndDate;
+                projectObject.exploitUserIdList = this.$refs.sonNewproject.checkedDeveloperId;
+                projectObject.testStartTime = this.$refs.sonNewproject.projectForm.testerStartDate;
+                projectObject.testEndTime = this.$refs.sonNewproject.projectForm.testerEndDate;
+                projectObject.testUserIdList = this.$refs.sonNewproject.checkedTesterId;
+                projectObject.packageTime = this.$refs.sonNewproject.projectForm.packagerStartDate;
+                projectObject.packageUserIdList = this.$refs.sonNewproject.checkedPackagerId;
+                projectObject.effectTaskId = '';
+                projectObject.exploitTaskId = '';
+                projectObject.testTaskId = '';
+                projectObject.guestbookId = '';
+                projectObject.logId = '';
+                /*
             //新建项目发消息
             let userList=[];
             let alluser=[];
@@ -209,10 +301,10 @@ export default {
             let crueatename=localStorage.getItem('ms_name');
             let crueateusername=localStorage.getItem('ms_username');
             */
-            this.$api.task.setProject(projectObject).then(response => {
-                var responsevalue = response;
-                if (responsevalue) {
-                    /*
+                this.$api.task.setProject(projectObject).then(response => {
+                    var responsevalue = response;
+                    if (responsevalue) {
+                        /*
                     //新建项目发消息
                     var dates=new Date();
                     if(alluser.length > 0){
@@ -234,18 +326,18 @@ export default {
                         }
                     }
                     */
-                    this.$message.success('创建成功');
-                    this.dialogNewprojectVisible = false;
-                    this.reload();
-                } else {
-                    this.$message.error('创建失败,请重新创建!');
-                    this.dialogNewprojectVisible = true;
-                    return false;
-                }
-            });
+                        this.$message.success('创建成功');
+                        this.dialogNewprojectVisible = false;
+                        this.reload();
+                    } else {
+                        this.$message.error('创建失败,请重新创建!');
+                        this.dialogNewprojectVisible = true;
+                        return false;
+                    }
+                });
+            }
         },
-        timecomparison(){
-        },
+        timecomparison() {},
         geteditProjectData() {
             this.$refs.sonEditproject.save();
             //项目名
@@ -298,7 +390,7 @@ export default {
         onRowLookButtonClick(row) {
             localStorage.setItem('list', JSON.stringify(true));
             let projectIdS = row.id;
-             localStorage.setItem('pro_id', projectIdS);
+            localStorage.setItem('pro_id', projectIdS);
             this.dialogVisible = true;
         },
         //编辑
@@ -325,7 +417,7 @@ export default {
             this.pageNum = val;
         },
         renderproState(row) {
-            let state='';
+            let state = '';
             if (row.proState === 0) {
                 state = '进行中';
             } else if (row.proState === 1) {
@@ -337,36 +429,36 @@ export default {
             }
             return <div>{state}</div>;
         },
-        renderleaderUserIdList(row){
-            let leadername='';
-            if(row.leaderUserList){
-                let leaderS='';
-                let ledaerArr=row.leaderUserList;
-                if(ledaerArr.length >0){
-                    for(var i=0;i<ledaerArr.length;i++){
-                        if(ledaerArr[i].name){
-                            leaderS+=ledaerArr[i].name+",";
+        renderleaderUserIdList(row) {
+            let leadername = '';
+            if (row.leaderUserList) {
+                let leaderS = '';
+                let ledaerArr = row.leaderUserList;
+                if (ledaerArr.length > 0) {
+                    for (var i = 0; i < ledaerArr.length; i++) {
+                        if (ledaerArr[i].name) {
+                            leaderS += ledaerArr[i].name + ',';
                         }
                     }
                 }
-                if(leaderS.indexOf(",")>-1){
-                    leadername=leaderS.slice(0,leaderS.length -1)
-                }else{
-                    leadername=leaderS;
+                if (leaderS.indexOf(',') > -1) {
+                    leadername = leaderS.slice(0, leaderS.length - 1);
+                } else {
+                    leadername = leaderS;
                 }
             }
             return <div>{leadername}</div>;
         },
         renderStartTimeDate(row) {
             if (row.overallStartTime) {
-                let DateS=new Date(row.overallStartTime);
+                let DateS = new Date(row.overallStartTime);
                 let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
                 return <div>{ovwerS}</div>;
             }
         },
         renderEndTimeDate(row) {
             if (row.overallEndTime) {
-                let DateS=new Date(row.overallEndTime);
+                let DateS = new Date(row.overallEndTime);
                 let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
                 return <div>{ovwerS}</div>;
             }
@@ -376,7 +468,7 @@ export default {
                 let projectNoS = row.proNum;
                 return <div>{projectNoS}</div>;
             }
-        },
+        }
     }
 };
 </script>

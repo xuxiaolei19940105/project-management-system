@@ -12,6 +12,28 @@
                 >
                     <el-row>
                         <el-col :span="6">
+                            <el-form-item label="所属项目">
+                                <el-select
+                                    v-model="projectForm.belongPro"
+                                    @change="selectGet"
+                                    placeholder="请选择"
+                                >
+                                    <el-option
+                                        v-for="item in proOptions"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value"
+                                        :id="item.id"
+                                        :name="item.name"
+                                        :level="item.level"
+                                    ></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="6">
                             <el-form-item label="项目名称">
                                 <el-input v-model="projectForm.projectName"></el-input>
                             </el-form-item>
@@ -190,15 +212,14 @@
 </template>
 <script>
 export default {
+    props: {
+        proOptions: Array
+    },
     data() {
         return {
             disabled: false,
             //人员选择弹窗
-            personOptions: [
-                { id: 1, name: '测试1' },
-                { id: 2, name: '测试2' },
-                { id: 3, name: '测试3' }
-            ],
+            personOptions: [],
             checkedPerson: [],
             checkedLeaderId: [],
             checkedImplementerId: [],
@@ -229,7 +250,10 @@ export default {
                 testers: '',
                 packagers: '',
                 projectNumber: '',
-                state: ''
+                state: '',
+                belongPro: '',
+                level: '',
+                belongProId: ''
             },
             labelPosition: 'left',
             stateOptions: [
@@ -434,6 +458,16 @@ export default {
                 this.checkedPackagerId = this.checkedPerson;
                 this.projectForm.packagers = this.checkedPersonValue.toString();
             }
+        },
+        selectGet(vId) {
+            //这个vId也就是value值
+            let obj = {};
+            obj = this.proOptions.find(item => {
+                //这里的userList就是上面遍历的数据源
+                return item.id === vId; //筛选出匹配数据
+            });
+            //获取level
+            this.projectForm.level = obj.level;
         }
     }
 };

@@ -1,9 +1,9 @@
 <template>
     <div>
         <el-card>
-            <div style="text-align:right;padding-bottom:10px;" v-if="showNewProject">
+            <!-- <div style="text-align:right;padding-bottom:10px;" v-if="showNewProject">
                 <el-button size="mini" @click="newprojectVisible">新建项目</el-button>
-            </div>
+            </div> -->
             <dytable
                 :columns="columns"
                 :table-data="table"
@@ -175,8 +175,10 @@ export default {
         },
 
         // 校验
-        check() {
-            if (this.$refs.sonNewproject.projectForm.projectName == '') {
+        check() { if (this.$refs.sonNewproject.projectForm.projectName == '') {
+                this.$message.error('请输选择所属项目');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.projectName == '') {
                 this.$message.error('请输入项目名称');
                 this.checkflag = false;
             } else if (this.$refs.sonNewproject.projectForm.state == '') {
