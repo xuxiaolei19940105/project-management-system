@@ -42,7 +42,7 @@ export default {
                     opDataObj.belongProId=respData[i].belongProId;
                     opDataObj.id=respData[i].id;
                     let startDateS = new Date(respData[i].inserttime);
-                    let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString();
+                    let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate(),startDateS.getHours(),startDateS.getMinutes(),startDateS.getSeconds())).toISOString();
                     startOvwerS=startOvwerS.slice(0, 10)+"  "+startOvwerS.slice(11, 19);
                     opDataObj.inserttime=startOvwerS;
                     reData.push(opDataObj);
