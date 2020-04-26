@@ -24,7 +24,7 @@
             width="50%"
             :append-to-body="true"
             v-if="dialogNewUserVisible"
-            :close-on-click-modal='false'
+            :close-on-click-modal="false"
         >
             <userinformation ref="sonNewuser" />
             <span slot="footer" class="dialog-footer">
@@ -35,98 +35,105 @@
     </div>
 </template>
 <script>
-import userinformation from '../../components/newUserinformation'
+import userinformation from '../../components/newUserinformation';
 export default {
-    components:{
+    components: {
         userinformation
     },
     inject: ['reload'],
-    data(){
-        const { renderControlColumn} = this;     
-        return{
-            articlesReadyColumns:[
+    data() {
+        const { renderControlColumn } = this;
+        return {
+            articlesReadyColumns: [
                 {
                     key: 'employeeName',
                     title: '姓名',
-                    width:'80px'
+                    width: '80px'
                 },
                 {
                     key: 'employeeCategory',
                     title: '职务',
-                    width:'80px'
+                    width: '80px'
                 },
                 {
                     key: 'employeedetails',
                     render: renderControlColumn,
-                    title: '近30天占用情况',
-                },
+                    title: '近30天占用情况'
+                }
             ],
-            dialogNewUserVisible:false,
-            articlesReadytableData:[],
+            dialogNewUserVisible: false,
+            articlesReadytableData: [],
             pageNum: 1,
             pageSize: 10,
             total: 10,
-            showNewUser:false,
-            PresonOptions:[
+            showNewUser: false,
+            PresonOptions: [
                 {
-                    value:'项目A',
-                    lable:'pr001'
+                    value: '项目A',
+                    lable: 'pr001'
                 },
                 {
-                    value:'项目B',
-                    lable:'pr002'
+                    value: '项目B',
+                    lable: 'pr002'
                 },
                 {
-                    value:'项目C',
-                    lable:'pr003r'
+                    value: '项目C',
+                    lable: 'pr003r'
                 }
             ]
-        }
+        };
     },
     created() {
         //新建人员权限控制
-        let roleId= localStorage.getItem('ms_roleId');
-        if(roleId ==='0'){
-            this.showNewUser=true;
+        let roleId = localStorage.getItem('ms_roleId');
+        if (roleId === '0') {
+            this.showNewUser = true;
         }
         //人员详情
-        this.$api.task.getAllUser().then((response)=>{
-            let responsevalue=response;
-            if(responsevalue){
-                let tabledata=[];
-                let returndata =responsevalue.data;
-                for(var i=0;i<returndata.length;i++){
-                    let proObject={};
-                    proObject.employeeName=returndata[i].name;
-                    proObject.employeeCategory=returndata[i].roleName;
-                    let projectdet=returndata[i].workList;
-                    if(projectdet.length>0){
-                        let projec=[];
-                        for(var j=0;j<projectdet.length;j++){
-                            if(projectdet[j].startTime){
-                                let proObjectdet={};
-                                proObjectdet.projectname=projectdet[j].belongProId;
-                                let starttime = projectdet[j].startTime;
-                                let DateS=new Date(starttime);
-                                let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
-                                proObjectdet.projectstarttime=ovwerS;
-                                let endtime = projectdet[j].endTime;
-                                let endDateS=new Date(endtime);
-                                let endovwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
-                                proObjectdet.projectendtime=endovwerS;
-                                projec.push(proObjectdet);
+        this.$api.task.getAllUser().then(response => {
+            let responsevalue = response;
+            if (responsevalue) {
+                let tabledata = [];
+                let returndata = responsevalue.data;
+                for (var i = 0; i < returndata.length; i++) {
+                    if (returndata[i].authId === 0) {
+                        //
+                    } else {
+                        let proObject = {};
+                        proObject.employeeName = returndata[i].name;
+                        proObject.employeeCategory = returndata[i].roleName;
+                        let projectdet = returndata[i].workList;
+                        if (projectdet.length > 0) {
+                            let projec = [];
+                            for (var j = 0; j < projectdet.length; j++) {
+                                if (projectdet[j].startTime) {
+                                    let proObjectdet = {};
+                                    proObjectdet.projectname = projectdet[j].belongProId;
+                                    let starttime = projectdet[j].startTime;
+                                    let DateS = new Date(starttime);
+                                    let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate()))
+                                        .toISOString()
+                                        .slice(0, 10);
+                                    proObjectdet.projectstarttime = ovwerS;
+                                    let endtime = projectdet[j].endTime;
+                                    let endDateS = new Date(endtime);
+                                    let endovwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                        .toISOString()
+                                        .slice(0, 10);
+                                    proObjectdet.projectendtime = endovwerS;
+                                    projec.push(proObjectdet);
+                                }
                             }
+                            proObject.projectdetail = projec;
+                        } else {
+                            proObject.projectdetail = returndata[i].workList;
                         }
-                        proObject.projectdetail=projec;
-                    }else{
-                        proObject.projectdetail=returndata[i].workList;
+                        tabledata.push(proObject);
                     }
-                    tabledata.push(proObject);
                 }
-                
-                this.articlesReadytableData=tabledata;
-            }else{
-                this.$message.success('请联系Admin!'); 
+                this.articlesReadytableData = tabledata;
+            } else {
+                this.$message.success('请联系Admin!');
             }
         });
     },
@@ -140,147 +147,146 @@ export default {
         onCurrentChange(val) {
             this.pageNum = val;
         },
-        getNewUserData(){
-            var usernameS= this.$refs.sonNewuser.newUserForm.username;
-            if(!usernameS){
+        getNewUserData() {
+            var usernameS = this.$refs.sonNewuser.newUserForm.username;
+            if (!usernameS) {
                 this.$message.success('请输入姓名!');
                 return false;
             }
-            var usernameStrn=this.$refs.sonNewuser.newUserForm.usernameString;
-            if(!usernameStrn){
+            var usernameStrn = this.$refs.sonNewuser.newUserForm.usernameString;
+            if (!usernameStrn) {
                 this.$message.success('请输入用户名!');
                 return false;
-            }else{
+            } else {
                 var reg = new RegExp(/^[a-zA-Z0-9]+$/);
-                if(!reg.test(usernameStrn)){
+                if (!reg.test(usernameStrn)) {
                     this.$message.success('用户名只能输入字母和数字!');
                     return false;
                 }
             }
-            var userroleidS=this.$refs.sonNewuser.newUserForm.userroleid;
-            if(!userroleidS){
+            var userroleidS = this.$refs.sonNewuser.newUserForm.userroleid;
+            if (!userroleidS) {
                 this.$message.success('请选择职位!');
                 return false;
             }
-            var userauthidS=this.$refs.sonNewuser.newUserForm.userauthid;
-            if(!userauthidS){
+            var userauthidS = this.$refs.sonNewuser.newUserForm.userauthid;
+            if (!userauthidS) {
                 this.$message.success('请选择权限!');
                 return false;
             }
             let userObject = {};
-            let worlest=[];
-            let todaydate=new Date();
-            userObject.id='';
-            userObject.name=this.$refs.sonNewuser.newUserForm.username;
-            userObject.username=this.$refs.sonNewuser.newUserForm.usernameString;
-            userObject.password='123456';
-            userObject.roleId=this.$refs.sonNewuser.newUserForm.userroleid;
-            userObject.authId=this.$refs.sonNewuser.newUserForm.userauthid;
-            userObject.state=0;
-            userObject.inserttime=todaydate;
-            userObject.updatetime=todaydate;
-            userObject.workList=worlest;
-            this.$api.task.newdataUser(userObject).then((response)=>{
-                var responsevalue=response;
-                if(responsevalue){
-                    if(responsevalue.data){
+            let worlest = [];
+            let todaydate = new Date();
+            userObject.id = '';
+            userObject.name = this.$refs.sonNewuser.newUserForm.username;
+            userObject.username = this.$refs.sonNewuser.newUserForm.usernameString;
+            userObject.password = '123456';
+            userObject.roleId = this.$refs.sonNewuser.newUserForm.userroleid;
+            userObject.authId = this.$refs.sonNewuser.newUserForm.userauthid;
+            userObject.state = 0;
+            userObject.inserttime = todaydate;
+            userObject.updatetime = todaydate;
+            userObject.workList = worlest;
+            this.$api.task.newdataUser(userObject).then(response => {
+                var responsevalue = response;
+                if (responsevalue) {
+                    if (responsevalue.data) {
                         this.$message.success('创建成功!默认密码:123456');
                         this.dialogNewUserVisible = false;
                         this.reload();
-                    }else{
+                    } else {
                         this.$message.success('用户已存在,请重新创建!');
                         this.dialogNewUserVisible = true;
                     }
-                }else{
+                } else {
                     this.$message.success('创建错误,请重试!');
                     this.dialogNewUserVisible = true;
                 }
-            })
-            
+            });
         },
         /**
          * 格式化时间
          * @param
          */
-        dateformate:function(datestring){
+        dateformate: function(datestring) {
             const dateS = datestring;
-            var dateAa= [];
-            var returnDate='';
+            var dateAa = [];
+            var returnDate = '';
             if (dateS === null || dateS === undefined || dateS === '') {
-                returnDate="00000000";
-            }else{
-                if(dateS.indexOf("-") >0){
-                    dateAa= dateS.split("-");
+                returnDate = '00000000';
+            } else {
+                if (dateS.indexOf('-') > 0) {
+                    dateAa = dateS.split('-');
                 }
-                if(dateAa.length > 0){
-                    for(var i=0;i< dateAa.length;i++){
-                        returnDate+=dateAa[i];
+                if (dateAa.length > 0) {
+                    for (var i = 0; i < dateAa.length; i++) {
+                        returnDate += dateAa[i];
                     }
-                }else{
-                    returnDate=datestring; 
+                } else {
+                    returnDate = datestring;
                 }
             }
-           return  returnDate+"";
+            return returnDate + '';
         },
-         /**
+        /**
          * 判断每一天项目的情况
          * @param
          */
-        timevalible:function(row){
+        timevalible: function(row) {
             const currentdate = new Date();
             var ProjectData = [];
             var rowData = row.projectdetail;
-            for(var i=0;i<30;i++){
+            for (var i = 0; i < 30; i++) {
                 var everydate = new Date(currentdate);
                 everydate.setDate(currentdate.getDate() + i);
-                const dayString=everydate.getDate();
-                var dayMon=everydate.getMonth()+1;
-                if(dayMon < 10)dayMon = "0"+dayMon;
-                var dayDate=everydate.getDate();
-                if(dayDate < 10)dayDate = "0"+dayDate;
-                var dayNumber = everydate.getFullYear()+''+dayMon+''+dayDate;
+                const dayString = everydate.getDate();
+                var dayMon = everydate.getMonth() + 1;
+                if (dayMon < 10) dayMon = '0' + dayMon;
+                var dayDate = everydate.getDate();
+                if (dayDate < 10) dayDate = '0' + dayDate;
+                var dayNumber = everydate.getFullYear() + '' + dayMon + '' + dayDate;
                 const everyData = {};
-                everyData.dayString=dayString+"";
-                everyData.ymdString =everydate.getFullYear()+'-'+dayMon+'-'+dayDate; 
-                const projectobj = this.projecttimevalible(rowData,dayNumber);
-                if(projectobj){
-                    if(projectobj.length > 0){
-                        everyData.typeflag="true";
-                        everyData.projectnameArr=projectobj;
-                    }else{
-                        everyData.typeflag="false";
-                        everyData.projectnameArr=[];
+                everyData.dayString = dayString + '';
+                everyData.ymdString = everydate.getFullYear() + '-' + dayMon + '-' + dayDate;
+                const projectobj = this.projecttimevalible(rowData, dayNumber);
+                if (projectobj) {
+                    if (projectobj.length > 0) {
+                        everyData.typeflag = 'true';
+                        everyData.projectnameArr = projectobj;
+                    } else {
+                        everyData.typeflag = 'false';
+                        everyData.projectnameArr = [];
                     }
-                }else{
-                    everyData.typeflag="false";
-                    everyData.projectnameArr=[];
+                } else {
+                    everyData.typeflag = 'false';
+                    everyData.projectnameArr = [];
                 }
                 ProjectData.push(everyData);
             }
             return ProjectData;
         },
-        projecttimevalible:function(data,crruetime){
-            const projectname=[];
-            for(var i=0;i< data.length;i++){
-                if(data[i]){
-                    const formtime= this.dateformate(data[i].projectstarttime);
+        projecttimevalible: function(data, crruetime) {
+            const projectname = [];
+            for (var i = 0; i < data.length; i++) {
+                if (data[i]) {
+                    const formtime = this.dateformate(data[i].projectstarttime);
                     const totime = this.dateformate(data[i].projectendtime);
-                    if(formtime==totime){
-                        if(formtime ==="00000000"){
+                    if (formtime == totime) {
+                        if (formtime === '00000000') {
                             // empty
-                        }else{
-                            if(formtime === crruetime){
+                        } else {
+                            if (formtime === crruetime) {
                                 projectname.push(data[i].projectname);
                             }
                         }
-                    }else if(formtime > totime){
+                    } else if (formtime > totime) {
                         // empty
-                    }else{
-                        if(crruetime < formtime){
+                    } else {
+                        if (crruetime < formtime) {
                             // empty
-                        }else if(crruetime >totime){
+                        } else if (crruetime > totime) {
                             // empty
-                        }else{
+                        } else {
                             projectname.push(data[i].projectname);
                         }
                     }
@@ -288,39 +294,37 @@ export default {
             }
             return projectname;
         },
-        createtimetable(row){  
-            const ret =[];
-            var indexf=0;
+        createtimetable(row) {
+            const ret = [];
+            var indexf = 0;
             const projectData = this.timevalible(row);
-            for(var i=0;i<projectData.length;i++){
-                indexf=indexf+1;
+            for (var i = 0; i < projectData.length; i++) {
+                indexf = indexf + 1;
                 var children = projectData[i];
-                if(children){
-                    if(children.typeflag ==="true"){
+                if (children) {
+                    if (children.typeflag === 'true') {
                         ret.push(
-                        <div style="width:40px;height:30px;line-height:30px;margin-left:2px;text-align:center;float:left;background:#F56C6C;">
-                            {children.dayString}
-                        </div>
+                            <div style="width:40px;height:30px;line-height:30px;margin-left:2px;text-align:center;float:left;background:#F56C6C;">
+                                {children.dayString}
+                            </div>
                         );
-                    }else{
+                    } else {
                         ret.push(
-                        <div style="width:40px;height:30px;line-height:30px;margin-left:2px;text-align:center;float:left;background:#67C23A;">
-                            {children.dayString}
-                        </div>
+                            <div style="width:40px;height:30px;line-height:30px;margin-left:2px;text-align:center;float:left;background:#67C23A;">
+                                {children.dayString}
+                            </div>
                         );
-                    }  
+                    }
                 }
             }
             return ret;
         },
-        renderControlColumn({row}){
-            var reutnStr =this.createtimetable(row);
-            return <div>{reutnStr}</div>
-
+        renderControlColumn({ row }) {
+            var reutnStr = this.createtimetable(row);
+            return <div>{reutnStr}</div>;
         }
     }
-}
+};
 </script>
 <style scoped>
-
 </style>
