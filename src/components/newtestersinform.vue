@@ -50,7 +50,7 @@
                     <el-col :span="11">
                         <el-form-item label="预计结果">
                             <el-input
-                                v-model="newtesterForm.expectedresults"
+                                v-model="newtesterForm.estimatedResult"
                                 v-bind:disabled="disabled"
                             ></el-input>
                         </el-form-item>
@@ -65,7 +65,7 @@
                     <el-col :span="11">
                         <el-form-item label="实际结果">
                             <el-input
-                                v-model="newtesterForm.actualresults"
+                                v-model="newtesterForm.actualResult"
                                 v-bind:disabled="disabled"
                             ></el-input>
                         </el-form-item>
@@ -191,8 +191,8 @@ export default {
                 userid: '',
                 userName: '',
                 taskdetail: '',
-                expectedresults: '',
-                actualresults: '',
+                estimatedResult: '',
+                actualResult: '',
                 testerStartDate: '',
                 testerEndDate: '',
                 developers: '',
@@ -230,17 +230,18 @@ export default {
             this.newtesterForm.sendUserName = localStorage.getItem('ms_name');
             this.newtesterForm.userName = this.rowdata.userName;
             this.newtesterForm.taskdetail = this.rowdata.workDescribe;
-            this.newtesterForm.expectedresults = this.rowdata.want;
-            this.newtesterForm.actualresults = this.rowdata.actual;
+            this.newtesterForm.estimatedResult = this.rowdata.estimatedResult;
+            this.newtesterForm.actualResult = this.rowdata.actualResult;
             this.newtesterForm.testerStartDate = this.rowdata.starttime;
             this.newtesterForm.testerEndDate = this.rowdata.endtime;
             this.disabled = false;
         } else if (this.operationmode == 'consult') {
             this.newtesterForm.sendUserName = localStorage.getItem('ms_name');
             this.newtesterForm.userName = this.rowdata.userName;
+            debugger
             this.newtesterForm.taskdetail = this.rowdata.workDescribe;
-            this.newtesterForm.expectedresults = this.rowdata.want;
-            this.newtesterForm.actualresults = this.rowdata.actual;
+            this.newtesterForm.estimatedResult = this.rowdata.estimatedResult;
+            this.newtesterForm.actualResult = this.rowdata.actualResult;
             this.newtesterForm.testerStartDate = this.rowdata.starttime;
             this.newtesterForm.testerEndDate = this.rowdata.endtime;
             this.disabled = true;
@@ -253,15 +254,15 @@ export default {
                 this.disabledlevel = false;
             }
             this.newtesterForm.taskdetail = '';
-            this.newtesterForm.expectedresults = '';
-            this.newtesterForm.actualresults = '';
+            this.newtesterForm.expectedresult = '';
+            this.newtesterForm.actualresult = '';
             this.newtesterForm.testerStartDate = '';
             this.newtesterForm.testerEndDate = '';
             this.disabled = false;
         } else {
             this.newtesterForm.taskdetail = '';
-            this.newtesterForm.expectedresults = '';
-            this.newtesterForm.actualresults = '';
+            this.newtesterForm.expectedresult = '';
+            this.newtesterForm.actualresult = '';
             this.newtesterForm.testerStartDate = '';
             this.newtesterForm.testerEndDate = '';
             this.disabled = false;

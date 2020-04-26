@@ -275,8 +275,8 @@ export default {
                 savedata.endtime = this.$refs.sonNewtestinform.newtesterForm.testerEndDate;
                 savedata.belongProId = this.belongProId;
                 savedata.belongTaskId = this.belongTaskId;
-                savedata.estimatedResult = this.$refs.sonNewtestinform.newtesterForm.expectedresults;
-                savedata.actualResult = this.$refs.sonNewtestinform.newtesterForm.actualresults;
+                savedata.estimatedResult = this.$refs.sonNewtestinform.newtesterForm.estimatedResult;
+                savedata.actualResult = this.$refs.sonNewtestinform.newtesterForm.actualResult;
                 //抄送人ID
                 let chaosongID = [];
                 chaosongID = this.$refs.sonNewtestinform.checkedPostId;
