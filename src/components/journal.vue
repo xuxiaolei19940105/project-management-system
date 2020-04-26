@@ -16,11 +16,7 @@
                         >
                             <el-table-column prop="operationDescribe" label="内容"></el-table-column>
                             <el-table-column prop="operationUserName" label="人员" width="180"></el-table-column>
-                            <el-table-column prop="inserttime" label="时间">
-                                <template slot-scope="scope">
-                                    <span>{{ scope.row.inserttime.slice(0, 10)}}</span><span>&nbsp;</span><span>{{ scope.row.inserttime.slice(11, 19)}}</span>
-                                </template>
-                            </el-table-column>
+                            <el-table-column prop="inserttime" label="时间"></el-table-column>
                         </el-table>
                     </div>
                 </el-col>
@@ -35,8 +31,24 @@ export default {
         let projectObjectId = {};
         projectObjectId.id = pro_id;
         this.$api.task.initProData(projectObjectId).then(response => {
-            console.log(response);
-            this.tableData = response.data.logList;
+            let reData=[];
+            let respData=response.data.logList;
+            if(respData.length > 0){
+                for(var i=0; i< respData.length;i++ ){
+                    let opDataObj={};
+                    opDataObj.operationDescribe=respData[i].operationDescribe;
+                    opDataObj.operationUserName=respData[i].operationUserName;
+                    opDataObj.operationUserid=respData[i].operationUserid;
+                    opDataObj.belongProId=respData[i].belongProId;
+                    opDataObj.id=respData[i].id;
+                    let startDateS = new Date(respData[i].inserttime);
+                    let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString();
+                    startOvwerS=startOvwerS.slice(0, 10)+"  "+startOvwerS.slice(11, 19);
+                    opDataObj.inserttime=startOvwerS;
+                    reData.push(opDataObj);
+                }
+            }
+            this.tableData = reData;
         });
     },
     data() {

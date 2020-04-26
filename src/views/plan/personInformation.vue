@@ -99,18 +99,18 @@ export default {
                     let proObject={};
                     proObject.employeeName=returndata[i].name;
                     proObject.employeeCategory=returndata[i].roleName;
-                    let projec=[];
-                    let projectdet=returndata[i].workList;
+                    let projectdet=returndata[i].taskList;
                     if(projectdet.length>0){
+                        let projec=[];
                         for(var j=0;j<projectdet.length;j++){
-                            if(projectdet[j].starttime){
+                            if(projectdet[j].startTime){
                                 let proObjectdet={};
                                 proObjectdet.projectname=projectdet[j].belongProId;
-                                let starttime = projectdet[j].starttime;
+                                let starttime = projectdet[j].startTime;
                                 let DateS=new Date(starttime);
                                 let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
                                 proObjectdet.projectstarttime=ovwerS;
-                                let endtime = projectdet[j].endtime;
+                                let endtime = projectdet[j].endTime;
                                 let endDateS=new Date(endtime);
                                 let endovwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
                                 proObjectdet.projectendtime=endovwerS;
@@ -119,10 +119,11 @@ export default {
                         }
                         proObject.projectdetail=projec;
                     }else{
-                        proObject.projectdetail=returndata[i].workList;
+                        proObject.projectdetail=returndata[i].taskList;
                     }
                     tabledata.push(proObject);
                 }
+                
                 this.articlesReadytableData=tabledata;
             }else{
                 this.$message.success('请联系Admin!'); 

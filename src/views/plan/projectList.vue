@@ -145,11 +145,19 @@ export default {
                             }
                             //proObject.state = returndata[i].proState;
                             proObject.leader = '';
+                            let leaderS='';
+                            let leadername='';
                             for (var j = 0; j < returndata[i].leaderUserList.length; j++) {
                                 if (returndata[i].leaderUserList[j]) {
-                                    proObject.leader += returndata[i].leaderUserList[j].name + ',';
+                                   leaderS+= returndata[i].leaderUserList[j].name + ',';
                                 }
                             }
+                            if(leaderS.indexOf(",")>-1){
+                                leadername=leaderS.slice(0,leaderS.length -1)
+                            }else{
+                                leadername=leaderS;
+                            }
+                            proObject.leader = leadername;
                             var starttime = returndata[i].overallStartTime;
                             // starttime = starttime.split('T')[0];
                             proObject.starttime = starttime;

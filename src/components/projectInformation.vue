@@ -295,6 +295,9 @@ export default {
         });
         //添加项目信息
         let pro_id = localStorage.getItem('pro_id');
+        let disabled = localStorage.getItem('list');
+        let roleId = localStorage.getItem('ms_roleId');
+        let username = localStorage.getItem('ms_name');
         let projectObjectId = {};
         projectObjectId.id = pro_id;
         if (pro_id) {
@@ -327,10 +330,11 @@ export default {
                 this.projectForm.projectStartDate = responseValue.overallStartTime;
                 this.projectForm.projectEndDate = responseValue.overallEndTime;
                 this.projectForm.projectLeader = '';
-
+                let projectLeadeStr="";
                 for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
                     this.projectForm.projectLeader += responseValue.taskList[0].userList[i].name + ',';
                     this.checkedLeaderId.push(responseValue.taskList[0].userList[i].name.id);
+                    projectLeadeStr+=responseValue.taskList[0].userList[i].name + ',';
                 }
                 this.projectForm.implStartDate = responseValue.effectStartTime;
                 this.projectForm.implEndDate = responseValue.effectEndTime;
@@ -358,6 +362,20 @@ export default {
                 for (let i = 0; i < responseValue.taskList[4].userList.length; i++) {
                     this.projectForm.packagers += responseValue.taskList[4].userList[i].name + ',';
                     this.checkedPackagerId.push(responseValue.taskList[4].userList[i].id);
+                }
+                //项目负责人权限控制
+                if (disabled === 'false') {
+                    if (roleId === '0' || roleId === '1') {
+                        this.disabled = false;
+                    } else {
+                        if(projectLeadeStr.indexOf(username)>-1){
+                            this.disabled = false;
+                        }else{
+                            this.disabled = true;
+                        }
+                    }
+                } else {
+                    this.disabled = JSON.parse(disabled);
                 }
             });
         }

@@ -190,9 +190,9 @@ export default {
                         mdata.taskno=param[i].id+"-("+param[i].taskId+")";
                         mdata.taskname=param[i].messageName;
                         mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
-                        var senddate=param[i].inserttime;
-                        senddate=senddate.split("T")[0];
-                        mdata.publishdate=senddate;
+                        let startDateS = new Date(param[i].inserttime);
+                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                        mdata.publishdate=startOvwerS;
                         mdata.taskdetail=param[i].messageDescribe;
                         paramReadydata.push(mdata);
                     }
@@ -223,9 +223,9 @@ export default {
                                 mdata.taskno=param[i].id+"-("+param[i].taskId+")";
                                 mdata.taskname=param[i].messageName;
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
-                                var senddate=param[i].inserttime;
-                                senddate=senddate.split("T")[0];
-                                mdata.publishdate=senddate;
+                                let startDateS = new Date(param[i].inserttime);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                                mdata.publishdate=startOvwerS;
                                 mdata.taskdetail=param[i].messageDescribe;
                                 paramReadydata.push(mdata);
                             }
@@ -250,9 +250,9 @@ export default {
                                 mdata.taskno=param[i].id+"-("+param[i].taskId+")";
                                 mdata.taskname=param[i].messageName;
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
-                                var senddate=param[i].inserttime;
-                                senddate=senddate.split("T")[0];
-                                mdata.publishdate=senddate;
+                                let startDateS = new Date(param[i].inserttime);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                                mdata.publishdate=startOvwerS;
                                 mdata.taskdetail=param[i].messageDescribe;
                                 paramOKdata.push(mdata);
                             }
@@ -277,9 +277,9 @@ export default {
                                 mdata.taskno=param[i].id+"-("+param[i].taskId+")";
                                 mdata.taskname=param[i].messageName;
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
-                                var senddate=param[i].inserttime;
-                                senddate=senddate.split("T")[0];
-                                mdata.publishdate=senddate;
+                                let startDateS = new Date(param[i].inserttime);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                                mdata.publishdate=startOvwerS;
                                 mdata.taskdetail=param[i].messageDescribe;
                                 paramrejdata.push(mdata);
                             }

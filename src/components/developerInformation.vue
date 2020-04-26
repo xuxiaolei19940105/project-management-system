@@ -156,6 +156,10 @@ export default {
             }
             userslsit = userslsit.slice(0, userslsit.length - 1);
             this.projectForm.developers += userslsit;
+            let projectLeadeStr="";
+            for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
+                projectLeadeStr+=responseValue.taskList[0].userList[i].name + ',';
+            }
             //按钮权限
             let disabled = localStorage.getItem('list');
             this.disabled = JSON.parse(disabled);
@@ -166,7 +170,9 @@ export default {
             } else {
                 if (userslsit.indexOf(username) > -1) {
                     this.newdevelopshow = true;
-                } else {
+                }else if(projectLeadeStr.indexOf(username) > -1){
+                    this.newdevelopshow = true;
+                }else {
                     let sssd = JSON.parse(disabled) + '';
                     if (sssd === 'false') {
                         this.disabled = true;
