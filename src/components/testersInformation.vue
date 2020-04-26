@@ -271,8 +271,8 @@ export default {
                 // savedata.userId = this.$refs.sonNewtestinform.checkedUseNameId.toString();
                 savedata.workName = this.$refs.sonNewtestinform.newtesterForm.taskdetail;
                 savedata.workDescribe = this.$refs.sonNewtestinform.newtesterForm.taskdetail;
-                savedata.starttime = this.$refs.sonNewtestinform.newtesterForm.testerStartDate;
-                savedata.endtime = this.$refs.sonNewtestinform.newtesterForm.testerEndDate;
+                savedata.startTime = this.$refs.sonNewtestinform.newtesterForm.testerStartDate;
+                savedata.endTime = this.$refs.sonNewtestinform.newtesterForm.testerEndDate;
                 savedata.belongProId = this.belongProId;
                 savedata.belongTaskId = this.belongTaskId;
                 savedata.estimatedResult = this.$refs.sonNewtestinform.newtesterForm.estimatedResult;

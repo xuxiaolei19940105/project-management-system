@@ -267,8 +267,8 @@ export default {
                 savedata.userId = this.$refs.sonNewimplement.implrmrntForm.userid;
                 savedata.workName = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
                 savedata.workDescribe = this.$refs.sonNewimplement.implrmrntForm.taskdetail;
-                savedata.starttime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
-                savedata.endtime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
+                savedata.startTime = this.$refs.sonNewimplement.implrmrntForm.implementStartDate;
+                savedata.endTime = this.$refs.sonNewimplement.implrmrntForm.implementEndDate;
                 savedata.belongProId = this.projectForm.belongProId;
                 savedata.belongTaskId = this.projectForm.belongTaskId;
                 savedata.deleteFlg = 0;

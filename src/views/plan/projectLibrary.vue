@@ -185,7 +185,10 @@ export default {
 
         // 校验
         check() {
-            if (this.$refs.sonNewproject.projectForm.projectName == '') {
+            if (this.$refs.sonNewproject.projectForm.belongPro == '') {
+                this.$message.error('请选择所属项目');
+                this.checkflag = false;
+            } else if (this.$refs.sonNewproject.projectForm.projectName == '') {
                 this.$message.error('请输入项目名称');
                 this.checkflag = false;
             } else if (this.$refs.sonNewproject.projectForm.state == '') {
