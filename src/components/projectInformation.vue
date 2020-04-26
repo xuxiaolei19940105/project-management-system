@@ -490,7 +490,7 @@ export default {
                 return item.id === vId; //筛选出匹配数据
             });
             //获取level
-            if (this.projectForm.id == '无') {
+            if (this.projectForm.belongPro == '无') {
                 this.projectForm.level = 0;
             } else {
                 debugger;
