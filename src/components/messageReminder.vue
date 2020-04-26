@@ -77,13 +77,13 @@ export default {
                 {
                     key: 'taskno',
                     title: '编号',
-                    width: '100',
+                    width: '50',
                     render:rendermessagetaskid
                 },
                 {
                     key: 'taskname',
                     title: '任务名称',
-                    width: '100'
+                    width: '150'
                 },
                 {
                     key: 'publisher',
@@ -109,13 +109,13 @@ export default {
                 {
                     key: 'taskno',
                     title: '编号',
-                    width: '100',
+                    width: '50',
                     render:rendermessagetaskid
                 },
                 {
                     key: 'taskname',
                     title: '任务名称',
-                    width: '100'
+                    width: '150'
                 },
                 {
                     key: 'publisher',
@@ -143,13 +143,13 @@ export default {
                 {
                     key: 'taskno',
                     title: '编号',
-                    width: '100',
+                    width: '50',
                     render:rendermessagetaskid
                 },
                 {
                     key: 'taskname',
                     title: '任务名称',
-                    width: '100'
+                    width: '150'
                 },
                 {
                     key: 'publisher',
@@ -187,7 +187,8 @@ export default {
                 if(param.length > 0){
                     for(var i=0;i<param.length;i++){
                         let mdata={};
-                        mdata.taskno=param[i].id+"-("+param[i].taskId+")";
+                        let index=i+1;
+                        mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
                         mdata.taskname=param[i].messageName;
                         mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                         let startDateS = new Date(param[i].inserttime);
@@ -220,7 +221,8 @@ export default {
                         if(param.length > 0){
                             for(var i=0;i<param.length;i++){
                                 let mdata={};
-                                mdata.taskno=param[i].id+"-("+param[i].taskId+")";
+                                let index=i+1;
+                                mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
                                 mdata.taskname=param[i].messageName;
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                                 let startDateS = new Date(param[i].inserttime);
@@ -247,7 +249,8 @@ export default {
                         if(param.length > 0){
                             for(var i=0;i<param.length;i++){
                                 let mdata={};
-                                mdata.taskno=param[i].id+"-("+param[i].taskId+")";
+                                let index=i+1;
+                                mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
                                 mdata.taskname=param[i].messageName;
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                                 let startDateS = new Date(param[i].inserttime);
@@ -274,7 +277,8 @@ export default {
                         if(param.length > 0){
                             for(var i=0;i<param.length;i++){
                                 let mdata={};
-                                mdata.taskno=param[i].id+"-("+param[i].taskId+")";
+                                let index=i+1;
+                                mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
                                 mdata.taskname=param[i].messageName;
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                                 let startDateS = new Date(param[i].inserttime);
@@ -323,9 +327,9 @@ export default {
             let crueateid=localStorage.getItem('ms_id');
             let crueatename=localStorage.getItem('ms_name');
             let crueateusername=localStorage.getItem('ms_username');
-             var userS=row.publisher;
-             var userid ="";
-             var userename="";
+            var userS=row.publisher;
+            var userid ="";
+            var userename="";
             if(userS.indexOf("-(")>-1){
                 userid=userS.split("-(")[1];
                 userid=userid.split(")")[0];
@@ -336,7 +340,7 @@ export default {
             }
             var dates=new Date();
             let messageObject={};
-            messageObject.id=row.taskno;
+            messageObject.id="";
             messageObject.taskId=taskid;
             messageObject.messageName=crueatename+" 已经拒绝了任务: "+row.taskname;
             messageObject.messageDescribe=row.taskdetail;
@@ -388,7 +392,8 @@ export default {
             if (v.row.taskno) {
                 var uid=v.row.taskno;
                 if(uid.indexOf("-(")>-1){
-                    uid=uid.split("-(")[0];
+                    uid=uid.split("-(")[1];
+                    uid=uid.split(")")[1];
                 }
                 return <div>{uid}</div>;
             }
