@@ -99,7 +99,7 @@ export default {
                     let proObject={};
                     proObject.employeeName=returndata[i].name;
                     proObject.employeeCategory=returndata[i].roleName;
-                    let projectdet=returndata[i].taskList;
+                    let projectdet=returndata[i].workList;
                     if(projectdet.length>0){
                         let projec=[];
                         for(var j=0;j<projectdet.length;j++){
@@ -119,7 +119,7 @@ export default {
                         }
                         proObject.projectdetail=projec;
                     }else{
-                        proObject.projectdetail=returndata[i].taskList;
+                        proObject.projectdetail=returndata[i].workList;
                     }
                     tabledata.push(proObject);
                 }

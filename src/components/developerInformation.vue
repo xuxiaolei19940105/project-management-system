@@ -130,16 +130,12 @@ export default {
 
             //时间转换
             for (let i = 0; i < responseValue.taskList[2].workList.length; i++) {
-                let startDateS = new Date(responseValue.taskList[2].workList[i].starttime);
-                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
-                    .toISOString()
-                    .slice(0, 10);
+                let startDateS = new Date(responseValue.taskList[2].workList[i].startTime);
+                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
                 responseValue.taskList[2].workList[i].starttime = startOvwerS;
 
-                let endDateS = new Date(responseValue.taskList[2].workList[i].endtime);
-                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
-                    .toISOString()
-                    .slice(0, 10);
+                let endDateS = new Date(responseValue.taskList[2].workList[i].endTime);
+                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
                 responseValue.taskList[2].workList[i].endtime = endOvwerS;
             }
             this.tableData = responseValue.taskList[2].workList;
@@ -228,16 +224,12 @@ export default {
                     let responseValue = response.data;
                     //时间转换
                     for (let i = 0; i < responseValue.taskList[2].workList.length; i++) {
-                        let startDateS = new Date(responseValue.taskList[2].workList[i].starttime);
-                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
-                            .toISOString()
-                            .slice(0, 10);
+                        let startDateS = new Date(responseValue.taskList[2].workList[i].startTime);
+                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
                         responseValue.taskList[2].workList[i].starttime = startOvwerS;
 
-                        let endDateS = new Date(responseValue.taskList[2].workList[i].endtime);
-                        let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
-                            .toISOString()
-                            .slice(0, 10);
+                        let endDateS = new Date(responseValue.taskList[2].workList[i].endTime);
+                        let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
                         responseValue.taskList[2].workList[i].endtime = endOvwerS;
                     }
                     this.tableData = responseValue.taskList[2].workList;
@@ -298,16 +290,12 @@ export default {
                             let responseValue = response.data;
                             //时间转换
                             for (let i = 0; i < responseValue.taskList[2].workList.length; i++) {
-                                let startDateS = new Date(responseValue.taskList[2].workList[i].starttime);
-                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
-                                    .toISOString()
-                                    .slice(0, 10);
+                                let startDateS = new Date(responseValue.taskList[2].workList[i].startTime);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
                                 responseValue.taskList[2].workList[i].starttime = startOvwerS;
 
-                                let endDateS = new Date(responseValue.taskList[2].workList[i].endtime);
-                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
-                                    .toISOString()
-                                    .slice(0, 10);
+                                let endDateS = new Date(responseValue.taskList[2].workList[i].endTime);
+                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
                                 responseValue.taskList[2].workList[i].endtime = endOvwerS;
                             }
                             this.tableData = responseValue.taskList[2].workList;
@@ -358,16 +346,12 @@ export default {
 
                             //时间转换
                             for (let i = 0; i < responseValue.taskList[2].workList.length; i++) {
-                                let startDateS = new Date(responseValue.taskList[2].workList[i].starttime);
-                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
-                                    .toISOString()
-                                    .slice(0, 10);
+                                let startDateS = new Date(responseValue.taskList[2].workList[i].startTime);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
                                 responseValue.taskList[2].workList[i].starttime = startOvwerS;
 
-                                let endDateS = new Date(responseValue.taskList[2].workList[i].endtime);
-                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
-                                    .toISOString()
-                                    .slice(0, 10);
+                                let endDateS = new Date(responseValue.taskList[2].workList[i].endTime);
+                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
                                 responseValue.taskList[2].workList[i].endtime = endOvwerS;
                             }
                             this.tableData = responseValue.taskList[2].workList;
