@@ -86,7 +86,6 @@ export default {
         projectObjectId.id = pro_id;
         this.$api.task.initProData(projectObjectId).then(response => {
             //时间转换
-            debugger;
             for (let i = 0; i < response.data.guestbookList.length; i++) {
                 let DateS = new Date(response.data.guestbookList[i].insertTime);
                 let OvwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);

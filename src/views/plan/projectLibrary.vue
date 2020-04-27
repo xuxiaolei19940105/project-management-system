@@ -147,7 +147,6 @@ export default {
 
         this.$api.task.getAllProList().then(response => {
             let responsevalue = response;
-            debugger;
             if (responsevalue) {
                 let returndata = responsevalue.data;
                 let proObject = {};

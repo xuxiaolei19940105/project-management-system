@@ -219,6 +219,7 @@ export default {
     data() {
         return {
             disabled: false,
+            newprojectshow: false,
             //人员选择弹窗
             personOptions01: [],
             personOptions02: [],
@@ -294,7 +295,6 @@ export default {
                     personOptions.push(proObject);
                 }
                 this.personOptions01 = personOptions;
-                debugger;
             } else {
                 this.$message.success('请联系Admin!');
             }
