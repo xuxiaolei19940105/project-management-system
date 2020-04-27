@@ -178,6 +178,7 @@ export default {
         newprojectVisible() {
             this.dialogNewprojectVisible = true;
             localStorage.setItem('list', JSON.stringify(false));
+            localStorage.setItem('New', JSON.stringify(true));
             localStorage.removeItem('pro_id');
         },
 
@@ -390,6 +391,7 @@ export default {
         // 查看
         onRowLookButtonClick(row) {
             localStorage.setItem('list', JSON.stringify(true));
+            localStorage.setItem('New', JSON.stringify(false));
             let projectIdS = row.id;
             localStorage.setItem('pro_id', projectIdS);
             this.dialogVisible = true;
@@ -397,6 +399,7 @@ export default {
         //编辑
         onRowUpdateButtonClick(row) {
             localStorage.setItem('list', JSON.stringify(false));
+            localStorage.setItem('New', JSON.stringify(false));
             let projectIdS = row.id;
             localStorage.setItem('pro_id', projectIdS);
             this.dialogVisible = true;

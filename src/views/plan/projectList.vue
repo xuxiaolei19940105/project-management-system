@@ -179,6 +179,7 @@ export default {
         newprojectVisible() {
             this.dialogNewprojectVisible = true;
             localStorage.setItem('list', JSON.stringify(false));
+            localStorage.setItem('New', JSON.stringify(true));
             localStorage.removeItem('pro_id');
         },
 
@@ -388,6 +389,7 @@ export default {
         // 查看
         onRowLookButtonClick(row) {
             localStorage.setItem('list', JSON.stringify(true));
+            localStorage.setItem('New', JSON.stringify(false));
             let projectS = row.projectNo;
             let projectIdS = projectS.split('-(')[1];
             projectIdS = projectIdS.split(')')[0];
@@ -404,6 +406,7 @@ export default {
         //编辑
         onRowUpdateButtonClick(row) {
             localStorage.setItem('list', JSON.stringify(false));
+            localStorage.setItem('New', JSON.stringify(false));
             this.dialogVisible = true;
             let projectS = row.projectNo;
             let projectIdS = projectS.split('-(')[1];

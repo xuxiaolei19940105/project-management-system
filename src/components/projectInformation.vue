@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="newprojectshow">
         <el-card class="box-card">
             <div>
                 <el-form
@@ -324,6 +324,8 @@ export default {
         let disabled = localStorage.getItem('list');
         let roleId = localStorage.getItem('ms_roleId');
         let username = localStorage.getItem('ms_name');
+        let NewFlag = localStorage.getItem('New');
+        let authId = localStorage.getItem('ms_authId');
         let projectObjectId = {};
         projectObjectId.id = pro_id;
         if (pro_id) {
@@ -392,6 +394,15 @@ export default {
                     this.checkedPackagerId.push(responseValue.taskList[4].userList[i].id);
                 }
                 //项目负责人权限控制
+                if(NewFlag === 'false'){
+                    if (authId === '0' || authId === '1' || authId === '3') {
+                        this.newprojectshow = true;
+                    }else{
+                        this.newprojectshow = false;
+                    }
+                }else{
+                    this.newprojectshow = true;
+                }
                 if (disabled === 'false') {
                     if (roleId === '0' || roleId === '1') {
                         this.disabled = false;
@@ -411,8 +422,20 @@ export default {
     mounted() {
         //权限控制
         let disabled = localStorage.getItem('list');
+        let NewFlag = localStorage.getItem('New');
+        let roleId = localStorage.getItem('ms_roleId');
+        let authId = localStorage.getItem('ms_authId');
+        if(NewFlag === 'false'){
+            if (authId === '0' || authId === '1' || authId === '3') {
+                this.newprojectshow = true;
+            }else{
+                this.newprojectshow = false;
+            }
+        }else{
+            this.newprojectshow = true;
+        }
         if (disabled === 'false') {
-            let roleId = localStorage.getItem('ms_roleId');
+            
             if (roleId === '0' || roleId === '1') {
                 this.disabled = false;
             } else {

@@ -96,7 +96,7 @@ export default {
                 let tabledata = [];
                 let returndata = responsevalue.data;
                 for (var i = 0; i < returndata.length; i++) {
-                    if (returndata[i].authId === 0) {
+                    if (returndata[i].authId === "0") {
                         //
                     } else {
                         let proObject = {};

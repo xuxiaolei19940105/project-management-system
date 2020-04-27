@@ -153,6 +153,10 @@ export default {
                         localStorage.removeItem('ms_data');
                         localStorage.removeItem('ms_id');
                         localStorage.removeItem('ms_username');
+                        localStorage.removeItem('list');
+                        localStorage.removeItem('ms_roleId');
+                        localStorage.removeItem('pro_id');
+                        localStorage.removeItem('ms_authId');
                         this.$router.push('/login');
                     });
                 } else {
@@ -170,7 +174,9 @@ export default {
                 localStorage.removeItem('ms_id');
                 localStorage.removeItem('ms_username');
                 localStorage.removeItem('list');
+                localStorage.removeItem('ms_roleId');
                 localStorage.removeItem('pro_id');
+                localStorage.removeItem('ms_authId');
                 this.$router.push('/login');
             } else if (command == 'change') {
                 this.dialogVisible = true;
