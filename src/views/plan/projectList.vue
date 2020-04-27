@@ -3,7 +3,7 @@
         <el-card>
             <!-- <div style="text-align:right;padding-bottom:10px;" v-if="showNewProject">
                 <el-button size="mini" @click="newprojectVisible">新建项目</el-button>
-            </div> -->
+            </div>-->
             <dytable
                 :columns="columns"
                 :table-data="table"
@@ -16,6 +16,7 @@
                 @size-change="onSizeChange"
                 v-loading="false"
                 element-loading-text="加载中"
+                :tableRowClassName="tableRowClassName"
             ></dytable>
         </el-card>
         <el-dialog
@@ -24,9 +25,9 @@
             width="80%"
             :append-to-body="true"
             v-if="dialogVisible"
-            :close-on-click-modal='false'
+            :close-on-click-modal="false"
         >
-            <projectPage ref="sonEditproject" ></projectPage>
+            <projectPage ref="sonEditproject"></projectPage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="closeDialogVisible">取 消</el-button>
                 <el-button type="primary" @click="geteditProjectData">确 定</el-button>
@@ -38,7 +39,7 @@
             width="80%"
             :append-to-body="true"
             v-if="dialogNewprojectVisible"
-            :close-on-click-modal='false'
+            :close-on-click-modal="false"
         >
             <project-information ref="sonNewproject" />
             <span slot="footer" class="dialog-footer">
@@ -48,6 +49,20 @@
         </el-dialog>
     </div>
 </template>
+<style>
+.el-table .green {
+    background: rgba(130, 255, 140, 0.2);
+}
+.el-table .gray {
+    background: rgba(192, 192, 192, 0.616);
+}
+.el-table .red {
+    background: rgba(248, 15, 15, 0.178);
+}
+.el-table .white {
+    background: rgba(255, 255, 255, 1);
+}
+</style>
 <script>
 import projectPage from '../../components/projectPage.vue';
 import projectInformation from '../../components/projectInformation.vue';
@@ -145,17 +160,17 @@ export default {
                             }
                             //proObject.state = returndata[i].proState;
                             proObject.leader = '';
-                            let leaderS='';
-                            let leadername='';
+                            let leaderS = '';
+                            let leadername = '';
                             for (var j = 0; j < returndata[i].leaderUserList.length; j++) {
                                 if (returndata[i].leaderUserList[j]) {
-                                   leaderS+= returndata[i].leaderUserList[j].name + ',';
+                                    leaderS += returndata[i].leaderUserList[j].name + ',';
                                 }
                             }
-                            if(leaderS.indexOf(",")>-1){
-                                leadername=leaderS.slice(0,leaderS.length -1)
-                            }else{
-                                leadername=leaderS;
+                            if (leaderS.indexOf(',') > -1) {
+                                leadername = leaderS.slice(0, leaderS.length - 1);
+                            } else {
+                                leadername = leaderS;
                             }
                             proObject.leader = leadername;
                             var starttime = returndata[i].overallStartTime;
@@ -175,6 +190,18 @@ export default {
         }
     },
     methods: {
+        //根据状态改背景色
+        tableRowClassName({ row }) {
+            debugger;
+            if (row.state === '暂停') {
+                return 'gray';
+            } else if (row.state === '已作废') {
+                return 'red';
+            } else if (row.state === '已完结') {
+                return 'green';
+            }
+            return '';
+        },
         // 新建
         newprojectVisible() {
             this.dialogNewprojectVisible = true;
@@ -184,7 +211,8 @@ export default {
         },
 
         // 校验
-        check() { if (this.$refs.sonNewproject.projectForm.projectName == '') {
+        check() {
+            if (this.$refs.sonNewproject.projectForm.projectName == '') {
                 this.$message.error('请输选择所属项目');
                 this.checkflag = false;
             } else if (this.$refs.sonNewproject.projectForm.projectName == '') {
@@ -235,8 +263,8 @@ export default {
             } else if (this.$refs.sonNewproject.projectForm.checkedPackagerId == '') {
                 this.$message.error('请选择打包人员');
                 this.checkflag = false;
-            } else{
-                 this.checkflag = true;
+            } else {
+                this.checkflag = true;
             }
         },
 
@@ -431,14 +459,14 @@ export default {
         },
         renderStartTimeDate(v) {
             if (v.row.starttime) {
-                let DateS=new Date(v.row.starttime);
+                let DateS = new Date(v.row.starttime);
                 let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
                 return <div>{ovwerS}</div>;
             }
         },
         renderEndTimeDate(v) {
             if (v.row.endtime) {
-                let DateS=new Date(v.row.endtime);
+                let DateS = new Date(v.row.endtime);
                 let ovwerS = new Date(Date.UTC(DateS.getFullYear(), DateS.getMonth(), DateS.getDate())).toISOString().slice(0, 10);
                 return <div>{ovwerS}</div>;
             }

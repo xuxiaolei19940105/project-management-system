@@ -6,6 +6,8 @@ export default {
     name: 'dytable',
     props: {
         columns: Array,
+
+        tableRowClassName: String,
         // 查询结果数据
         tableData: {
             type: Array,
@@ -121,6 +123,7 @@ export default {
             pageSizes,
             onCurrentChange,
             onSelectionChange,
+            tableRowClassName,
             onSizeChange,
             renderColumn,
             tableData = [],
@@ -151,8 +154,8 @@ export default {
                     border
                     header-cell-class-name="table-header"
                     on-selection-change={onSelectionChange}
-                    stripe
                     size="small"
+                    row-class-name={tableRowClassName}
                 >
                     {$slots['batch-control'] ? <template slot="control">{$slots['batch-control']}</template> : null}
                     {renderColumns}
