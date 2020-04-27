@@ -83,6 +83,14 @@ const task = {
     //获取人员权限
     getUserAuth() {
         return httpReqest.post('/api/Auth/getAuthList');
+    },
+    //获取管理员用户列表
+    getSystemUserList() {
+        return httpReqest.post('/api/User/getSystemUserList');
+    },
+    //获取所有项目集合
+    getAllProList() {
+        return httpReqest.post('/api/Project/getAllProList');
     }
 };
 

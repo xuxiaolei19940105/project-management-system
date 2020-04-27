@@ -220,6 +220,8 @@ export default {
         return {
             disabled: false,
             //人员选择弹窗
+            personOptions01: [],
+            personOptions02: [],
             personOptions: [],
             checkedPerson: [],
             checkedLeaderId: [],
@@ -279,8 +281,26 @@ export default {
         };
     },
     created() {
-        this.belongdisabled = false;
+        //获取管理员用户列表
+
+        this.$api.task.getSystemUserList().then(response => {
+            let responsevalue = response.data;
+            if (responsevalue) {
+                let personOptions = [];
+                for (var i = 0; i < responsevalue.length; i++) {
+                    let proObject = {};
+                    proObject.id = responsevalue[i].id;
+                    proObject.name = responsevalue[i].name;
+                    personOptions.push(proObject);
+                }
+                this.personOptions01 = personOptions;
+                debugger;
+            } else {
+                this.$message.success('请联系Admin!');
+            }
+        });
         //获取人员
+
         this.$api.task.getAllUser().then(response => {
             let responsevalue = response.data;
             if (responsevalue) {
@@ -291,11 +311,14 @@ export default {
                     proObject.name = responsevalue[i].name;
                     personOptions.push(proObject);
                 }
-                this.personOptions = personOptions;
+                this.personOptions02 = personOptions;
             } else {
                 this.$message.success('请联系Admin!');
             }
         });
+
+        this.belongdisabled = false;
+
         //添加项目信息
         let pro_id = localStorage.getItem('pro_id');
         let disabled = localStorage.getItem('list');
@@ -335,11 +358,11 @@ export default {
                 this.projectForm.projectStartDate = responseValue.overallStartTime;
                 this.projectForm.projectEndDate = responseValue.overallEndTime;
                 this.projectForm.projectLeader = '';
-                let projectLeadeStr="";
+                let projectLeadeStr = '';
                 for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
                     this.projectForm.projectLeader += responseValue.taskList[0].userList[i].name + ',';
                     this.checkedLeaderId.push(responseValue.taskList[0].userList[i].name.id);
-                    projectLeadeStr+=responseValue.taskList[0].userList[i].name + ',';
+                    projectLeadeStr += responseValue.taskList[0].userList[i].name + ',';
                 }
                 this.projectForm.implStartDate = responseValue.effectStartTime;
                 this.projectForm.implEndDate = responseValue.effectEndTime;
@@ -373,9 +396,9 @@ export default {
                     if (roleId === '0' || roleId === '1') {
                         this.disabled = false;
                     } else {
-                        if(projectLeadeStr.indexOf(username)>-1){
+                        if (projectLeadeStr.indexOf(username) > -1) {
                             this.disabled = false;
-                        }else{
+                        } else {
                             this.disabled = true;
                         }
                     }
@@ -449,6 +472,11 @@ export default {
                     this.$message.success('请联系Admin!');
                 }
             });*/
+            if (this.openfrom == 1) {
+                this.personOptions = this.personOptions01;
+            } else {
+                this.personOptions = this.personOptions02;
+            }
             this.dialogVisible = true;
             if (this.openfrom == 1 && this.projectForm.projectLeader) {
                 this.checkedPerson = this.checkedLeaderId;

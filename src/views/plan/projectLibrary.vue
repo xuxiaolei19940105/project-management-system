@@ -144,36 +144,34 @@ export default {
         }
 
         //所属项目加载
-        userData = localStorage.getItem('ms_data');
-        if (userData) {
-            this.$api.task.getProjectMess(userData).then(response => {
-                let responsevalue = response;
-                debugger;
-                if (responsevalue) {
-                    let returndata = responsevalue.data;
-                    let proObject = {};
-                    proObject.id = '无';
-                    proObject.name = '该项目为主项目';
-                    proObject.value = '无';
-                    proObject.label = '该项目为主项目';
-                    proObject.level = 0;
-                    this.proOptions.push(proObject);
-                    for (var i = 0; i < returndata.length; i++) {
-                        if (returndata[i]) {
-                            let proObject = {};
-                            proObject.id = returndata[i].id;
-                            proObject.name = returndata[i].proName;
-                            proObject.value = returndata[i].id;
-                            proObject.label = returndata[i].proName;
-                            proObject.level = returndata[i].projectLv;
-                            this.proOptions.push(proObject);
-                        }
+
+        this.$api.task.getAllProList().then(response => {
+            let responsevalue = response;
+            debugger;
+            if (responsevalue) {
+                let returndata = responsevalue.data;
+                let proObject = {};
+                proObject.id = '无';
+                proObject.name = '该项目为主项目';
+                proObject.value = '无';
+                proObject.label = '该项目为主项目';
+                proObject.level = 0;
+                this.proOptions.push(proObject);
+                for (var i = 0; i < returndata.length; i++) {
+                    if (returndata[i]) {
+                        let proObject = {};
+                        proObject.id = returndata[i].id;
+                        proObject.name = returndata[i].proName;
+                        proObject.value = returndata[i].id;
+                        proObject.label = returndata[i].proName;
+                        proObject.level = returndata[i].projectLv;
+                        this.proOptions.push(proObject);
                     }
-                } else {
-                    this.$message.success('所属项目加载失败');
                 }
-            });
-        }
+            } else {
+                this.$message.success('所属项目加载失败');
+            }
+        });
     },
     methods: {
         // 新建
