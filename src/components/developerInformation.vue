@@ -306,7 +306,7 @@ export default {
                                 if (chaosongID[i]) {
                                     let messageObject = {};
                                     messageObject.id = '';
-                                    messageObject.messageType = '0';
+                                    messageObject.messageType = 0;
                                     messageObject.messageName = '任务邀请:' + taskdetail;
                                     messageObject.messageDescribe = crueatename + '给你配发任务.';
                                     messageObject.sendUserid = crueateid;
@@ -362,7 +362,7 @@ export default {
                                 if (chaosongID[i]) {
                                     let messageObject = {};
                                     messageObject.id = '';
-                                    messageObject.messageType = '0';
+                                    messageObject.messageType = 0;
                                     messageObject.messageName = '任务邀请:' + taskdetail1;
                                     messageObject.messageDescribe = crueatename + '给你配发任务.';
                                     messageObject.sendUserid = crueateid;
