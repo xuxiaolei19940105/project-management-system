@@ -361,37 +361,39 @@ export default {
                 this.projectForm.projectEndDate = responseValue.overallEndTime;
                 this.projectForm.projectLeader = '';
                 let projectLeadeStr = '';
-                for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
-                    this.projectForm.projectLeader += responseValue.taskList[0].userList[i].name + ',';
-                    this.checkedLeaderId.push(responseValue.taskList[0].userList[i].name.id);
-                    projectLeadeStr += responseValue.taskList[0].userList[i].name + ',';
+
+                
+                for (let i = 0; i < responseValue.leaderUserList.length; i++) {
+                    this.projectForm.projectLeader += responseValue.leaderUserList[i].name + ',';
+                    this.checkedLeaderId.push(responseValue.leaderUserList[i].name.id);
+                    projectLeadeStr += responseValue.leaderUserList[i].name + ',';
                 }
                 this.projectForm.implStartDate = responseValue.effectStartTime;
                 this.projectForm.implEndDate = responseValue.effectEndTime;
                 this.projectForm.implementers = '';
-                for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
-                    this.projectForm.implementers += responseValue.taskList[1].userList[i].name + ',';
-                    this.checkedImplementerId.push(responseValue.taskList[1].userList[i].id);
+                for (let i = 0; i < responseValue.effectUserList.length; i++) {
+                    this.projectForm.implementers += responseValue.effectUserList[i].name + ',';
+                    this.checkedImplementerId.push( responseValue.effectUserList[i].id);
                 }
                 this.projectForm.develStartDate = responseValue.exploitStartTime;
                 this.projectForm.develEndDate = responseValue.exploitEndTime;
                 this.projectForm.developers = '';
-                for (let i = 0; i < responseValue.taskList[2].userList.length; i++) {
-                    this.projectForm.developers += responseValue.taskList[2].userList[i].name + ',';
-                    this.checkedDeveloperId.push(responseValue.taskList[2].userList[i].id);
+                for (let i = 0; i < responseValue.exploitUserList.length; i++) {
+                    this.projectForm.developers += responseValue.exploitUserList[i].name + ',';
+                    this.checkedDeveloperId.push(responseValue.exploitUserList[i].id);
                 }
                 this.projectForm.testerStartDate = responseValue.testStartTime;
                 this.projectForm.testerEndDate = responseValue.testEndTime;
                 this.projectForm.testers = '';
-                for (let i = 0; i < responseValue.taskList[3].userList.length; i++) {
-                    this.projectForm.testers += responseValue.taskList[3].userList[i].name + ',';
-                    this.checkedTesterId.push(responseValue.taskList[3].userList[i].id);
+                for (let i = 0; i < responseValue.testUserList.length; i++) {
+                    this.projectForm.testers += responseValue.testUserList[i].name + ',';
+                    this.checkedTesterId.push(responseValue.testUserList[i].id);
                 }
                 this.projectForm.packagerStartDate = responseValue.packageTime;
                 this.projectForm.packagers = '';
-                for (let i = 0; i < responseValue.taskList[4].userList.length; i++) {
-                    this.projectForm.packagers += responseValue.taskList[4].userList[i].name + ',';
-                    this.checkedPackagerId.push(responseValue.taskList[4].userList[i].id);
+                for (let i = 0; i < responseValue.packageUserList.length; i++) {
+                    this.projectForm.packagers += responseValue.packageUserList[i].name + ',';
+                    this.checkedPackagerId.push(responseValue.packageUserList[i].id);
                 }
                 //项目负责人权限控制
                 if(NewFlag === 'false'){
