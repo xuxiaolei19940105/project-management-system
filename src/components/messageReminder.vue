@@ -374,8 +374,10 @@ export default {
                 paramdata.id=row.taskno;
                 paramdata.taskId=taskid;
             }
+            let crueateid=localStorage.getItem('ms_id');
             paramdata.state=1;
             paramdata.messageType=0;
+            paramdata.receiveUserid=crueateid;
             this.$api.task.rejectOrconfirmMessage(paramdata).then(()=>{
                 this.$message.success('任务已确认.');
                 this.reload();
