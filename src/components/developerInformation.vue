@@ -311,10 +311,10 @@ export default {
                                     messageObject.messageDescribe = crueatename + '给你配发任务.';
                                     messageObject.sendUserid = crueateid;
                                     messageObject.receiveUserid = chaosongID[i];
-                                    messageObject.state = '0';
+                                    messageObject.state = 0;
                                     messageObject.inserttime = dates;
                                     messageObject.updatetime = dates;
-                                    messageObject.readTag = '0';
+                                    messageObject.readTag = 0;
                                     messageObject.sendUserName = crueateusername;
                                     messageObject.receiveUserName = '';
                                     this.$api.task.newMessage(messageObject).then(() => {});
@@ -367,10 +367,10 @@ export default {
                                     messageObject.messageDescribe = crueatename + '给你配发任务.';
                                     messageObject.sendUserid = crueateid;
                                     messageObject.receiveUserid = chaosongID[i];
-                                    messageObject.state = '0';
+                                    messageObject.state = 0;
                                     messageObject.inserttime = dates1;
                                     messageObject.updatetime = dates1;
-                                    messageObject.readTag = '0';
+                                    messageObject.readTag = 0;
                                     messageObject.sendUserName = crueateusername;
                                     messageObject.receiveUserName = '';
                                     this.$api.task.newMessage(messageObject).then(() => {});
