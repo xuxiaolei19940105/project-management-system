@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>
-            <project-information ref="sonlookproject" />
+            <project-information ref="sonlookproject" :proOptions="proOptions" />
         </div>
         <div>
             <implementers-information />
@@ -35,7 +35,8 @@ import message from './message.vue';
 import journal from './journal.vue';
 export default {
     props: {
-        rowdata: Object
+        rowdata: Object,
+        proOptions: Array
     },
     components: {
         projectInformation,
@@ -74,12 +75,14 @@ export default {
                 testers: '',
                 packagers: '',
                 projectNumber: '',
-                state: ''
+                state: '',
+                belongPro: '',
+                level: '',
+                belongProId: ''
             }
         };
     },
-    created() {
-    },
+    created() {},
     methods: {
         handleClick(tab, event) {
             console.log(tab, event);
@@ -102,6 +105,9 @@ export default {
             this.projectForm.testerEndDate = this.$refs.sonlookproject.projectForm.testerEndDate;
             this.checkedTesterId = this.$refs.sonlookproject.checkedTesterId;
             this.projectForm.packagerStartDate = this.$refs.sonlookproject.projectForm.packagerStartDate;
+            this.projectForm.belongPro = this.$refs.sonlookproject.projectForm.belongPro;
+            this.projectForm.level = this.$refs.sonlookproject.projectForm.level;
+            this.projectForm.belongProId = this.$refs.sonlookproject.projectForm.belongProId;
             this.checkedPackagerId = this.$refs.sonlookproject.checkedPackagerId;
         }
     }

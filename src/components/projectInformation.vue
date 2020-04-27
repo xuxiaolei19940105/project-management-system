@@ -17,7 +17,6 @@
                                     v-model="projectForm.belongPro"
                                     @change="selectGet"
                                     placeholder="请选择"
-                                    :disabled="belongdisabled"
                                 >
                                     <el-option
                                         v-for="item in proOptions"
@@ -260,7 +259,6 @@ export default {
                 belongProId: ''
             },
             labelPosition: 'left',
-            belongdisabled: false,
             stateOptions: [
                 {
                     value: '进行中',
@@ -283,7 +281,6 @@ export default {
     },
     created() {
         //获取管理员用户列表
-
         this.$api.task.getSystemUserList().then(response => {
             let responsevalue = response.data;
             if (responsevalue) {
@@ -299,8 +296,7 @@ export default {
                 this.$message.success('请联系Admin!');
             }
         });
-        //获取人员
-
+        //获取人员 
         this.$api.task.getAllUser().then(response => {
             let responsevalue = response.data;
             if (responsevalue) {
@@ -317,7 +313,6 @@ export default {
             }
         });
 
-        this.belongdisabled = false;
 
         //添加项目信息
         let pro_id = localStorage.getItem('pro_id');
@@ -326,14 +321,16 @@ export default {
         let username = localStorage.getItem('ms_name');
         let NewFlag = localStorage.getItem('New');
         let authId = localStorage.getItem('ms_authId');
+        
         let projectObjectId = {};
         projectObjectId.id = pro_id;
         if (pro_id) {
             this.$api.task.initProData(projectObjectId).then(response => {
                 let responseValue = response.data;
                 this.projectForm.id = responseValue.id;
-                this.projectForm.belongPro = responseValue.belongProName;
-                this.belongdisabled = true;
+                 this.projectForm.level = responseValue.projectLv;
+                this.projectForm.belongPro = responseValue.belongProId;
+
                 this.projectForm.projectName = responseValue.proName;
                 this.projectForm.projectNumber = responseValue.proNum;
 
@@ -503,17 +500,17 @@ export default {
                 this.personOptions = this.personOptions02;
             }
             this.dialogVisible = true;
-            if (this.openfrom == 1 && this.projectForm.projectLeader) {
-                this.checkedPerson = this.checkedLeaderId;
-            } else if (this.openfrom == 2 && this.projectForm.implementers) {
-                this.checkedPerson = this.checkedImplementerId;
-            } else if (this.openfrom == 3 && this.projectForm.developers) {
-                this.checkedPerson = this.checkedDeveloperId;
-            } else if (this.openfrom == 4 && this.projectForm.testers) {
-                this.checkedPerson = this.checkedTesterId;
-            } else if (this.openfrom == 5 && this.projectForm.packagers) {
-                this.checkedPerson = this.checkedPackagerId;
-            }
+            // if (this.openfrom == 1 && this.projectForm.projectLeader) {
+            //     this.checkedPerson = this.checkedLeaderId;
+            // } else if (this.openfrom == 2 && this.projectForm.implementers) {
+            //     this.checkedPerson = this.checkedImplementerId;
+            // } else if (this.openfrom == 3 && this.projectForm.developers) {
+            //     this.checkedPerson = this.checkedDeveloperId;
+            // } else if (this.openfrom == 4 && this.projectForm.testers) {
+            //     this.checkedPerson = this.checkedTesterId;
+            // } else if (this.openfrom == 5 && this.projectForm.packagers) {
+            //     this.checkedPerson = this.checkedPackagerId;
+            // }
         },
         addPerson: function() {
             this.dialogVisible = false;

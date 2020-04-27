@@ -69,7 +69,7 @@
             v-if="dialogVisible"
             :close-on-click-modal="false"
         >
-            <projectPage ref="sonEditproject"></projectPage>
+            <projectPage ref="sonEditproject" :proOptions="proOptions"></projectPage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="closeDialogVisible">取 消</el-button>
                 <el-button type="primary" @click="geteditProjectData">确 定</el-button>
@@ -144,7 +144,6 @@ export default {
         }
 
         //所属项目加载
-
         this.$api.task.getAllProList().then(response => {
             let responsevalue = response;
             if (responsevalue) {
@@ -345,6 +344,8 @@ export default {
             let projectObject = {};
             projectObject.id = this.$refs.sonEditproject.projectForm.id;
             projectObject.proName = this.$refs.sonEditproject.projectForm.projectName;
+            projectObject.projectLv = this.$refs.sonEditproject.projectForm.level;
+            projectObject.belongProId = this.$refs.sonEditproject.projectForm.belongPro;
             projectObject.proNum = this.$refs.sonEditproject.projectForm.projectNumber;
             projectObject.leaderUserIdList = this.$refs.sonEditproject.checkedLeaderId;
             projectObject.overallStartTime = this.$refs.sonEditproject.projectForm.projectStartDate;
