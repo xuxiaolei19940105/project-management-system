@@ -162,9 +162,22 @@ export default {
             userObject.workList = row.workList;
             userObject.taskList= row.taskList;
             userObject.deleteFlg = 1;
-            this.$api.task.changedataUser(userObject).then(() => {
-                this.reload();
-                this.$message.success('删除成功!');
+            let couruser=row.id;
+            let loginuser=localStorage.getItem('ms_id');
+
+            let messageStr="确认删除"+row.roleName+":"+row.name+"?";
+            let tital="删除用户";
+            this.$confirm(tital,messageStr).then(() => {
+                this.$api.task.changedataUser(userObject).then(() => {
+                    this.reload();
+                    this.$message.success('删除成功!');
+                    if(couruser === loginuser){
+                        this.$message.success('你已被删除，请重新登录!');
+                        this.$router.push('/login');
+                    }
+                });
+            }).catch(() => {
+                this.$message.success('取消删除!');
             });
         },
         renderControlColumn({ row }) {
