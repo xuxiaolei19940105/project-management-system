@@ -118,11 +118,11 @@ export default {
                 },
                 {
                     value: 2,
-                    label: '已完结'
+                    label: '已作废'
                 },
                 {
                     value: 3,
-                    label: '已作废'
+                    label: '已完结'
                 }
             ],
 
