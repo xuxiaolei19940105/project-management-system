@@ -8,6 +8,8 @@ export default {
         columns: Array,
 
         tableRowClassName: null,
+
+        defaultsort: null,
         // 查询结果数据
         tableData: {
             type: Array,
@@ -47,6 +49,10 @@ export default {
         if (targetInstance.dynamicTablePageSizes && typeof targetInstance.dynamicTablePageSizes === 'string') {
             this.pageSizes = targetInstance.dynamicTablePageSizes.split(',');
         }
+    },
+    mounted() {
+        console.log(this.defaultsort);
+        console.log(typeof this.defaultsort);
     },
     methods: {
         /**
@@ -129,7 +135,8 @@ export default {
             tableData = [],
             total,
             isShowPager,
-            $slots
+            $slots,
+            defaultsort = {}
         } = this;
         const renderColumns = [];
         columns.forEach(column => {
@@ -156,6 +163,7 @@ export default {
                     on-selection-change={onSelectionChange}
                     size="small"
                     row-class-name={tableRowClassName}
+                    default-sort={defaultsort}
                 >
                     {$slots['batch-control'] ? <template slot="control">{$slots['batch-control']}</template> : null}
                     {renderColumns}

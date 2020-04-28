@@ -11,13 +11,13 @@
                     border
                     :default-expand-all="defaultexpand"
                     :tree-props="{children: 'proList'}"
+                    :default-sort = "{prop: 'proState', order: 'ascending'}"
                 >
-                    <el-table-column prop="proName" label="项目名称" sortable height="40"></el-table-column>
+                    <el-table-column prop="proName" label="项目名称" height="40"></el-table-column>
                     <el-table-column
                         prop="proNum"
                         label="项目编号"
                         :formatter="renderprojectNo"
-                        sortable
                         height="40"
                     ></el-table-column>
                     <el-table-column

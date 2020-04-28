@@ -17,6 +17,7 @@
                 v-loading="false"
                 element-loading-text="加载中"
                 :tableRowClassName="tableRowClassName"
+                :defaultsort="{prop: 'state', order: 'descending'}"
             ></dytable>
         </el-card>
         <el-dialog
@@ -85,13 +86,13 @@ export default {
             dialogNewImpltaskVisible: false,
             columns: [
                 {
+                    key: 'name',
+                    title: '项目名称'
+                },
+                {
                     key: 'projectNo',
                     title: '项目编号',
                     render: renderprojectNo
-                },
-                {
-                    key: 'name',
-                    title: '项目名称'
                 },
                 {
                     key: 'state',

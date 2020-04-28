@@ -296,7 +296,7 @@ export default {
                 this.$message.success('请联系Admin!');
             }
         });
-        //获取人员 
+        //获取人员
         this.$api.task.getAllUser().then(response => {
             let responsevalue = response.data;
             if (responsevalue) {
@@ -313,7 +313,6 @@ export default {
             }
         });
 
-
         //添加项目信息
         let pro_id = localStorage.getItem('pro_id');
         let disabled = localStorage.getItem('list');
@@ -321,14 +320,14 @@ export default {
         let username = localStorage.getItem('ms_name');
         let NewFlag = localStorage.getItem('New');
         let authId = localStorage.getItem('ms_authId');
-        
+
         let projectObjectId = {};
         projectObjectId.id = pro_id;
         if (pro_id) {
             this.$api.task.initProData(projectObjectId).then(response => {
                 let responseValue = response.data;
                 this.projectForm.id = responseValue.id;
-                 this.projectForm.level = responseValue.projectLv;
+                this.projectForm.level = responseValue.projectLv;
                 this.projectForm.belongPro = responseValue.belongProId;
 
                 this.projectForm.projectName = responseValue.proName;
@@ -358,48 +357,56 @@ export default {
                 this.projectForm.projectEndDate = responseValue.overallEndTime;
                 this.projectForm.projectLeader = '';
                 let projectLeadeStr = '';
-
-                
+                let leaderNameList = [];
                 for (let i = 0; i < responseValue.leaderUserList.length; i++) {
-                    this.projectForm.projectLeader += responseValue.leaderUserList[i].name + ',';
+                    leaderNameList.push(responseValue.leaderUserList[i].name);
+                    this.projectForm.projectLeader = leaderNameList.toString();
                     this.checkedLeaderId.push(responseValue.leaderUserList[i].name.id);
                     projectLeadeStr += responseValue.leaderUserList[i].name + ',';
                 }
                 this.projectForm.implStartDate = responseValue.effectStartTime;
                 this.projectForm.implEndDate = responseValue.effectEndTime;
                 this.projectForm.implementers = '';
+                let effectNameList = [];
                 for (let i = 0; i < responseValue.effectUserList.length; i++) {
-                    this.projectForm.implementers += responseValue.effectUserList[i].name + ',';
-                    this.checkedImplementerId.push( responseValue.effectUserList[i].id);
+                    effectNameList.push(responseValue.effectUserList[i].name);
+                    this.projectForm.implementers = effectNameList.toString();
+                    this.checkedImplementerId.push(responseValue.effectUserList[i].id);
                 }
                 this.projectForm.develStartDate = responseValue.exploitStartTime;
                 this.projectForm.develEndDate = responseValue.exploitEndTime;
                 this.projectForm.developers = '';
+                let exploitNameList = [];
                 for (let i = 0; i < responseValue.exploitUserList.length; i++) {
-                    this.projectForm.developers += responseValue.exploitUserList[i].name + ',';
+                    exploitNameList.push(responseValue.exploitUserList[i].name);
+                    this.projectForm.developers = exploitNameList.toString();
                     this.checkedDeveloperId.push(responseValue.exploitUserList[i].id);
                 }
                 this.projectForm.testerStartDate = responseValue.testStartTime;
                 this.projectForm.testerEndDate = responseValue.testEndTime;
                 this.projectForm.testers = '';
+                let testNameList = [];
                 for (let i = 0; i < responseValue.testUserList.length; i++) {
-                    this.projectForm.testers += responseValue.testUserList[i].name + ',';
+                    testNameList.push(responseValue.testUserList[i].name);
+                    this.projectForm.testers = testNameList.toString();
                     this.checkedTesterId.push(responseValue.testUserList[i].id);
                 }
                 this.projectForm.packagerStartDate = responseValue.packageTime;
                 this.projectForm.packagers = '';
+                let packageNameList = [];
                 for (let i = 0; i < responseValue.packageUserList.length; i++) {
-                    this.projectForm.packagers += responseValue.packageUserList[i].name + ',';
+                    packageNameList.push(responseValue.packageUserList[i].name);
+                    this.projectForm.packagers = packageNameList.toString();
                     this.checkedPackagerId.push(responseValue.packageUserList[i].id);
                 }
                 //项目负责人权限控制
-                if(NewFlag === 'false'){
+                if (NewFlag === 'false') {
                     if (authId === '0' || authId === '1' || authId === '3') {
                         this.newprojectshow = true;
-                    }else{
+                    } else {
                         this.newprojectshow = false;
                     }
-                }else{
+                } else {
                     this.newprojectshow = true;
                 }
                 if (disabled === 'false') {
@@ -424,17 +431,16 @@ export default {
         let NewFlag = localStorage.getItem('New');
         let roleId = localStorage.getItem('ms_roleId');
         let authId = localStorage.getItem('ms_authId');
-        if(NewFlag === 'false'){
+        if (NewFlag === 'false') {
             if (authId === '0' || authId === '1' || authId === '3') {
                 this.newprojectshow = true;
-            }else{
+            } else {
                 this.newprojectshow = false;
             }
-        }else{
+        } else {
             this.newprojectshow = true;
         }
         if (disabled === 'false') {
-            
             if (roleId === '0' || roleId === '1') {
                 this.disabled = false;
             } else {
@@ -516,6 +522,7 @@ export default {
             this.dialogVisible = false;
             this.getval();
             if (this.openfrom == 1) {
+                debugger;
                 this.checkedLeaderId = this.checkedPerson;
                 this.projectForm.projectLeader = this.checkedPersonValue.toString();
             } else if (this.openfrom == 2) {
