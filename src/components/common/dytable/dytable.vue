@@ -7,7 +7,7 @@ export default {
     props: {
         columns: Array,
 
-        tableRowClassName: String,
+        tableRowClassName: null,
         // 查询结果数据
         tableData: {
             type: Array,

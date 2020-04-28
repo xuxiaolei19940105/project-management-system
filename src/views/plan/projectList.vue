@@ -192,7 +192,6 @@ export default {
     methods: {
         //根据状态改背景色
         tableRowClassName({ row }) {
-            debugger;
             if (row.state === '暂停') {
                 return 'gray';
             } else if (row.state === '已作废') {
