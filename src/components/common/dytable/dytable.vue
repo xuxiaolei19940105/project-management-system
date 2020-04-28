@@ -51,8 +51,7 @@ export default {
         }
     },
     mounted() {
-        console.log(this.defaultsort);
-        console.log(typeof this.defaultsort);
+
     },
     methods: {
         /**

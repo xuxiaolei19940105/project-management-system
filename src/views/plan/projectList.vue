@@ -4,6 +4,29 @@
             <!-- <div style="text-align:right;padding-bottom:10px;" v-if="showNewProject">
                 <el-button size="mini" @click="newprojectVisible">新建项目</el-button>
             </div>-->
+            <el-form :inline="true" :model="search" class="demo-form-inline">
+                <el-form-item label="项目名称">
+                    <el-input v-model="search.projectName"></el-input>
+                </el-form-item>
+
+                <el-form-item label="项目状态">
+                    <el-select v-model="search.state" placeholder="请选择项目状态">
+                        <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
+
+                <el-button
+                    type="primary"
+                    style="float:right"
+                    icon="el-icon-search"
+                    @click="searchPro"
+                >查询</el-button>
+            </el-form>
             <dytable
                 :columns="columns"
                 :table-data="table"
@@ -79,6 +102,30 @@ export default {
         const { renderEndTimeDate } = this;
         const { renderprojectNo } = this;
         return {
+            //查询条件
+            search: {
+                projectName: '',
+                state: ''
+            },
+            options: [
+                {
+                    value: 0,
+                    label: '进行中'
+                },
+                {
+                    value: 1,
+                    label: '暂停'
+                },
+                {
+                    value: 2,
+                    label: '已完结'
+                },
+                {
+                    value: 3,
+                    label: '已作废'
+                }
+            ],
+
             operationmode: '',
             showNewProject: false,
             dialogVisible: false,
@@ -143,54 +190,74 @@ export default {
             this.$api.task.getProjectMess(userData).then(response => {
                 let responsevalue = response;
                 if (responsevalue) {
-                    let tabledata = [];
-                    let returndata = responsevalue.data;
-                    for (var i = 0; i < returndata.length; i++) {
-                        if (returndata[i]) {
-                            let proObject = {};
-                            proObject.projectNo = returndata[i].proNum + '-(' + returndata[i].id + ')';
-                            proObject.name = returndata[i].proName;
-                            if (returndata[i].proState === 0) {
-                                proObject.state = '进行中';
-                            } else if (returndata[i].proState === 1) {
-                                proObject.state = '暂停';
-                            } else if (returndata[i].proState === 2) {
-                                proObject.state = '已作废';
-                            } else if (returndata[i].proState === 3) {
-                                proObject.state = '已完结';
-                            }
-                            //proObject.state = returndata[i].proState;
-                            proObject.leader = '';
-                            let leaderS = '';
-                            let leadername = '';
-                            for (var j = 0; j < returndata[i].leaderUserList.length; j++) {
-                                if (returndata[i].leaderUserList[j]) {
-                                    leaderS += returndata[i].leaderUserList[j].name + ',';
-                                }
-                            }
-                            if (leaderS.indexOf(',') > -1) {
-                                leadername = leaderS.slice(0, leaderS.length - 1);
-                            } else {
-                                leadername = leaderS;
-                            }
-                            proObject.leader = leadername;
-                            var starttime = returndata[i].overallStartTime;
-                            // starttime = starttime.split('T')[0];
-                            proObject.starttime = starttime;
-                            var endtime = returndata[i].overallEndTime;
-                            // endtime = endtime.split('T')[0];
-                            proObject.endtime = endtime;
-                            tabledata.push(proObject);
-                        }
-                    }
-                    this.table = tabledata;
+                    this.initTable(responsevalue);
                 } else {
-                    this.$message.success('没有权限,请联系Admin!');
+                    this.$message.success('没有获取到项目列表');
                 }
             });
         }
     },
     methods: {
+        //初始化表格
+        initTable(responsevalue) {
+            let tabledata = [];
+            let returndata = responsevalue.data;
+            for (var i = 0; i < returndata.length; i++) {
+                if (returndata[i]) {
+                    let proObject = {};
+                    proObject.projectNo = returndata[i].proNum + '-(' + returndata[i].id + ')';
+                    proObject.name = returndata[i].proName;
+                    if (returndata[i].proState === 0) {
+                        proObject.state = '进行中';
+                    } else if (returndata[i].proState === 1) {
+                        proObject.state = '暂停';
+                    } else if (returndata[i].proState === 2) {
+                        proObject.state = '已作废';
+                    } else if (returndata[i].proState === 3) {
+                        proObject.state = '已完结';
+                    }
+                    proObject.leader = '';
+                    let leaderS = '';
+                    let leadername = '';
+                    for (var j = 0; j < returndata[i].leaderUserList.length; j++) {
+                        if (returndata[i].leaderUserList[j]) {
+                            leaderS += returndata[i].leaderUserList[j].name + ',';
+                        }
+                    }
+                    if (leaderS.indexOf(',') > -1) {
+                        leadername = leaderS.slice(0, leaderS.length - 1);
+                    } else {
+                        leadername = leaderS;
+                    }
+                    proObject.leader = leadername;
+                    var starttime = returndata[i].overallStartTime;
+                    proObject.starttime = starttime;
+                    var endtime = returndata[i].overallEndTime;
+                    proObject.endtime = endtime;
+                    tabledata.push(proObject);
+                }
+            }
+            this.table = tabledata;
+        },
+
+        //根据条件查询项目列表
+        searchPro() {
+            let projectCondition = {};
+            projectCondition.proName = this.search.projectName;
+            projectCondition.proState = this.search.state;
+            if (projectCondition) {
+                this.$api.task.getProjectMessByCondition(projectCondition).then(response => {
+                    console.log(response);
+                    let responsevalue = response;
+                    if (responsevalue) {
+                        this.initTable(responsevalue);
+                    } else {
+                        this.$message.success('没有符合条件的项目');
+                    }
+                });
+            }
+        },
+
         //根据状态改背景色
         tableRowClassName({ row }) {
             if (row.state === '暂停') {

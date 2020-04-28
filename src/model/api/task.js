@@ -32,6 +32,10 @@ const task = {
     getProjectMess(params) {
         return httpReqest.post('/api/Project/getProList', params);
     },
+    //获取项目信息
+    getProjectMessByCondition(params) {
+        return httpReqest.post('/api/Project/getProListByCondition', params);
+    },
     //获取人员情况
     getAllUser() {
         return httpReqest.post('/api/User/findAll');
