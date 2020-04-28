@@ -37,6 +37,15 @@ export default new Router({
                         title: '人员占用情况表'
                     }
                 },
+                {
+                    path: 'persondetail',
+                    name: 'persondetail',
+                    component: () =>
+                        import ( /* webpackChunkName: "tabs" */ '../views/plan/personneldetails.vue'),
+                    meta: {
+                        title: '人员信息'
+                    }
+                }
             ]
         },
         {

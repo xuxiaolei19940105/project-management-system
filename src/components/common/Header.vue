@@ -147,6 +147,7 @@ export default {
                 if (valid) {
                     let userdata = JSON.parse(localStorage.getItem('ms_data'));
                     userdata.password = this.ruleForm.checkPass;
+                    userdata.deleteFlg = 0;
                     userdata.workList = [];
                     this.$api.task.changedataUser(userdata).then(() => {
                         localStorage.removeItem('ms_name');

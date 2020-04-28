@@ -30,7 +30,7 @@
                 <el-row>
                     <el-col :span="24">
                         <el-form-item label="职位">
-                            <el-select v-model="newUserForm.userroleid" placeholder="请选择">
+                            <el-select v-model="newUserForm.userroleid" value-key="id" placeholder="请选择">
                                 <el-option
                                     v-for="item in roleoptions"
                                     :key="item.id"
@@ -44,7 +44,7 @@
                 <el-row>
                     <el-col :span="24">
                         <el-form-item label="权限分配">
-                            <el-select v-model="newUserForm.userauthid" placeholder="请选择">
+                            <el-select v-model="newUserForm.userauthid" value-key="id" placeholder="请选择">
                                 <el-option
                                     v-for="item in authoptions"
                                     :key="item.id"
@@ -61,10 +61,15 @@
 </template>
 <script>
 export default {
+    props: {
+        rowdata: Object,
+        operationmode: String
+    },
     data(){
         return {
             labelPosition: 'left',
             newUserForm: {
+                id:'',
                 username: '',
                 userroleid: '',
                 userauthid: '',
@@ -76,10 +81,18 @@ export default {
     },
     created() {
         //获取人员角色
+        if (this.operationmode == 'edit') {
+            this.newUserForm.id=this.rowdata.id;
+            this.newUserForm.username=this.rowdata.name;
+            this.newUserForm.usernameString=this.rowdata.username;
+        }
         this.$api.task.getUserRole().then(response => {
             let responsevalue = response.data;
             if (responsevalue) {
                 this.roleoptions=responsevalue;
+                if (this.operationmode == 'edit') {
+                    this.newUserForm.userroleid=this.rowdata.roleId;
+                }
             }else {
                 this.$message.success('请联系Admin!');
             }
@@ -88,6 +101,9 @@ export default {
             let responsevalue = response.data;
             if (responsevalue) {
                this.authoptions=responsevalue;
+               if (this.operationmode == 'edit') {
+                    this.newUserForm.userauthid=this.rowdata.authId;
+                }
             }else {
                 this.$message.success('请联系Admin!');
             }

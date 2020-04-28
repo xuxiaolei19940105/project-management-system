@@ -40,21 +40,6 @@
                             element-loading-text="加载中"
                         ></dytable>
                     </el-tab-pane>
-                    <el-tab-pane label="拒绝消息" name="Third" >
-                        <dytable
-                            :columns="articlesRejectColumns"
-                            :table-data="articlesRejecttableData"
-                            :total="total"
-                            ref="multipleTable"
-                            :page-num="pageNum"
-                            :page-size="pageSize"
-                            @current-change="onCurrentChange"
-                            @on-selection-change="onSelectionChange"
-                            @size-change="onSizeChange"
-                            v-loading="false"
-                            element-loading-text="加载中"
-                        ></dytable>
-                    </el-tab-pane>
                 </el-tabs>
             </div>
         </el-card>
@@ -105,40 +90,7 @@ export default {
                     width: '260px'
                 }
             ],
-            articlesRejectColumns:[
-                {
-                    key: 'taskno',
-                    title: '编号',
-                    width: '50',
-                    render:rendermessagetaskid
-                },
-                {
-                    key: 'taskname',
-                    title: '任务名称',
-                    width: '150'
-                },
-                {
-                    key: 'publisher',
-                    title: '发布者',
-                    render: rendermessagesender,
-                    width: '100'
-                },
-                {
-                    key: 'publishdate',
-                    title: '发布时间'
-                },
-                {
-                    key: 'taskdetail',
-                    title: '任务详情'
-                },
-                {
-                    title: '操作',
-                    render: renderControlColumn,
-                    width: '260px'
-                }
-            ],
             articlesReadytableData:[],
-            articlesRejecttableData:[],
             articlesDoneColumns: [
                 {
                     key: 'taskno',
@@ -236,7 +188,7 @@ export default {
                         //this.reload();
                         this.atctiveName="first";
                     });
-                }else if(tabsname ==="second"){
+                }else{
                     //已办消息的已接收消息
                     let userid = localStorage.getItem('ms_id');
                     let paramdata={};
@@ -264,7 +216,8 @@ export default {
                         //this.reload();
                         this.atctiveName="second";
                     });
-                }else{
+                }
+                /*else{
                     //已拒绝消息
                     let userid = localStorage.getItem('ms_id');
                     let paramdatare={};
@@ -293,6 +246,7 @@ export default {
                         //this.reload();
                     });
                 }
+                */
             }
         },
         //分页

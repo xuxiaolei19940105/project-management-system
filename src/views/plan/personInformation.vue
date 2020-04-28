@@ -26,7 +26,7 @@
             v-if="dialogNewUserVisible"
             :close-on-click-modal="false"
         >
-            <userinformation ref="sonNewuser" />
+            <userinformation ref="sonNewuser" :rowdata="rowdata" :operationmode="operationmode"/>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewUserVisible=false">取 消</el-button>
                 <el-button type="primary" @click="getNewUserData">确 定</el-button>
@@ -67,6 +67,8 @@ export default {
             pageSize: 10,
             total: 10,
             showNewUser: false,
+            rowdata: {},
+            operationmode: 'new',
             PresonOptions: [
                 {
                     value: '项目A',
@@ -187,6 +189,7 @@ export default {
             userObject.inserttime = todaydate;
             userObject.updatetime = todaydate;
             userObject.workList = worlest;
+            userObject.deleteFlg = 0;
             this.$api.task.newdataUser(userObject).then(response => {
                 var responsevalue = response;
                 if (responsevalue) {
