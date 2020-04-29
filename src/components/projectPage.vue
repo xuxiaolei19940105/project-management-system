@@ -66,6 +66,11 @@ export default {
             checkedDeveloperId: [],
             checkedTesterId: [],
             checkedPackagerId: [],
+            oldLeaderId: [],
+            oldImplementerId: [],
+            oldDeveloperId: [],
+            oldTesterId: [],
+            oldPackagerId: [],
             projectForm: {
                 id: '',
                 projectName: '',
@@ -122,6 +127,11 @@ export default {
             this.projectForm.level = this.$refs.sonlookproject.projectForm.level;
             this.projectForm.belongProId = this.$refs.sonlookproject.projectForm.belongProId;
             this.checkedPackagerId = this.$refs.sonlookproject.checkedPackagerId;
+            this.oldLeaderId = this.$refs.sonlookproject.oldLeaderId;
+            this.oldImplementerId = this.$refs.sonlookproject.oldImplementerId;
+            this.oldDeveloperId = this.$refs.sonlookproject.oldDeveloperId;
+            this.oldTesterId = this.$refs.sonlookproject.oldTesterId;
+            this.oldPackagerId = this.$refs.sonlookproject.oldPackagerId;
         },
         getProjectData() {
             this.$refs.sonlookproject.getProjectData();

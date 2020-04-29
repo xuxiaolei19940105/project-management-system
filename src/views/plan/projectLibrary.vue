@@ -316,7 +316,6 @@ export default {
             this.check();
             if (this.checkflag) {
                 //人员占用
-                debugger;
                 let projectObject = {};
                 projectObject.overallStartTime = this.$refs.sonNewproject.projectForm.projectStartDate.toISOString();
                 projectObject.overallEndTime = this.$refs.sonNewproject.projectForm.projectEndDate.toISOString();
@@ -347,8 +346,9 @@ export default {
 
                         _this.tipTable = response.data;
                     } else {
-                        _this.getProjectData();
-                        _this.tipDialogVisible = false;
+                        _this.$refs.sonNewproject.getProjectData();
+                        //_this.getProjectData();
+                        _this.$refs.sonNewproject.tipDialogVisible = false;
                     }
                 });
             }

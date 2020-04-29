@@ -280,6 +280,11 @@ export default {
             checkedDeveloperId: [],
             checkedTesterId: [],
             checkedPackagerId: [],
+            oldLeaderId: [],
+            oldImplementerId: [],
+            oldDeveloperId: [],
+            oldTesterId: [],
+            oldPackagerId: [],
             checkedPersonValue: [],
             dialogVisible: false,
             openfrom: '',
@@ -414,17 +419,21 @@ export default {
                     leaderNameList.push(responseValue.leaderUserList[i].name);
                     this.projectForm.projectLeader = leaderNameList.toString();
                     this.checkedLeaderId.push(responseValue.leaderUserList[i].id);
+                    this.oldLeaderId.push(responseValue.leaderUserList[i].id);
                     projectLeadeStr += responseValue.leaderUserList[i].name + ',';
                 }
                 this.projectForm.implStartDate = responseValue.effectStartTime;
                 this.projectForm.implEndDate = responseValue.effectEndTime;
                 this.projectForm.implementers = '';
                 let effectNameList = [];
+                let effectidList = [];
                 for (let j = 0; j < responseValue.effectUserList.length; j++) {
                     effectNameList.push(responseValue.effectUserList[j].name);
                     this.projectForm.implementers = effectNameList.toString();
                     this.checkedImplementerId.push(responseValue.effectUserList[j].id);
+                    effectidList.push(responseValue.effectUserList[j].id);
                 }
+                this.oldImplementerId=effectidList;
                 this.projectForm.develStartDate = responseValue.exploitStartTime;
                 this.projectForm.develEndDate = responseValue.exploitEndTime;
                 this.projectForm.developers = '';
@@ -433,15 +442,17 @@ export default {
                     exploitNameList.push(responseValue.exploitUserList[k].name);
                     this.projectForm.developers = exploitNameList.toString();
                     this.checkedDeveloperId.push(responseValue.exploitUserList[k].id);
+                    this.oldDeveloperId.push(responseValue.exploitUserList[k].id);                
                 }
-                this.projectForm.testerStartDate = responseValue.testStartTime;
-                this.projectForm.testerEndDate = responseValue.testEndTime;
-                this.projectForm.testers = '';
-                let testNameList = [];
+                    this.projectForm.testerStartDate = responseValue.testStartTime;
+                    this.projectForm.testerEndDate = responseValue.testEndTime;
+                    this.projectForm.testers = '';
+                    let testNameList = [];
                 for (let g = 0; g < responseValue.testUserList.length; g++) {
                     testNameList.push(responseValue.testUserList[g].name);
                     this.projectForm.testers = testNameList.toString();
                     this.checkedTesterId.push(responseValue.testUserList[g].id);
+                    this.oldTesterId.push(responseValue.testUserList[g].id);                
                 }
                 this.projectForm.packagerStartDate = responseValue.packageTime;
                 this.projectForm.packagers = '';
@@ -450,6 +461,7 @@ export default {
                     packageNameList.push(responseValue.packageUserList[h].name);
                     this.projectForm.packagers = packageNameList.toString();
                     this.checkedPackagerId.push(responseValue.packageUserList[h].id);
+                    this.oldPackagerId.push(responseValue.packageUserList[h].id);                
                 }
                 //项目负责人权限控制
                 if (NewFlag === 'false') {
@@ -641,7 +653,6 @@ export default {
             this.dialogVisible = false;
             this.getval();
             if (this.openfrom == 1) {
-                debugger;
                 this.checkedLeaderId = this.checkedPerson;
                 this.projectForm.projectLeader = this.checkedPersonValue.toString();
             } else if (this.openfrom == 2) {

@@ -43,21 +43,41 @@
                 </el-tabs>
             </div>
         </el-card>
+        <el-dialog
+            title="项目信息"
+            :visible.sync="dialogVisible"
+            width="80%"
+            :append-to-body="true"
+            v-if="dialogVisible"
+            :close-on-click-modal="false"
+        >
+            <projectPage ref="sonEditproject"></projectPage>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible =false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible =false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
+import projectPage from './projectPage.vue';
 export default {
+    components: {
+        projectPage,
+    },
     name: 'tabs',
     inject:['reload'],
     data(){
         const { renderControlColumn } = this;
         const { rendermessagesender } = this;
         const { rendermessagetaskid } = this;
+        const { rendermessageprojectid } = this;
         return{
             atctiveName: 'first',
             pageNum: 1,
             pageSize: 2,
             total: 10,
+            dialogVisible:false,
             articlesReadyColumns: [
                 {
                     key: 'taskno',
@@ -69,6 +89,12 @@ export default {
                     key: 'taskname',
                     title: '任务名称',
                     width: '150'
+                },
+                {
+                    key: 'projectname',
+                    title: '所属项目',
+                    width: '150',
+                    render:rendermessageprojectid
                 },
                 {
                     key: 'publisher',
@@ -104,6 +130,12 @@ export default {
                     width: '150'
                 },
                 {
+                    key: 'projectname',
+                    title: '所属项目',
+                    width: '150',
+                    render:rendermessageprojectid
+                },
+                {
                     key: 'publisher',
                     title: '发布者',
                     render: rendermessagesender,
@@ -137,6 +169,7 @@ export default {
                         let index=i+1;
                         mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
                         mdata.taskname=param[i].messageName;
+                        mdata.projectname="查看项目-("+param[i].correlationProId+")";
                         mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                         let startDateS = new Date(param[i].inserttime);
                         let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
@@ -171,6 +204,7 @@ export default {
                                 let index=i+1;
                                 mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
                                 mdata.taskname=param[i].messageName;
+                                mdata.projectname="查看项目-("+param[i].correlationProId+")";
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                                 let startDateS = new Date(param[i].inserttime);
                                 let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
@@ -198,7 +232,8 @@ export default {
                                 let mdata={};
                                 let index=i+1;
                                 mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
-                                mdata.taskname=param[i].messageName;
+                                mdata.taskname=param[i].messageName;                                
+                                mdata.projectname="查看项目-("+param[i].correlationProId+")";
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                                 let startDateS = new Date(param[i].inserttime);
                                 let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
@@ -348,6 +383,39 @@ export default {
                 }
                 return <div>{uid}</div>;
             }
+        },
+        onRowProjectnameClick(row){
+            localStorage.setItem('list', JSON.stringify(true));
+            localStorage.setItem('New', JSON.stringify(false));
+            let projectS = row.projectname;
+            let projectIdS = projectS.split('-(')[1];
+            projectIdS = projectIdS.split(')')[0];
+            this.dialogVisible = true;
+            // let projectObjectId = {};
+            // projectObjectId.id = row.id;
+            localStorage.setItem('pro_id', projectIdS);
+            let proName=projectS.split("-(")[0];
+            localStorage.setItem('pro_name', proName);
+        },
+        rendermessageprojectid(V){
+            const { onRowProjectnameClick } = this;
+            const  ret =[];
+            let proIDStr="";
+            let proName="";
+            if(V.row.projectname){
+                proIDStr=V.row.projectname;
+                if(proIDStr.indexOf("-(")>-1){
+                    proName=proIDStr.split("-(")[0];
+                }
+                ret.push(
+                    <div>
+                        <el-button type="text" icon="el-icon-link" onClick={() => onRowProjectnameClick(V.row)}>
+                            {proName}
+                        </el-button>
+                    </div>
+                );
+            }
+            return <div>{ret}</div>; 
         },
         renderControlColumn({row}){
             const { onRowRefuseButtonClick, onRowAgreeButtonClick } = this;

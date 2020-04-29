@@ -99,6 +99,14 @@ const task = {
     //获取时间冲突工作集合
     getUniteWorkList(params) {
         return httpReqest.post('/api/Work/getUniteWorkList', params);
+    },
+    //项目添加用户发信
+    addProjectUser(params) {
+        return httpReqest.post('/api/Project/addUser', params);
+    },
+    //项目移除用户发信
+    removeProjectUser(params) {
+        return httpReqest.post('/api/Project/removeUser', params);
     }
 };
 
