@@ -488,6 +488,8 @@ export default {
             let projectS = row.projectNo;
             let projectIdS = projectS.split('-(')[1];
             projectIdS = projectIdS.split(')')[0];
+            let projectName = row.name;
+            localStorage.setItem('pro_name', projectName);
             this.dialogVisible = true;
             // let projectObjectId = {};
             // projectObjectId.id = row.id;
@@ -507,6 +509,8 @@ export default {
             let projectIdS = projectS.split('-(')[1];
             projectIdS = projectIdS.split(')')[0];
             localStorage.setItem('pro_id', projectIdS);
+            let projectName = row.name;
+            localStorage.setItem('pro_name', projectName);
         },
 
         closeDialogVisible() {

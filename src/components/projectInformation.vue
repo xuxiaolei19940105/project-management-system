@@ -209,6 +209,11 @@
             </span>
         </el-dialog>
     </div>
+    <div v-else>
+        <el-card class="box-card">
+            项目名称: {{projectName}}
+        </el-card>
+    </div>
 </template>
 <script>
 export default {
@@ -217,6 +222,7 @@ export default {
     },
     data() {
         return {
+            projectName:'',
             disabled: false,
             newprojectshow: false,
             //人员选择弹窗
@@ -320,7 +326,8 @@ export default {
         let username = localStorage.getItem('ms_name');
         let NewFlag = localStorage.getItem('New');
         let authId = localStorage.getItem('ms_authId');
-
+        let pro_name = localStorage.getItem('pro_name');
+        this.projectName =pro_name;
         let projectObjectId = {};
         projectObjectId.id = pro_id;
         if (pro_id) {

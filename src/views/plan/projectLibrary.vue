@@ -394,6 +394,8 @@ export default {
             localStorage.setItem('New', JSON.stringify(false));
             let projectIdS = row.id;
             localStorage.setItem('pro_id', projectIdS);
+            let projectName = row.proName;
+            localStorage.setItem('pro_name', projectName);
             this.dialogVisible = true;
         },
         //编辑
@@ -402,6 +404,8 @@ export default {
             localStorage.setItem('New', JSON.stringify(false));
             let projectIdS = row.id;
             localStorage.setItem('pro_id', projectIdS);
+            let projectName = row.proName;
+            localStorage.setItem('pro_name', projectName);
             this.dialogVisible = true;
         },
 
