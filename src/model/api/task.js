@@ -95,6 +95,10 @@ const task = {
     //获取所有项目集合
     getAllProList() {
         return httpReqest.post('/api/Project/getAllProList');
+    },
+    //获取时间冲突工作集合
+    getUniteWorkList(params) {
+        return httpReqest.post('/api/Work/getUniteWorkList', params);
     }
 };
 

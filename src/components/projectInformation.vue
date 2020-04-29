@@ -208,6 +208,48 @@
                 <el-button type="primary" @click="addPerson">确 定</el-button>
             </span>
         </el-dialog>
+
+        <el-dialog
+            title="人员占用提醒"
+            :visible.sync="tipDialogVisible"
+            width="80%"
+            :append-to-body="true"
+        >
+            <el-form
+                label-width="150px"
+                v-model="projectForm"
+                :label-position="labelPosition"
+                size="mini"
+                disabled
+            >
+                <el-row>
+                    <el-col :span="6">
+                        <el-form-item label="项目开始日期">
+                            <el-date-picker
+                                v-model="projectForm.projectStartDate"
+                                placeholder="请选择"
+                            ></el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6" :offset="2">
+                        <el-form-item label="项目结束时间">
+                            <el-date-picker v-model="projectForm.projectEndDate" placeholder="请选择"></el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <el-table :data="tipTable" border style="width: 100%">
+                <el-table-column prop="userName" label="人员" width="180"></el-table-column>
+                <el-table-column prop="belongProName" label="任务所属项目"></el-table-column>
+                <el-table-column prop="workName" label="任务名称"></el-table-column>
+                <el-table-column prop="startTime" label="任务开始时间"></el-table-column>
+                <el-table-column prop="endTime" label="任务结束时间"></el-table-column>
+            </el-table>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="tipDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="getProjectData">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
     <div v-else>
         <el-card class="box-card">
@@ -217,8 +259,11 @@
 </template>
 <script>
 export default {
+    inject: ['reload'],
     props: {
-        proOptions: Array
+        proOptions: Array,
+        tipTable: Array,
+        tipDialogVisible: Boolean
     },
     data() {
         return {
@@ -368,43 +413,43 @@ export default {
                 for (let i = 0; i < responseValue.leaderUserList.length; i++) {
                     leaderNameList.push(responseValue.leaderUserList[i].name);
                     this.projectForm.projectLeader = leaderNameList.toString();
-                    this.checkedLeaderId.push(responseValue.leaderUserList[i].name.id);
+                    this.checkedLeaderId.push(responseValue.leaderUserList[i].id);
                     projectLeadeStr += responseValue.leaderUserList[i].name + ',';
                 }
                 this.projectForm.implStartDate = responseValue.effectStartTime;
                 this.projectForm.implEndDate = responseValue.effectEndTime;
                 this.projectForm.implementers = '';
                 let effectNameList = [];
-                for (let i = 0; i < responseValue.effectUserList.length; i++) {
-                    effectNameList.push(responseValue.effectUserList[i].name);
+                for (let j = 0; j < responseValue.effectUserList.length; j++) {
+                    effectNameList.push(responseValue.effectUserList[j].name);
                     this.projectForm.implementers = effectNameList.toString();
-                    this.checkedImplementerId.push(responseValue.effectUserList[i].id);
+                    this.checkedImplementerId.push(responseValue.effectUserList[j].id);
                 }
                 this.projectForm.develStartDate = responseValue.exploitStartTime;
                 this.projectForm.develEndDate = responseValue.exploitEndTime;
                 this.projectForm.developers = '';
                 let exploitNameList = [];
-                for (let i = 0; i < responseValue.exploitUserList.length; i++) {
-                    exploitNameList.push(responseValue.exploitUserList[i].name);
+                for (let k = 0; k < responseValue.exploitUserList.length; k++) {
+                    exploitNameList.push(responseValue.exploitUserList[k].name);
                     this.projectForm.developers = exploitNameList.toString();
-                    this.checkedDeveloperId.push(responseValue.exploitUserList[i].id);
+                    this.checkedDeveloperId.push(responseValue.exploitUserList[k].id);
                 }
                 this.projectForm.testerStartDate = responseValue.testStartTime;
                 this.projectForm.testerEndDate = responseValue.testEndTime;
                 this.projectForm.testers = '';
                 let testNameList = [];
-                for (let i = 0; i < responseValue.testUserList.length; i++) {
-                    testNameList.push(responseValue.testUserList[i].name);
+                for (let g = 0; g < responseValue.testUserList.length; g++) {
+                    testNameList.push(responseValue.testUserList[g].name);
                     this.projectForm.testers = testNameList.toString();
-                    this.checkedTesterId.push(responseValue.testUserList[i].id);
+                    this.checkedTesterId.push(responseValue.testUserList[g].id);
                 }
                 this.projectForm.packagerStartDate = responseValue.packageTime;
                 this.projectForm.packagers = '';
                 let packageNameList = [];
-                for (let i = 0; i < responseValue.packageUserList.length; i++) {
-                    packageNameList.push(responseValue.packageUserList[i].name);
+                for (let h = 0; h < responseValue.packageUserList.length; h++) {
+                    packageNameList.push(responseValue.packageUserList[h].name);
                     this.projectForm.packagers = packageNameList.toString();
-                    this.checkedPackagerId.push(responseValue.packageUserList[i].id);
+                    this.checkedPackagerId.push(responseValue.packageUserList[h].id);
                 }
                 //项目负责人权限控制
                 if (NewFlag === 'false') {
@@ -458,6 +503,73 @@ export default {
         }
     },
     methods: {
+        //新建项目
+        getProjectData() {
+            let projectObject = {};
+            if (projectObject.id == '') {
+                projectObject.id = '';
+            } else {
+                projectObject.id = this.projectForm.id;
+            }
+
+            projectObject.projectLv = this.projectForm.level;
+            projectObject.belongProId = this.projectForm.belongPro;
+            projectObject.proName = this.projectForm.projectName;
+            projectObject.proNum = this.projectForm.projectNumber;
+            projectObject.leaderUserIdList = this.checkedLeaderId;
+            projectObject.overallStartTime = this.projectForm.projectStartDate;
+            projectObject.overallEndTime = this.projectForm.projectEndDate;
+            if (this.projectForm.state === '进行中') {
+                projectObject.proState = 0;
+            } else if (this.projectForm.state === '暂停') {
+                projectObject.proState = 1;
+            } else if (this.projectForm.state === '已作废') {
+                projectObject.proState = 2;
+            } else if (this.projectForm.state === '已完结') {
+                projectObject.proState = 3;
+            }
+            projectObject.effectStartTime = this.projectForm.implStartDate;
+            projectObject.effectEndTime = this.projectForm.implEndDate;
+            projectObject.effectUserIdList = this.checkedImplementerId;
+            projectObject.exploitStartTime = this.projectForm.develStartDate;
+            projectObject.exploitEndTime = this.projectForm.develEndDate;
+            projectObject.exploitUserIdList = this.checkedDeveloperId;
+            projectObject.testStartTime = this.projectForm.testerStartDate;
+            projectObject.testEndTime = this.projectForm.testerEndDate;
+            projectObject.testUserIdList = this.checkedTesterId;
+            projectObject.packageTime = this.projectForm.packagerStartDate;
+            projectObject.packageUserIdList = this.checkedPackagerId;
+            if (projectObject.id == '') {
+                this.$api.task.setProject(projectObject).then(response => {
+                    var responsevalue = response;
+                    if (responsevalue) {
+                        this.$message.success('创建成功');
+                        this.dialogNewprojectVisible = false;
+                        this.tipDialogVisible = false;
+                        this.reload();
+                    } else {
+                        this.$message.error('创建失败,请重新创建!');
+                        this.dialogNewprojectVisible = true;
+                        return false;
+                    }
+                });
+            } else {
+                this.$api.task.updateProject(projectObject).then(response => {
+                    var responsevalue = response;
+                    if (responsevalue) {
+                        this.$message.success('更新成功');
+                        this.dialogNewprojectVisible = false;
+                        this.reload();
+                    } else {
+                        this.$message.error('更新失败!');
+                        this.dialogNewprojectVisible = true;
+                        return false;
+                    }
+                });
+            }
+        },
+        //编辑项目
+
         handleChange(value, direction, movedKeys) {
             console.log(value, direction, movedKeys);
         },

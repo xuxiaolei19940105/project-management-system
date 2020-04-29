@@ -1,7 +1,12 @@
 <template>
     <div>
         <div>
-            <project-information ref="sonlookproject" :proOptions="proOptions" />
+            <project-information
+                ref="sonlookproject"
+                :proOptions="proOptions"
+                :tipTable="tipTable"
+                :tipDialogVisible="tipDialogVisible"
+            />
         </div>
         <div>
             <implementers-information />
@@ -36,7 +41,9 @@ import journal from './journal.vue';
 export default {
     props: {
         rowdata: Object,
-        proOptions: Array
+        proOptions: Array,
+        tipTable: Array,
+        tipDialogVisible: Boolean
     },
     components: {
         projectInformation,
@@ -48,6 +55,10 @@ export default {
     },
     data() {
         return {
+            //时间冲突
+            // tipTable: [],
+            //人员占用提示窗口
+            // tipDialogVisible: false,
             activeName: 'first',
             personDialogVisible: false,
             checkedLeaderId: [],
@@ -88,6 +99,8 @@ export default {
             console.log(tab, event);
         },
         save() {
+            this.tipDialogVisible = this.$refs.sonlookproject.tipDialogVisible;
+            this.tipTable = this.$refs.sonlookproject.tipTable;
             this.projectForm.id = this.$refs.sonlookproject.projectForm.id;
             this.projectForm.projectName = this.$refs.sonlookproject.projectForm.projectName;
             this.projectForm.projectNumber = this.$refs.sonlookproject.projectForm.projectNumber;
@@ -100,7 +113,7 @@ export default {
             this.checkedImplementerId = this.$refs.sonlookproject.checkedImplementerId;
             this.projectForm.develStartDate = this.$refs.sonlookproject.projectForm.develStartDate;
             this.projectForm.develEndDate = this.$refs.sonlookproject.projectForm.develEndDate;
-            this.projectForm.checkedDeveloperId = this.$refs.sonlookproject.checkedDeveloperId;
+            this.checkedDeveloperId = this.$refs.sonlookproject.checkedDeveloperId;
             this.projectForm.testerStartDate = this.$refs.sonlookproject.projectForm.testerStartDate;
             this.projectForm.testerEndDate = this.$refs.sonlookproject.projectForm.testerEndDate;
             this.checkedTesterId = this.$refs.sonlookproject.checkedTesterId;
@@ -109,6 +122,9 @@ export default {
             this.projectForm.level = this.$refs.sonlookproject.projectForm.level;
             this.projectForm.belongProId = this.$refs.sonlookproject.projectForm.belongProId;
             this.checkedPackagerId = this.$refs.sonlookproject.checkedPackagerId;
+        },
+        getProjectData() {
+            this.$refs.sonlookproject.getProjectData();
         }
     }
 };
