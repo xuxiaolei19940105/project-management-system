@@ -117,11 +117,6 @@ export default {
                     key: 'taskdetail',
                     title: '任务详情'
                 },
-                {
-                    title: '操作',
-                    render: renderControlColumn,
-                    width: '260px'
-                }
             ],
             articlesDonetableData:[]
         }
