@@ -72,7 +72,6 @@ export default {
     data() {
         return {
             disabled: false,
-
             dialogNewmesaagetaskVisible: false,
             rowdata: {},
             index: '',

@@ -528,6 +528,53 @@ export default {
         }
     },
     methods: {
+        //人员去重
+        checkArrayDiff(oldArr,newArr){
+            let oldV = oldArr;
+            let newV= newArr;
+            let ReturnObj={};
+            if(oldArr.length>0){
+                if(newV.length>0){
+                    for(var i=0;i<oldV.length;i++){
+                        for(var j=0;j<newV.length;j++){
+                            if(oldV[i] ===newV[j]){
+                                newV.splice(j,1);
+                                oldV.splice(i,1);
+                            }
+                        }
+                    }
+                }else{
+                    newV=[];
+                }
+            }else{
+                oldV=[];
+            }
+            
+            let addflag=false;
+            let removeflag=false;
+            if(newV.length ==0){
+                if(oldV.length ==0){
+                    addflag=false;
+                    removeflag=false;
+                }else{
+                    addflag=false;
+                    removeflag=true;
+                }
+            }else{
+                if(oldV.length ==0){
+                    removeflag=false;
+                    addflag=true;
+                }else{
+                    addflag=true;
+                    removeflag=true;
+                }
+            }
+            ReturnObj.Addflag=addflag;
+            ReturnObj.Removeflag=removeflag;
+            ReturnObj.OldArr=oldV;
+            ReturnObj.NewArr=newV;
+            return ReturnObj;
+        },
         //新建项目
         getProjectData() {
             let projectObject = {};
@@ -564,6 +611,39 @@ export default {
             projectObject.testUserIdList = this.checkedTesterId;
             projectObject.packageTime = this.projectForm.packagerStartDate;
             projectObject.packageUserIdList = this.checkedPackagerId;
+            //人员变更发信
+            let AddALLflag=false;
+            let RemoveAllflag=false;
+            let AdduserObj={};
+            let removeuserObj={};
+            let LeaderId=this.checkArrayDiff(this.oldLeaderId,this.checkedLeaderId);
+            AdduserObj.leaderUserIdList=LeaderId.NewArr;
+            removeuserObj.leaderUserIdList=LeaderId.OldArr;
+            if(AddALLflag==false){AddALLflag=LeaderId.Addflag;}
+            if(RemoveAllflag==false){RemoveAllflag=LeaderId.Removeflag;}
+            let Implementer=this.checkArrayDiff(this.oldImplementerId,this.checkedImplementerId);
+            AdduserObj.effectUserIdList=Implementer.NewArr;
+            removeuserObj.effectUserIdList=Implementer.OldArr;
+            if(AddALLflag==false){AddALLflag=Implementer.Addflag;}
+            if(RemoveAllflag==false){RemoveAllflag=Implementer.Removeflag;}
+            let DeveloperId=this.checkArrayDiff(this.oldDeveloperId,this.checkedDeveloperId);
+            AdduserObj.exploitUserIdList=DeveloperId.NewArr;
+            removeuserObj.exploitUserIdList=DeveloperId.OldArr;
+            if(AddALLflag==false){AddALLflag=DeveloperId.Addflag;}
+            if(RemoveAllflag==false){RemoveAllflag=DeveloperId.Removeflag;}
+            let TesterId=this.checkArrayDiff(this.oldTesterId,this.checkedTesterId);
+            AdduserObj.testUserIdList=TesterId.NewArr;
+            removeuserObj.testUserIdList=TesterId.OldArr;
+            if(AddALLflag==false){AddALLflag=TesterId.Addflag;}
+            if(RemoveAllflag==false){RemoveAllflag=TesterId.Removeflag;}
+            let PackagerId=this.checkArrayDiff(this.oldPackagerId,this.checkedPackagerId);
+            AdduserObj.packageUserIdList=PackagerId.NewArr;
+            removeuserObj.packageUserIdList=PackagerId.OldArr;
+            if(AddALLflag==false){AddALLflag=PackagerId.Addflag;}
+            if(RemoveAllflag==false){RemoveAllflag=PackagerId.Removeflag;}
+            let prjID = localStorage.getItem('pro_id');
+            AdduserObj.id=prjID;
+            removeuserObj.id=prjID;
             if (projectObject.id == '') {
                 this.$api.task.setProject(projectObject).then(response => {
                     var responsevalue = response;
@@ -582,9 +662,27 @@ export default {
                 this.$api.task.updateProject(projectObject).then(response => {
                     var responsevalue = response;
                     if (responsevalue) {
-                        this.$message.success('更新成功');
-                        this.dialogNewprojectVisible = false;
-                        this.reload();
+                        if(AddALLflag === true){
+                            //添加用户
+                            this.$api.task.addProjectUser(AdduserObj).then(()=>{
+                                if(RemoveAllflag === true){
+                                    //移除用户
+                                    this.$api.task.removeProjectUser(removeuserObj).then(()=>{
+                                        this.$message.success('更新成功.');
+                                        this.dialogNewprojectVisible = false;
+                                        this.reload();
+                                    })
+                                }else{
+                                    this.$message.success('更新成功.');
+                                    this.dialogNewprojectVisible = false;
+                                    this.reload(); 
+                                }
+                            })
+                        }else{
+                            this.$message.success('更新成功.');
+                            this.dialogNewprojectVisible = false;
+                            this.reload();
+                        }
                     } else {
                         this.$message.error('更新失败!');
                         this.dialogNewprojectVisible = true;
