@@ -147,25 +147,26 @@ export default {
             this.projectForm.belongTaskId = responseValue.taskList[1].id;
 
             let implementerslsit = '';
+            let implementS='';
             for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
                 implementerslsit += responseValue.taskList[1].userList[i].name + ',';
+                implementS += responseValue.taskList[1].userList[i].username + ',';
             }
             implementerslsit = implementerslsit.slice(0, implementerslsit.length - 1);
             this.projectForm.implementers += implementerslsit;
             let projectLeadeStr="";
             for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
-                projectLeadeStr+=responseValue.taskList[0].userList[i].name + ',';
+                projectLeadeStr+=responseValue.taskList[0].userList[i].username + ',';
             }
             //按钮权限
             let disabled = localStorage.getItem('list');
             this.disabled = JSON.parse(disabled);
             let roleId = localStorage.getItem('ms_roleId');
-            let username = localStorage.getItem('ms_name');
-            let impleList = implementerslsit;
+            let username = localStorage.getItem('ms_username');
             if (roleId === '0' || roleId === '1') {
                 this.newimpshowhide = true;
             } else {
-                if (impleList.indexOf(username) > -1) {
+                if (implementS.indexOf(username) > -1) {
                     this.newimpshowhide = true;
                 }else if(projectLeadeStr.indexOf(username) > -1){
                     this.newimpshowhide = true;

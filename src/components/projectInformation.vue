@@ -8,7 +8,7 @@
                     class="dataForm"
                     :label-position="labelPosition"
                     size="mini"
-                    v-bind:disabled="disabled"
+                    v-bind:disabled="disabledproject"
                 >
                     <el-row>
                         <el-col :span="6">
@@ -269,6 +269,7 @@ export default {
         return {
             projectName:'',
             disabled: false,
+            disabledproject: false,
             newprojectshow: false,
             //人员选择弹窗
             personOptions01: [],
@@ -375,6 +376,7 @@ export default {
         let roleId = localStorage.getItem('ms_roleId');
         let username = localStorage.getItem('ms_name');
         let NewFlag = localStorage.getItem('New');
+        let EditFlag = localStorage.getItem('Edit');
         let authId = localStorage.getItem('ms_authId');
         let pro_name = localStorage.getItem('pro_name');
         this.projectName =pro_name;
@@ -473,6 +475,11 @@ export default {
                 } else {
                     this.newprojectshow = true;
                 }
+                if (EditFlag === 'false') {
+                   this.disabledproject= true;
+                } else {
+                    this.disabledproject= false;
+                }
                 if (disabled === 'false') {
                     if (roleId === '0' || roleId === '1') {
                         this.disabled = false;
@@ -495,6 +502,12 @@ export default {
         let NewFlag = localStorage.getItem('New');
         let roleId = localStorage.getItem('ms_roleId');
         let authId = localStorage.getItem('ms_authId');
+        let EditFlag = localStorage.getItem('Edit');
+        if (EditFlag === 'false') {
+            this.disabledproject= true;
+        } else {
+            this.disabledproject= false;
+        }
         if (NewFlag === 'false') {
             if (authId === '0' || authId === '1' || authId === '3') {
                 this.newprojectshow = true;

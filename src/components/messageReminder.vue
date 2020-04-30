@@ -93,7 +93,7 @@ export default {
                 {
                     key: 'projectname',
                     title: '所属项目',
-                    width: '150',
+                    width: '200',
                     render:rendermessageprojectid
                 },
                 {
@@ -104,7 +104,8 @@ export default {
                 },
                 {
                     key: 'publishdate',
-                    title: '发布时间'
+                    title: '发布时间',
+                    width: '100'
                 },
                 {
                     key: 'taskdetail',
@@ -132,7 +133,7 @@ export default {
                 {
                     key: 'projectname',
                     title: '所属项目',
-                    width: '150',
+                    width: '200',
                     render:rendermessageprojectid
                 },
                 {
@@ -143,7 +144,8 @@ export default {
                 },
                 {
                     key: 'publishdate',
-                    title: '发布时间'
+                    title: '发布时间',
+                    width: '100'
                 },
                 {
                     key: 'taskdetail',
@@ -169,7 +171,7 @@ export default {
                         let index=i+1;
                         mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
                         mdata.taskname=param[i].messageName;
-                        mdata.projectname="查看项目-("+param[i].correlationProId+")";
+                        mdata.projectname=param[i].correlationProName+"-("+param[i].correlationProId+")";
                         mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                         let startDateS = new Date(param[i].inserttime);
                         let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
@@ -204,7 +206,7 @@ export default {
                                 let index=i+1;
                                 mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
                                 mdata.taskname=param[i].messageName;
-                                mdata.projectname="查看项目-("+param[i].correlationProId+")";
+                                mdata.projectname=param[i].correlationProName+"-("+param[i].correlationProId+")";
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                                 let startDateS = new Date(param[i].inserttime);
                                 let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
@@ -233,7 +235,7 @@ export default {
                                 let index=i+1;
                                 mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
                                 mdata.taskname=param[i].messageName;                                
-                                mdata.projectname="查看项目-("+param[i].correlationProId+")";
+                                mdata.projectname=param[i].correlationProName+"-("+param[i].correlationProId+")";
                                 mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
                                 let startDateS = new Date(param[i].inserttime);
                                 let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);

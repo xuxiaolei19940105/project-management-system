@@ -419,6 +419,7 @@ export default {
         onRowLookButtonClick(row) {
             localStorage.setItem('list', JSON.stringify(true));
             localStorage.setItem('New', JSON.stringify(false));
+            localStorage.setItem('Edit', JSON.stringify(false));
             let projectIdS = row.id;
             localStorage.setItem('pro_id', projectIdS);
             let projectName = row.proName;
@@ -429,6 +430,7 @@ export default {
         onRowUpdateButtonClick(row) {
             localStorage.setItem('list', JSON.stringify(false));
             localStorage.setItem('New', JSON.stringify(false));
+            localStorage.setItem('Edit', JSON.stringify(true));
             let projectIdS = row.id;
             localStorage.setItem('pro_id', projectIdS);
             let projectName = row.proName;

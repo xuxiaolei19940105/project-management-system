@@ -433,7 +433,7 @@ export default {
         },
         timecomparison() {},
         geteditProjectData() {
-            this.$refs.sonEditproject.save();
+            /*this.$refs.sonEditproject.save();
             //必填项校验
             //项目名
             let projectObject = {};
@@ -472,19 +472,21 @@ export default {
                 var responsevalue = response;
                 if (responsevalue) {
                     this.$message.success('更新成功');
-                    this.dialogNewprojectVisible = false;
+                    this.dialogVisible = false;
                     this.reload();
                 } else {
                     this.$message.error('创建失败,请重新创建!');
-                    this.dialogNewprojectVisible = true;
+                    this.dialogVisible = true;
                     return false;
                 }
-            });
+            });*/
+            this.dialogVisible = false;
         },
         // 查看
         onRowLookButtonClick(row) {
             localStorage.setItem('list', JSON.stringify(true));
             localStorage.setItem('New', JSON.stringify(false));
+            localStorage.setItem('Edit', JSON.stringify(false));
             let projectS = row.projectNo;
             let projectIdS = projectS.split('-(')[1];
             projectIdS = projectIdS.split(')')[0];
@@ -504,6 +506,7 @@ export default {
         onRowUpdateButtonClick(row) {
             localStorage.setItem('list', JSON.stringify(false));
             localStorage.setItem('New', JSON.stringify(false));
+            localStorage.setItem('Edit', JSON.stringify(false));
             this.dialogVisible = true;
             let projectS = row.projectNo;
             let projectIdS = projectS.split('-(')[1];
