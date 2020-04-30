@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-card>
+        <el-card v-loading="loading">
             <div style="text-align:right;padding-bottom:10px;" v-if="showNewProject">
                 <el-button size="mini" @click="newprojectVisible">新建项目</el-button>
             </div>
@@ -11,7 +11,7 @@
                     border
                     :default-expand-all="defaultexpand"
                     :tree-props="{children: 'proList'}"
-                    :default-sort = "{prop: 'proState', order: 'ascending'}"
+                    :default-sort="{prop: 'proState', order: 'ascending'}"
                 >
                     <el-table-column prop="proName" label="项目名称" height="40"></el-table-column>
                     <el-table-column
@@ -101,6 +101,12 @@
         </el-dialog>
     </div>
 </template>
+<style lang="stylus">
+.el-dialog__body {
+  max-height: 500px;
+  overflow: auto;
+}
+</style>
 <script>
 import projectPage from '../../components/projectPage.vue';
 import projectInformation from '../../components/projectInformation.vue';
@@ -112,6 +118,8 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            loading: false,
+
             //时间冲突
             tipTable: [],
             //人员占用提示窗口
@@ -316,6 +324,12 @@ export default {
             this.check();
             if (this.checkflag) {
                 //人员占用
+                const loading = this.$loading({
+                    lock: true
+                    // text: 'Loading',
+                    // spinner: 'el-icon-loading',
+                    // background: 'rgba(0, 0, 0, 0.7)'
+                });
                 let projectObject = {};
                 projectObject.overallStartTime = this.$refs.sonNewproject.projectForm.projectStartDate.toISOString();
                 projectObject.overallEndTime = this.$refs.sonNewproject.projectForm.projectEndDate.toISOString();
@@ -328,8 +342,6 @@ export default {
                 this.$api.task.getUniteWorkList(projectObject).then(response => {
                     debugger;
                     if (response.data.length !== 0) {
-                        _this.tipDialogVisible = true;
-
                         for (let i = 0; i < response.data.length; i++) {
                             let startDateS = new Date(response.data[i].startTime);
                             let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
@@ -343,11 +355,13 @@ export default {
                                 .slice(0, 10);
                             response.data[i].endTime = endOvwerS;
                         }
-
+                        loading.close();
                         _this.tipTable = response.data;
+                        _this.tipDialogVisible = true;
                     } else {
                         _this.$refs.sonNewproject.getProjectData();
                         //_this.getProjectData();
+                        loading.close();
                         _this.$refs.sonNewproject.tipDialogVisible = false;
                     }
                 });
@@ -358,8 +372,13 @@ export default {
             this.$refs.sonEditproject.save();
             this.checkEdit();
             if (this.checkflag) {
+                const loading = this.$loading({
+                    lock: true
+                    // text: 'Loading',
+                    // spinner: 'el-icon-loading',
+                    // background: 'rgba(0, 0, 0, 0.7)'
+                });
                 //人员占用
-                debugger;
                 let projectObject = {};
                 projectObject.overallStartTime = this.$refs.sonEditproject.projectForm.projectStartDate;
                 projectObject.overallEndTime = this.$refs.sonEditproject.projectForm.projectEndDate;
@@ -368,13 +387,9 @@ export default {
                 projectObject.exploitUserIdList = this.$refs.sonEditproject.checkedDeveloperId;
                 projectObject.testUserIdList = this.$refs.sonEditproject.checkedTesterId;
                 projectObject.packageUserIdList = this.$refs.sonEditproject.checkedPackagerId;
-                debugger;
                 var _this = this;
                 this.$api.task.getUniteWorkList(projectObject).then(response => {
-                    debugger;
                     if (response.data.length !== 0) {
-                        _this.$refs.sonEditproject.tipDialogVisible = true;
-
                         for (let i = 0; i < response.data.length; i++) {
                             let startDateS = new Date(response.data[i].startTime);
                             let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
@@ -390,9 +405,12 @@ export default {
                         }
 
                         _this.$refs.sonEditproject.tipTable = response.data;
+                        _this.$refs.sonEditproject.tipDialogVisible = true;
+                        loading.close();
                     } else {
                         _this.$refs.sonEditproject.getProjectData();
                         _this.$refs.sonEditproject.tipDialogVisible = false;
+                        loading.close();
                     }
                 });
             }
