@@ -53,7 +53,7 @@
                             <el-table-column label="操作" width="100">
                                 <template slot-scope="scope">
                                     <el-button
-                                        @click="handleClick(scope.row)"
+                                        @click="handleClick(scope.row, scope.$index)"
                                         type="text"
                                         size="small"
                                         :disabled="disabled"
@@ -85,7 +85,13 @@
             :append-to-body="true"
             :close-on-click-modal="false"
         >
-            <newdeveloppage ref="sonNewdevop" :rowdata="rowdata" :operationmode="operationmode"></newdeveloppage>
+            <newdeveloppage
+                ref="sonNewdevop"
+                :rowdata="rowdata"
+                :operationmode="operationmode"
+                :belongTaskId="projectForm.belongTaskId"
+                :workId="workId"
+            ></newdeveloppage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewDeveltaskVisible = false">取 消</el-button>
                 <el-button type="primary" @click="savenewDevelop()">确 定</el-button>
@@ -94,6 +100,9 @@
     </div>
 </template>
 <script>
+//引入uuid文件
+import uuidv1 from 'uuid/v1';
+
 import newdeveloppage from './newdevelopInform.vue';
 export default {
     components: {
@@ -101,6 +110,9 @@ export default {
     },
     data() {
         return {
+            //任务id
+            workId: '',
+
             disabled: false,
             newdevelopshow: false,
             dialogNewDeveltaskVisible: false,
@@ -131,11 +143,15 @@ export default {
             //时间转换
             for (let i = 0; i < responseValue.taskList[2].workList.length; i++) {
                 let startDateS = new Date(responseValue.taskList[2].workList[i].startTime);
-                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                    .toISOString()
+                    .slice(0, 10);
                 responseValue.taskList[2].workList[i].starttime = startOvwerS;
 
                 let endDateS = new Date(responseValue.taskList[2].workList[i].endTime);
-                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
+                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                    .toISOString()
+                    .slice(0, 10);
                 responseValue.taskList[2].workList[i].endtime = endOvwerS;
             }
             this.tableData = responseValue.taskList[2].workList;
@@ -152,9 +168,9 @@ export default {
             }
             userslsit = userslsit.slice(0, userslsit.length - 1);
             this.projectForm.developers += userslsit;
-            let projectLeadeStr="";
+            let projectLeadeStr = '';
             for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
-                projectLeadeStr+=responseValue.taskList[0].userList[i].name + ',';
+                projectLeadeStr += responseValue.taskList[0].userList[i].name + ',';
             }
             //按钮权限
             let disabled = localStorage.getItem('list');
@@ -166,9 +182,9 @@ export default {
             } else {
                 if (userslsit.indexOf(username) > -1) {
                     this.newdevelopshow = true;
-                }else if(projectLeadeStr.indexOf(username) > -1){
+                } else if (projectLeadeStr.indexOf(username) > -1) {
                     this.newdevelopshow = true;
-                }else {
+                } else {
                     let sssd = JSON.parse(disabled) + '';
                     if (sssd === 'false') {
                         this.disabled = true;
@@ -193,14 +209,24 @@ export default {
         //新建工作任务
         newdevelopList() {
             this.rowdata = {};
+            this.workId = uuidv1().replace(/-/g, ''); //获取随机id
             this.operationmode = 'new';
             this.dialogNewDeveltaskVisible = true;
         },
         //查看工作任务
-        handleClick(row) {
+        handleClick(row, index) {
+            this.index = index;
             this.rowdata = row;
             this.operationmode = 'consult';
             this.dialogNewDeveltaskVisible = true;
+
+            let pro_id = localStorage.getItem('pro_id');
+            let projectObjectId = {};
+            projectObjectId.id = pro_id;
+            this.$api.task.initProData(projectObjectId).then(response => {
+                let responseValue = response.data;
+                this.workId = responseValue.taskList[2].workList[this.index].id;
+            });
         },
         //编辑工作任务
         editleclick(row, index) {
@@ -225,11 +251,15 @@ export default {
                     //时间转换
                     for (let i = 0; i < responseValue.taskList[2].workList.length; i++) {
                         let startDateS = new Date(responseValue.taskList[2].workList[i].startTime);
-                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                            .toISOString()
+                            .slice(0, 10);
                         responseValue.taskList[2].workList[i].starttime = startOvwerS;
 
                         let endDateS = new Date(responseValue.taskList[2].workList[i].endTime);
-                        let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
+                        let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                            .toISOString()
+                            .slice(0, 10);
                         responseValue.taskList[2].workList[i].endtime = endOvwerS;
                     }
                     this.tableData = responseValue.taskList[2].workList;
@@ -259,8 +289,13 @@ export default {
         savenewDevelop() {
             this.check();
             if (this.checkflag) {
+                this.$refs.sonNewdevop.submitUpload();
+
+
                 let savedata = {};
                 let userData = JSON.parse(localStorage.getItem('ms_data'));
+
+                savedata.id = this.workId;
                 savedata.sendUserId = userData.id;
                 // savedata.userId = this.$refs.sonNewdevop.checkedUseNameId.toString();
                 savedata.userId = this.$refs.sonNewdevop.newdevelopForm.userid;
@@ -291,11 +326,15 @@ export default {
                             //时间转换
                             for (let i = 0; i < responseValue.taskList[2].workList.length; i++) {
                                 let startDateS = new Date(responseValue.taskList[2].workList[i].startTime);
-                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
                                 responseValue.taskList[2].workList[i].starttime = startOvwerS;
 
                                 let endDateS = new Date(responseValue.taskList[2].workList[i].endTime);
-                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
+                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
                                 responseValue.taskList[2].workList[i].endtime = endOvwerS;
                             }
                             this.tableData = responseValue.taskList[2].workList;
@@ -347,11 +386,15 @@ export default {
                             //时间转换
                             for (let i = 0; i < responseValue.taskList[2].workList.length; i++) {
                                 let startDateS = new Date(responseValue.taskList[2].workList[i].startTime);
-                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
                                 responseValue.taskList[2].workList[i].starttime = startOvwerS;
 
                                 let endDateS = new Date(responseValue.taskList[2].workList[i].endTime);
-                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
+                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
                                 responseValue.taskList[2].workList[i].endtime = endOvwerS;
                             }
                             this.tableData = responseValue.taskList[2].workList;
@@ -381,6 +424,7 @@ export default {
                 }
                 //关闭弹窗
                 this.dialogNewDeveltaskVisible = false;
+                
             }
         }
     }

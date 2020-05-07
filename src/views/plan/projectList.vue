@@ -185,7 +185,7 @@ export default {
             this.showNewProject = true;
         }
         //项目列表加载
-        let userData = localStorage.getItem('ms_data');
+        let userData = JSON.parse(localStorage.getItem('ms_data'));
         if (userData) {
             this.$api.task.getProjectMess(userData).then(response => {
                 let responsevalue = response;

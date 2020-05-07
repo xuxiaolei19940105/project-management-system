@@ -140,18 +140,24 @@
                     <el-col>
                         <el-upload
                             class="upload-demo"
-                            action="https://jsonplaceholder.typicode.com/posts/"
-                            list-type="picture"
+                            ref="upload"
+                            action
                             :on-preview="handlePreview"
                             :on-remove="handleRemove"
-                            :before-remove="beforeRemove"
-                            :limit="3"
-                            :disabled="disabled"
-                            :on-exceed="handleExceed"
                             :file-list="fileList"
-                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                            :auto-upload="false"
+                            :http-request="uploadSectionFile"
+                            v-bind:disabled="disabled"
                         >
-                            <el-button size="small" type="primary" v-bind:disabled="disabled">点击上传</el-button>
+                            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+
+                            <el-button
+                                style="margin-left: 10px;"
+                                size="small"
+                                type="success"
+                                @click="showDownloadPage"
+                            >导出</el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传不超过500kb的文件</div>
                         </el-upload>
                     </el-col>
                 </el-row>
@@ -178,16 +184,48 @@
                 <el-button type="primary" @click="addPerson">确 定</el-button>
             </span>
         </el-dialog>
+
+        <el-dialog
+            title="文件导出"
+            :visible.sync="downloadDialogVisible"
+            width="680px"
+            :append-to-body="true"
+            :close-on-click-modal="false"
+        >
+            <el-card>
+                <el-table :data="fileList" border style="width: 100%">
+                    <el-table-column prop="name" label="文件名"></el-table-column>
+                    <el-table-column label="操作" width="100">
+                        <template slot-scope="scope">
+                            <el-button
+                                @click="download(scope.row,scope.$index)"
+                                type="text"
+                                size="small"
+                            >导出</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-card>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="addPerson">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
 export default {
     props: {
         rowdata: Object,
-        operationmode: String
+        operationmode: String,
+        belongTaskId: String,
+        workId: String
     },
     data() {
         return {
+            //下载弹窗
+            downloadDialogVisible: false,
+
             //人员选择弹窗
             dialogVisible: false,
             personOptions: [
@@ -220,12 +258,7 @@ export default {
                 radio: ''
             },
             labelPosition: 'left',
-            fileList: [
-                {
-                    name: '',
-                    url: ''
-                }
-            ]
+            fileList: []
         };
     },
     created() {
@@ -256,13 +289,13 @@ export default {
         } else if (this.operationmode == 'consult') {
             this.newtesterForm.sendUserName = localStorage.getItem('ms_name');
             this.newtesterForm.userName = this.rowdata.userName;
-            debugger;
             this.newtesterForm.taskdetail = this.rowdata.workDescribe;
             this.newtesterForm.estimatedResult = this.rowdata.estimatedResult;
             this.newtesterForm.actualResult = this.rowdata.actualResult;
             this.newtesterForm.testerStartDate = this.rowdata.starttime;
             this.newtesterForm.testerEndDate = this.rowdata.endtime;
             this.disabled = true;
+            this.itialize();
         } else if (this.operationmode == 'new') {
             this.newtesterForm.sendUserName = localStorage.getItem('ms_name');
             this.newtesterForm.userName = localStorage.getItem('ms_name');
@@ -287,17 +320,57 @@ export default {
         }
     },
     methods: {
+        //初始化附件显示
+        itialize() {
+            let workList = {};
+            workList.id = this.workId;
+            this.$api.task.getFileListByWork(workList).then(response => {
+                let responsevalue = response.data;
+                for (var i = 0; i < responsevalue.length; i++) {
+                    let work = {};
+                    work.name = responsevalue[i].fileName;
+                    work.url = responsevalue[i].fileUrl;
+                    work.id = responsevalue[i].id;
+                    this.fileList.push(work);
+                }
+            });
+        },
+
+        //上传
+        submitUpload() {
+            this.$refs.upload.submit();
+        },
+        uploadSectionFile(param) {
+            // FormData 对象
+            var form = new FormData();
+            // 文件对象
+            //通过append向form对象添加数据
+            form.append('workId', this.workId);
+            form.append('fileList', param.file);
+            this.$api.task.uploadFile(form).then(
+                this.$message({
+                    type: 'success',
+                    message: '附件上传成功'
+                })
+            );
+            this.itialize();
+        },
+        showDownloadPage() {
+            this.downloadDialogVisible = true;
+        },
+        download(row, index) {
+            let link = document.createElement('a');
+            link.style.display = 'none';
+            debugger
+            link.href = 'http://192.168.85.170:8099/StaticFile/downloadFile?fileId='+this.fileList[index].id;
+            link.click();
+        },
+
         handleRemove(file, fileList) {
             console.log(file, fileList);
         },
         handlePreview(file) {
             console.log(file);
-        },
-        handleExceed(files, fileList) {
-            this.$message.warning(files.length + fileList.length);
-        },
-        beforeRemove(file) {
-            return this.$confirm(file.name);
         },
 
         getval() {
@@ -341,3 +414,11 @@ export default {
     }
 };
 </script>
+<style lang="stylus">
+.el-upload--text {
+  vertical-align: bottom;
+  width: auto;
+  height: auto;
+  border: none;
+}
+</style>

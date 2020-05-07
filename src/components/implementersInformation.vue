@@ -50,7 +50,7 @@
                             <el-table-column label="操作" width="100">
                                 <template slot-scope="scope">
                                     <el-button
-                                        @click="handleClick(scope.row)"
+                                        @click="handleClick(scope.row,scope.$index)"
                                         type="text"
                                         size="small"
                                         :disabled="disabled"
@@ -86,6 +86,8 @@
                 ref="sonNewimplement"
                 :rowdata="rowdata"
                 :operationmode="operationmode"
+                :belongTaskId="projectForm.belongTaskId"
+                :workId="workId"
             ></newImpltaskpage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewImpltaskVisible = false">取 消</el-button>
@@ -95,6 +97,8 @@
     </div>
 </template>
 <script>
+//引入uuid文件
+import uuidv1 from 'uuid/v1';
 import newImpltaskpage from './newimplementerInform.vue';
 export default {
     components: {
@@ -103,6 +107,9 @@ export default {
 
     data() {
         return {
+            //任务id
+            workId: '',
+
             disabled: false,
             newimpshowhide: false,
             projectForm: {
@@ -131,11 +138,15 @@ export default {
             //时间转换
             for (let i = 0; i < responseValue.taskList[1].workList.length; i++) {
                 let startDateS = new Date(responseValue.taskList[1].workList[i].startTime);
-                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                    .toISOString()
+                    .slice(0, 10);
                 responseValue.taskList[1].workList[i].starttime = startOvwerS;
 
                 let endDateS = new Date(responseValue.taskList[1].workList[i].endTime);
-                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
+                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                    .toISOString()
+                    .slice(0, 10);
                 responseValue.taskList[1].workList[i].endtime = endOvwerS;
             }
             this.tableData = responseValue.taskList[1].workList;
@@ -147,30 +158,29 @@ export default {
             this.projectForm.belongTaskId = responseValue.taskList[1].id;
 
             let implementerslsit = '';
-            let implementS='';
             for (let i = 0; i < responseValue.taskList[1].userList.length; i++) {
                 implementerslsit += responseValue.taskList[1].userList[i].name + ',';
-                implementS += responseValue.taskList[1].userList[i].username + ',';
             }
             implementerslsit = implementerslsit.slice(0, implementerslsit.length - 1);
             this.projectForm.implementers += implementerslsit;
-            let projectLeadeStr="";
+            let projectLeadeStr = '';
             for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
-                projectLeadeStr+=responseValue.taskList[0].userList[i].username + ',';
+                projectLeadeStr += responseValue.taskList[0].userList[i].name + ',';
             }
             //按钮权限
             let disabled = localStorage.getItem('list');
             this.disabled = JSON.parse(disabled);
             let roleId = localStorage.getItem('ms_roleId');
-            let username = localStorage.getItem('ms_username');
+            let username = localStorage.getItem('ms_name');
+            let impleList = implementerslsit;
             if (roleId === '0' || roleId === '1') {
                 this.newimpshowhide = true;
             } else {
-                if (implementS.indexOf(username) > -1) {
+                if (impleList.indexOf(username) > -1) {
                     this.newimpshowhide = true;
-                }else if(projectLeadeStr.indexOf(username) > -1){
+                } else if (projectLeadeStr.indexOf(username) > -1) {
                     this.newimpshowhide = true;
-                }else {
+                } else {
                     let sssd = JSON.parse(disabled) + '';
                     if (sssd === 'false') {
                         this.disabled = true;
@@ -195,14 +205,24 @@ export default {
         //新建工作任务
         NewImpltask() {
             this.rowdata = {};
+            this.workId = uuidv1().replace(/-/g, ''); //获取随机id
             this.operationmode = 'new';
             this.dialogNewImpltaskVisible = true;
         },
         //查看工作任务
-        handleClick(row) {
+        handleClick(row, index) {
+            this.index = index;
             this.rowdata = row;
             this.operationmode = 'consult';
             this.dialogNewImpltaskVisible = true;
+
+            let pro_id = localStorage.getItem('pro_id');
+            let projectObjectId = {};
+            projectObjectId.id = pro_id;
+            this.$api.task.initProData(projectObjectId).then(response => {
+                let responseValue = response.data;
+                this.workId = responseValue.taskList[1].workList[this.index].id;
+            });
         },
         //编辑工作任务
         editleclick(row, index) {
@@ -226,11 +246,15 @@ export default {
                     let responseValue = response.data;
                     for (let i = 0; i < responseValue.taskList[1].workList.length; i++) {
                         let startDateS = new Date(responseValue.taskList[1].workList[i].startTime);
-                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                            .toISOString()
+                            .slice(0, 10);
                         responseValue.taskList[1].workList[i].starttime = startOvwerS;
 
                         let endDateS = new Date(responseValue.taskList[1].workList[i].endTime);
-                        let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
+                        let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                            .toISOString()
+                            .slice(0, 10);
                         responseValue.taskList[1].workList[i].endtime = endOvwerS;
                     }
                     this.tableData = responseValue.taskList[1].workList;
@@ -261,8 +285,11 @@ export default {
         saveNewImpltask() {
             this.check();
             if (this.checkflag) {
+                this.$refs.sonNewimplement.submitUpload();
+
                 let savedata = {};
                 let userData = JSON.parse(localStorage.getItem('ms_data'));
+                savedata.id = this.workId;
                 savedata.sendUserId = userData.id;
                 //  savedata.userId = this.$refs.sonNewimplement.checkedimplrmrntId.toString();
                 savedata.userId = this.$refs.sonNewimplement.implrmrntForm.userid;
@@ -283,11 +310,15 @@ export default {
                             let responseValue = response.data;
                             for (let i = 0; i < responseValue.taskList[1].workList.length; i++) {
                                 let startDateS = new Date(responseValue.taskList[1].workList[i].startTime);
-                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
                                 responseValue.taskList[1].workList[i].starttime = startOvwerS;
 
                                 let endDateS = new Date(responseValue.taskList[1].workList[i].endTime);
-                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
+                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
                                 responseValue.taskList[1].workList[i].endtime = endOvwerS;
                             }
                             this.tableData = responseValue.taskList[1].workList;

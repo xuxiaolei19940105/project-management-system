@@ -1,6 +1,7 @@
 import base from './base'; // 导入接口域名列表
 //import {get, post } from '../../utils/https'; // 导入http中创建的axios实例
 import httpReqest from '../../utils/https';
+import uploadrequest from '../../utils/httpUpload';
 
 const v = base.dev;
 //const testV = base.test;
@@ -107,6 +108,19 @@ const task = {
     //项目移除用户发信
     removeProjectUser(params) {
         return httpReqest.post('/api/Project/removeUser', params);
+    },
+
+     //文件上传
+    uploadFile(params) {
+        return uploadrequest.post('/api/StaticFile/uploadFile', params);
+    },
+    //获取文件列表
+    getFileListByWork(params) {
+        return httpReqest.post('/api/StaticFile/getFileListByWork', params);
+    },
+    //文件下载
+    downloadFile(params) {
+        return uploadrequest.get('/api/StaticFile/downloadFile', params);
     }
 };
 

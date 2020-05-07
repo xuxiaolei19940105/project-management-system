@@ -53,7 +53,7 @@
                             <el-table-column label="操作" width="100">
                                 <template slot-scope="scope">
                                     <el-button
-                                        @click="handleClick(scope.row)"
+                                        @click="handleClick(scope.row, scope.$index)"
                                         type="text"
                                         size="small"
                                         :disabled="disabled"
@@ -89,6 +89,8 @@
                 ref="sonNewtestinform"
                 :rowdata="rowdata"
                 :operationmode="operationmode"
+                :belongTaskId="projectForm.belongTaskId"
+                :workId="workId"
             ></newtesttaskpage>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewtesttaskVisible = false">取 消</el-button>
@@ -98,6 +100,8 @@
     </div>
 </template>
 <script>
+//引入uuid文件
+import uuidv1 from 'uuid/v1';
 import newtesttaskpage from './newtestersinform.vue';
 export default {
     components: {
@@ -105,6 +109,8 @@ export default {
     },
     data() {
         return {
+            //任务id
+            workId: '',
             disabled: false,
             newtestshow: false,
             dialogNewtesttaskVisible: false,
@@ -154,9 +160,9 @@ export default {
             }
             testuser = testuser.slice(0, testuser.length - 1);
             this.projectForm.testers += testuser;
-            let projectLeadeStr="";
+            let projectLeadeStr = '';
             for (let i = 0; i < responseValue.taskList[0].userList.length; i++) {
-                projectLeadeStr+=responseValue.taskList[0].userList[i].name + ',';
+                projectLeadeStr += responseValue.taskList[0].userList[i].name + ',';
             }
             //按钮权限
             let disabled = localStorage.getItem('list');
@@ -168,9 +174,9 @@ export default {
             } else {
                 if (testuser.indexOf(username) > -1) {
                     this.newtestshow = true;
-                }else if(projectLeadeStr.indexOf(username) > -1){
+                } else if (projectLeadeStr.indexOf(username) > -1) {
                     this.newtestshow = true;
-                }else {
+                } else {
                     let sssd = JSON.parse(disabled) + '';
                     if (sssd === 'false') {
                         this.disabled = true;
@@ -197,15 +203,25 @@ export default {
     methods: {
         //新建工作任务
         Newtesttask() {
+            this.workId = uuidv1().replace(/-/g, ''); //获取随机id
             this.rowdata = {};
             this.operationmode = 'new';
             this.dialogNewtesttaskVisible = true;
         },
         //查看工作任务
-        handleClick(row) {
+        handleClick(row, index) {
+            this.index = index;
             this.rowdata = row;
             this.operationmode = 'consult';
             this.dialogNewtesttaskVisible = true;
+
+            let pro_id = localStorage.getItem('pro_id');
+            let projectObjectId = {};
+            projectObjectId.id = pro_id;
+            this.$api.task.initProData(projectObjectId).then(response => {
+                let responseValue = response.data;
+                this.workId = responseValue.taskList[3].workList[this.index].id;
+            });
         },
         //编辑工作任务
         editleclick(row, index) {
@@ -229,11 +245,15 @@ export default {
                     let responseValue = response.data;
                     for (let i = 0; i < responseValue.taskList[3].workList.length; i++) {
                         let startDateS = new Date(responseValue.taskList[3].workList[i].startTime);
-                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                            .toISOString()
+                            .slice(0, 10);
                         responseValue.taskList[3].workList[i].starttime = startOvwerS;
 
                         let endDateS = new Date(responseValue.taskList[3].workList[i].endTime);
-                        let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
+                        let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                            .toISOString()
+                            .slice(0, 10);
                         responseValue.taskList[3].workList[i].endtime = endOvwerS;
                     }
                     this.tableData = responseValue.taskList[3].workList;
@@ -266,8 +286,11 @@ export default {
             if (this.checkflag) {
                 let savedata = {};
                 let userData = JSON.parse(localStorage.getItem('ms_data'));
+
+                this.$refs.sonNewtestinform.submitUpload();
                 savedata.sendUserId = userData.id;
                 savedata.userId = this.$refs.sonNewtestinform.newtesterForm.userid;
+                savedata.id = this.workId;
                 // savedata.userId = this.$refs.sonNewtestinform.checkedUseNameId.toString();
                 savedata.workName = this.$refs.sonNewtestinform.newtesterForm.taskdetail;
                 savedata.workDescribe = this.$refs.sonNewtestinform.newtesterForm.taskdetail;
@@ -307,11 +330,15 @@ export default {
                             let responseValue = response.data;
                             for (let i = 0; i < responseValue.taskList[3].workList.length; i++) {
                                 let startDateS = new Date(responseValue.taskList[3].workList[i].startTime);
-                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
                                 responseValue.taskList[3].workList[i].starttime = startOvwerS;
 
                                 let endDateS = new Date(responseValue.taskList[3].workList[i].endTime);
-                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
+                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
                                 responseValue.taskList[3].workList[i].endtime = endOvwerS;
                             }
                             this.tableData = responseValue.taskList[3].workList;
@@ -352,11 +379,15 @@ export default {
                             let responseValue = response.data;
                             for (let i = 0; i < responseValue.taskList[3].workList.length; i++) {
                                 let startDateS = new Date(responseValue.taskList[3].workList[i].startTime);
-                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
                                 responseValue.taskList[3].workList[i].starttime = startOvwerS;
 
                                 let endDateS = new Date(responseValue.taskList[3].workList[i].endTime);
-                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate())).toISOString().slice(0, 10);
+                                let endOvwerS = new Date(Date.UTC(endDateS.getFullYear(), endDateS.getMonth(), endDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
                                 responseValue.taskList[3].workList[i].endtime = endOvwerS;
                             }
                             this.tableData = responseValue.taskList[3].workList;
