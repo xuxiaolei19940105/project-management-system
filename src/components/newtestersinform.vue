@@ -156,7 +156,7 @@
                                 size="small"
                                 type="success"
                                 @click="showDownloadPage"
-                            >导出</el-button>
+                            >下载</el-button>
                             <div slot="tip" class="el-upload__tip">只能上传不超过500kb的文件</div>
                         </el-upload>
                     </el-col>
@@ -186,7 +186,7 @@
         </el-dialog>
 
         <el-dialog
-            title="文件导出"
+            title="下载文件"
             :visible.sync="downloadDialogVisible"
             width="680px"
             :append-to-body="true"
@@ -201,7 +201,7 @@
                                 @click="download(scope.row,scope.$index)"
                                 type="text"
                                 size="small"
-                            >导出</el-button>
+                            >下载</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -266,12 +266,19 @@ export default {
             let responsevalue = response.data;
             if (responsevalue) {
                 let personOptions = [];
-                for (var i = 0; i < responsevalue.length; i++) {
-                    let proObject = {};
-                    proObject.id = responsevalue[i].id;
-                    proObject.name = responsevalue[i].name;
+                // for (var i = 0; i < responsevalue.length; i++) {
+                //     let proObject = {};
+                //     proObject.id = responsevalue[i].id;
+                //     proObject.name = responsevalue[i].name;
+                //     personOptions.push(proObject);
+                // }
+                responsevalue.map(v=>{
+                    let proObject = {
+                        id:v.id,
+                        name:v.name
+                    };
                     personOptions.push(proObject);
-                }
+                })
                 this.personOptions = personOptions;
             } else {
                 this.$message.success('请联系Admin!');
@@ -295,6 +302,7 @@ export default {
             this.newtesterForm.testerStartDate = this.rowdata.starttime;
             this.newtesterForm.testerEndDate = this.rowdata.endtime;
             this.disabled = true;
+            
             this.itialize();
         } else if (this.operationmode == 'new') {
             this.newtesterForm.sendUserName = localStorage.getItem('ms_name');
@@ -324,6 +332,7 @@ export default {
         itialize() {
             let workList = {};
             workList.id = this.workId;
+            
             this.$api.task.getFileListByWork(workList).then(response => {
                 let responsevalue = response.data;
                 for (var i = 0; i < responsevalue.length; i++) {
@@ -361,8 +370,8 @@ export default {
         download(row, index) {
             let link = document.createElement('a');
             link.style.display = 'none';
-            debugger
-            link.href = 'http://192.168.85.170:8099/StaticFile/downloadFile?fileId='+this.fileList[index].id;
+            
+            link.href = 'http://192.168.85.91:8099/StaticFile/downloadFile?fileId='+this.fileList[index].id;
             link.click();
         },
 

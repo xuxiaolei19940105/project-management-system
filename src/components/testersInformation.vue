@@ -53,7 +53,7 @@
                             <el-table-column label="操作" width="100">
                                 <template slot-scope="scope">
                                     <el-button
-                                        @click="handleClick(scope.row, scope.$index)"
+                                        @click="handleClick(scope.row)"
                                         type="text"
                                         size="small"
                                         :disabled="disabled"
@@ -209,8 +209,9 @@ export default {
             this.dialogNewtesttaskVisible = true;
         },
         //查看工作任务
-        handleClick(row, index) {
-            this.index = index;
+        handleClick(row) {
+            console.log(row)
+           
             this.rowdata = row;
             this.operationmode = 'consult';
             this.dialogNewtesttaskVisible = true;
@@ -218,10 +219,8 @@ export default {
             let pro_id = localStorage.getItem('pro_id');
             let projectObjectId = {};
             projectObjectId.id = pro_id;
-            this.$api.task.initProData(projectObjectId).then(response => {
-                let responseValue = response.data;
-                this.workId = responseValue.taskList[3].workList[this.index].id;
-            });
+           
+            this.workId=row.id
         },
         //编辑工作任务
         editleclick(row, index) {

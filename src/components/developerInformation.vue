@@ -223,10 +223,7 @@ export default {
             let pro_id = localStorage.getItem('pro_id');
             let projectObjectId = {};
             projectObjectId.id = pro_id;
-            this.$api.task.initProData(projectObjectId).then(response => {
-                let responseValue = response.data;
-                this.workId = responseValue.taskList[2].workList[this.index].id;
-            });
+            this.workId = row.id;
         },
         //编辑工作任务
         editleclick(row, index) {
@@ -290,7 +287,6 @@ export default {
             this.check();
             if (this.checkflag) {
                 this.$refs.sonNewdevop.submitUpload();
-
 
                 let savedata = {};
                 let userData = JSON.parse(localStorage.getItem('ms_data'));
@@ -424,7 +420,6 @@ export default {
                 }
                 //关闭弹窗
                 this.dialogNewDeveltaskVisible = false;
-                
             }
         }
     }

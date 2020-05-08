@@ -88,7 +88,7 @@
                                 size="small"
                                 type="success"
                                 @click="showDownloadPage"
-                            >导出</el-button>
+                            >下载</el-button>
                             <div slot="tip" class="el-upload__tip">只能上传不超过500kb的文件</div>
                         </el-upload>
                     </el-col>
@@ -118,7 +118,7 @@
         </el-dialog>
 
         <el-dialog
-            title="文件导出"
+            title="下载文件"
             :visible.sync="downloadDialogVisible"
             width="680px"
             :append-to-body="true"
@@ -133,7 +133,7 @@
                                 @click="download(scope.row,scope.$index)"
                                 type="text"
                                 size="small"
-                            >导出</el-button>
+                            >下载</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -258,7 +258,6 @@ export default {
             let workList = {};
             workList.id = this.workId;
             this.$api.task.getFileListByWork(workList).then(response => {
-                debugger;
                 let responsevalue = response.data;
                 for (var i = 0; i < responsevalue.length; i++) {
                     let work = {};
@@ -272,7 +271,6 @@ export default {
 
         //上传
         submitUpload() {
-            alert(111);
             this.$refs.upload.submit();
         },
         uploadSectionFile(param) {
@@ -296,7 +294,7 @@ export default {
         download(row, index) {
             let link = document.createElement('a');
             link.style.display = 'none';
-            link.href = "http://192.168.85.170:8099/StaticFile/downloadFile?fileId="+this.fileList[index].id;
+            link.href = "http://192.168.85.91:8099/StaticFile/downloadFile?fileId="+this.fileList[index].id;
             link.click();
         },
 

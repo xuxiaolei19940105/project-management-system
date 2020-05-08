@@ -219,10 +219,7 @@ export default {
             let pro_id = localStorage.getItem('pro_id');
             let projectObjectId = {};
             projectObjectId.id = pro_id;
-            this.$api.task.initProData(projectObjectId).then(response => {
-                let responseValue = response.data;
-                this.workId = responseValue.taskList[1].workList[this.index].id;
-            });
+            this.workId=row.id
         },
         //编辑工作任务
         editleclick(row, index) {
