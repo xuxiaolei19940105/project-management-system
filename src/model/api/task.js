@@ -110,7 +110,7 @@ const task = {
         return httpReqest.post('/api/Project/removeUser', params);
     },
 
-     //文件上传
+    //文件上传
     uploadFile(params) {
         return uploadrequest.post('/api/StaticFile/uploadFile', params);
     },
@@ -121,7 +121,73 @@ const task = {
     //文件下载
     downloadFile(params) {
         return uploadrequest.get('/api/StaticFile/downloadFile', params);
-    }
+    },
+    //获取角色列表
+    getRoleList() {
+        return httpReqest.post('/api/Role/getRoleList');
+    },
+
+    //新建角色
+    createRole(params) {
+        return httpReqest.post('/api/Role/createRole', params);
+    },
+
+    //角色用户关联
+    roleUserRelevance(params) {
+        return uploadrequest.post('/api/Role/roleUserRelevance', params);
+    },
+
+    //获取角色列表
+    getMenuTree() {
+        return httpReqest.post('/api/Menu/getMenuTree');
+    },
+
+    //角色菜单关联
+    roleMenuRelevance(params) {
+        return httpReqest.post('/api/Role/roleMenuRelevance', params);
+    },
+
+    //获取bug集合
+    getBugList() {
+        return httpReqest.post('/api/Bug/getBugList');
+    },
+
+    //新建bug
+    insertBug(params) {
+        return httpReqest.post('/api/Bug/insertBug', params);
+    },
+
+    
+    //获取包集合
+    getPackageList() {
+        return httpReqest.post('/api/Package/getPackageList');
+    },
+
+
+    //操作bug集合
+    disposeBugList(params) {
+        return httpReqest.post('/api/Bug/disposeBugList', params);
+    },
+
+    //操作bug集合
+    insertPackage(params) {
+        return httpReqest.post('/api/Package/insertPackage', params);
+    },
+
+    //bug条件检索
+    conditionSearch(params) {
+        return httpReqest.post('/api/Bug/conditionSearch', params);
+    },
+
+      //修改bug信息
+      updateBug(params) {
+        return httpReqest.post('/api/Bug/updateBug', params);
+    },
+
+    //包条件检索
+    packageConditionSearch(params) {
+        return httpReqest.post('/api/Package/conditionSearch', params);
+    },
 };
 
 export default task;

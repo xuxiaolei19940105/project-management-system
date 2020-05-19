@@ -23,7 +23,7 @@
             v-if="dialogNewUserVisible"
             :close-on-click-modal="false"
         >
-            <userinformation ref="sonNewuser" :rowdata="rowdata" :operationmode="operationmode"/>
+            <userinformation ref="sonNewuser" :rowdata="rowdata" :operationmode="operationmode" />
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewUserVisible=false">取 消</el-button>
                 <el-button type="primary" @click="updateUserData">确 定</el-button>
@@ -44,19 +44,19 @@ export default {
             personColumns: [
                 {
                     key: 'name',
-                    title: '姓名',
+                    title: '姓名'
                 },
                 {
                     key: 'username',
-                    title: '用户名',
+                    title: '用户名'
                 },
                 {
                     key: 'roleName',
-                    title: '职位',
+                    title: '职位'
                 },
                 {
                     key: 'authName',
-                    title: '权限',
+                    title: '权限'
                 },
                 {
                     render: renderControlColumn,
@@ -70,7 +70,7 @@ export default {
             pageNum: 1,
             pageSize: 10,
             total: 10,
-            showNewUser: false,
+            showNewUser: false
         };
     },
     created() {
@@ -134,20 +134,20 @@ export default {
             userObject.inserttime = this.$refs.sonNewuser.rowdata.inserttime;
             userObject.updatetime = todaydate;
             userObject.workList = this.$refs.sonNewuser.rowdata.workList;
-            userObject.taskList= this.$refs.sonNewuser.rowdata.taskList;
+            userObject.taskList = this.$refs.sonNewuser.rowdata.taskList;
             userObject.deleteFlg = 0;
             this.$api.task.changedataUser(userObject).then(() => {
-                this.dialogNewUserVisible=false;
+                this.dialogNewUserVisible = false;
                 this.reload();
                 this.$message.success('更新成功!');
             });
         },
-        onRowLookButtonClick(row){
+        onRowLookButtonClick(row) {
             this.rowdata = row;
             this.operationmode = 'edit';
-            this.dialogNewUserVisible=true;
+            this.dialogNewUserVisible = true;
         },
-        onRowremoveButtonClick(row){
+        onRowremoveButtonClick(row) {
             let userObject = {};
             let todaydate = new Date();
             userObject.id = row.id;
@@ -160,35 +160,40 @@ export default {
             userObject.inserttime = row.inserttime;
             userObject.updatetime = todaydate;
             userObject.workList = row.workList;
-            userObject.taskList= row.taskList;
+            userObject.taskList = row.taskList;
             userObject.deleteFlg = 1;
-            let couruser=row.id;
-            let loginuser=localStorage.getItem('ms_id');
+            let couruser = row.id;
+            let loginuser = localStorage.getItem('ms_id');
 
-            let messageStr="确认删除"+row.roleName+":"+row.name+"?";
-            let tital="删除用户";
-            this.$confirm(tital,messageStr).then(() => {
-                this.$api.task.changedataUser(userObject).then(() => {
-                    this.reload();
-                    this.$message.success('删除成功!');
-                    if(couruser === loginuser){
-                        this.$message.success('你已被删除，请重新登录!');
-                        this.$router.push('/login');
-                    }
+            let messageStr = '确认删除' + row.roleName + ':' + row.name + '?';
+            let tital = '删除用户';
+            this.$confirm(tital, messageStr)
+                .then(() => {
+                    this.$api.task.changedataUser(userObject).then(() => {
+                        this.reload();
+                        this.$message.success('删除成功!');
+                        if (couruser === loginuser) {
+                            this.$message.success('你已被删除，请重新登录!');
+                            this.$router.push('/login');
+                        }
+                    });
+                })
+                .catch(() => {
+                    this.$message.success('取消删除!');
                 });
-            }).catch(() => {
-                this.$message.success('取消删除!');
-            });
         },
         renderControlColumn({ row }) {
-           const { onRowLookButtonClick, onRowremoveButtonClick } = this;
+            const { onRowLookButtonClick, onRowremoveButtonClick } = this;
             const ret = [];
+            let roleList = JSON.parse(localStorage.getItem('ms_role'));
+            let editShow = roleList.includes('15');
+            let delShow = roleList.includes('16');
             ret.push(
                 <div>
-                    <el-button type="text" icon="el-icon-folder-opened" onClick={() => onRowLookButtonClick(row)}>
+                    <el-button type="text" icon="el-icon-folder-opened" onClick={() => onRowLookButtonClick(row)} disabled={!editShow}>
                         编辑
                     </el-button>
-                    <el-button type="text" icon="el-icon-edit" onClick={() => onRowremoveButtonClick(row)}>
+                    <el-button type="text" icon="el-icon-edit" onClick={() => onRowremoveButtonClick(row)} disabled={!delShow}>
                         删除
                     </el-button>
                 </div>

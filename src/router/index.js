@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import PROJECT from '../views/plan/route';
+import Bug from '../views/bug/route';
+import User from '../views/user/route';
 
 Vue.use(Router);
 
@@ -19,6 +21,10 @@ export default new Router({
             },
             children: [
                 ...PROJECT, //项目管理
+
+                ...Bug, //Bug跟踪
+
+                ...User, //用户管理
                 {
                     path: 'tabs',
                     name: 'tabs',

@@ -371,7 +371,7 @@ export default {
             let link = document.createElement('a');
             link.style.display = 'none';
             
-            link.href = 'http://192.168.85.91:8099/StaticFile/downloadFile?fileId='+this.fileList[index].id;
+            link.href = 'http://192.168.85.170:8099/StaticFile/downloadFile?fileId='+this.fileList[index].id;
             link.click();
         },
 

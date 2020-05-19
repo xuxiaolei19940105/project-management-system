@@ -7,7 +7,7 @@
                     style="float: right; padding: 3px 0"
                     type="text"
                     @click="Newtesttask()"
-                    :disabled="disabled"
+                    :disabled="disabledCreatWord"
                 >新建任务</el-button>
             </div>
             <el-row>
@@ -109,6 +109,8 @@ export default {
     },
     data() {
         return {
+            //新建任务按钮权限
+            disabledCreatWord: false,
             //任务id
             workId: '',
             disabled: false,
@@ -167,6 +169,9 @@ export default {
             //按钮权限
             let disabled = localStorage.getItem('list');
             this.disabled = JSON.parse(disabled);
+            //新建任务按钮绑定角色
+            let roleList = JSON.parse(localStorage.getItem('ms_role'));
+            this.disabledCreatWord = !(roleList.includes('05') || roleList.includes('10')) && !this.disabled;
             let roleId = localStorage.getItem('ms_roleId');
             let username = localStorage.getItem('ms_name');
             if (roleId === '0' || roleId === '1' || roleId === '4') {
@@ -210,8 +215,8 @@ export default {
         },
         //查看工作任务
         handleClick(row) {
-            console.log(row)
-           
+            console.log(row);
+
             this.rowdata = row;
             this.operationmode = 'consult';
             this.dialogNewtesttaskVisible = true;
@@ -219,8 +224,8 @@ export default {
             let pro_id = localStorage.getItem('pro_id');
             let projectObjectId = {};
             projectObjectId.id = pro_id;
-           
-            this.workId=row.id
+
+            this.workId = row.id;
         },
         //编辑工作任务
         editleclick(row, index) {

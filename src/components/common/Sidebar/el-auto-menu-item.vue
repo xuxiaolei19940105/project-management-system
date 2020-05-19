@@ -1,6 +1,6 @@
 
 <template>
-    <el-submenu v-if="menuItemData.subs" :index="menuItemData.index">
+    <el-submenu v-if="menuItemData.subs" :index="menuItemData.index" v-show="menuItemData.menuShow">
         <template>
             <span slot="title">{{ menuItemData.title }}</span>
         </template>
@@ -10,7 +10,7 @@
             :menuItemData="menuChildrenItem"
         ></el-auto-menu-item>
     </el-submenu>
-    <el-menu-item v-else :index="menuItemData.index">
+    <el-menu-item v-else :index="menuItemData.index" v-show="menuItemData.menuShow">
         <i :class="menuItemData.icon"></i>
         <span slot="title">{{ menuItemData.title }}</span>
     </el-menu-item>

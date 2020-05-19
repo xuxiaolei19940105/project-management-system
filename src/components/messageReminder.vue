@@ -10,7 +10,7 @@
             </div>
             <div>
                 <el-tabs v-model="atctiveName" @tab-click="handleClick">
-                    <el-tab-pane label="待办消息" name="first" >
+                    <el-tab-pane label="待办消息" name="first">
                         <dytable
                             :columns="articlesReadyColumns"
                             :table-data="articlesReadytableData"
@@ -25,7 +25,7 @@
                             element-loading-text="加载中"
                         ></dytable>
                     </el-tab-pane>
-                    <el-tab-pane label="已办消息" name="second" >
+                    <el-tab-pane label="已办消息" name="second">
                         <dytable
                             :columns="articlesDoneColumns"
                             :table-data="articlesDonetableData"
@@ -57,33 +57,50 @@
                 <el-button type="primary" @click="dialogVisible =false">确 定</el-button>
             </span>
         </el-dialog>
+
+        <bug-information
+            v-if="showChild"
+            :showFrom="showFrom"
+            ref="buginformation"
+            :tableSelect="tableSelect"
+            :title="childTitle"
+            :showDescribe="showDescribe"
+        />
     </div>
 </template>
 <script>
+import bugInformation from './bugInformation.vue';
 import projectPage from './projectPage.vue';
 export default {
     components: {
-        projectPage,
+        bugInformation,
+        projectPage
     },
     name: 'tabs',
-    inject:['reload'],
-    data(){
+    inject: ['reload'],
+    data() {
         const { renderControlColumn } = this;
         const { rendermessagesender } = this;
         const { rendermessagetaskid } = this;
         const { rendermessageprojectid } = this;
-        return{
+        return {
+            tableSelect: [],
+            showChild: false,
+            showFrom: 4,
+            childTitle: '',
+            showDescribe: false,
+
             atctiveName: 'first',
             pageNum: 1,
             pageSize: 2,
             total: 10,
-            dialogVisible:false,
+            dialogVisible: false,
             articlesReadyColumns: [
                 {
                     key: 'taskno',
                     title: '编号',
                     width: '50',
-                    render:rendermessagetaskid
+                    render: rendermessagetaskid
                 },
                 {
                     key: 'taskname',
@@ -94,7 +111,7 @@ export default {
                     key: 'projectname',
                     title: '所属项目',
                     width: '200',
-                    render:rendermessageprojectid
+                    render: rendermessageprojectid
                 },
                 {
                     key: 'publisher',
@@ -114,16 +131,16 @@ export default {
                 {
                     title: '操作',
                     render: renderControlColumn,
-                    width: '260px'
+                    width: '150px'
                 }
             ],
-            articlesReadytableData:[],
+            articlesReadytableData: [],
             articlesDoneColumns: [
                 {
                     key: 'taskno',
                     title: '编号',
                     width: '50',
-                    render:rendermessagetaskid
+                    render: rendermessagetaskid
                 },
                 {
                     key: 'taskname',
@@ -134,7 +151,7 @@ export default {
                     key: 'projectname',
                     title: '所属项目',
                     width: '200',
-                    render:rendermessageprojectid
+                    render: rendermessageprojectid
                 },
                 {
                     key: 'publisher',
@@ -150,103 +167,117 @@ export default {
                 {
                     key: 'taskdetail',
                     title: '任务详情'
-                },
+                }
             ],
-            articlesDonetableData:[]
-        }
+            articlesDonetableData: []
+        };
     },
-    created(){
+    created() {
         let userid = localStorage.getItem('ms_id');
-        if(userid){
-            let paramdata={};
-            paramdata.receiveUserid=userid;
-            paramdata.state=0;
-            this.$api.task.getMessagelist(paramdata).then((response)=>{
-                let paramReadydata=[];
-                let param=[];
-                param=response.data;
-                if(param.length > 0){
-                    for(var i=0;i<param.length;i++){
-                        let mdata={};
-                        let index=i+1;
-                        mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
-                        mdata.taskname=param[i].messageName;
-                        mdata.projectname=param[i].correlationProName+"-("+param[i].correlationProId+")";
-                        mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
+        if (userid) {
+            let paramdata = {};
+            paramdata.receiveUserid = userid;
+            paramdata.state = 0;
+            this.$api.task.getMessagelist(paramdata).then(response => {
+                let paramReadydata = [];
+                let param = [];
+                param = response.data;
+                if (param.length > 0) {
+                    for (var i = 0; i < param.length; i++) {
+                        let mdata = {};
+                        let index = i + 1;
+                        mdata.taskno = param[i].id + '-(' + param[i].taskId + ')' + index;
+                        mdata.taskname = param[i].messageName;
+                        mdata.projectname = param[i].correlationProName + '-(' + param[i].correlationProId + ')';
+                        mdata.publisher = param[i].sendUserName + '-(' + param[i].sendUserid + ')';
                         let startDateS = new Date(param[i].inserttime);
-                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
-                        mdata.publishdate=startOvwerS;
-                        mdata.taskdetail=param[i].messageDescribe;
+                        let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                            .toISOString()
+                            .slice(0, 10);
+                        mdata.publishdate = startOvwerS;
+                        mdata.taskdetail = param[i].messageDescribe;
+
+                        mdata.messageType = param[i].messageType;
+                        mdata.correlationBugList = param[i].correlationBugList;
                         paramReadydata.push(mdata);
                     }
                 }
-                this.articlesReadytableData=paramReadydata;
+                this.articlesReadytableData = paramReadydata;
             });
         }
     },
-    mounted(){},
-    methods:{
+    mounted() {},
+    methods: {
         //切换待办和已办消息
-        handleClick(tab){
-            var tabsname =tab.paneName;
-            if(tabsname){
-                if(tabsname ==="first"){
+        handleClick(tab) {
+            var tabsname = tab.paneName;
+            if (tabsname) {
+                if (tabsname === 'first') {
                     //待办消息
                     let userid = localStorage.getItem('ms_id');
-                    let paramdata={};
-                    paramdata.receiveUserid=userid;
-                    paramdata.state=0;
-                    this.$api.task.getMessagelist(paramdata).then((response)=>{
-                        let paramReadydata=[];
-                        let param=[];
-                        param=response.data;
-                        if(param.length > 0){
-                            for(var i=0;i<param.length;i++){
-                                let mdata={};
-                                let index=i+1;
-                                mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
-                                mdata.taskname=param[i].messageName;
-                                mdata.projectname=param[i].correlationProName+"-("+param[i].correlationProId+")";
-                                mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
+                    let paramdata = {};
+                    paramdata.receiveUserid = userid;
+                    paramdata.state = 0;
+                    this.$api.task.getMessagelist(paramdata).then(response => {
+                        let paramReadydata = [];
+                        let param = [];
+                        param = response.data;
+                        if (param.length > 0) {
+                            for (var i = 0; i < param.length; i++) {
+                                let mdata = {};
+                                let index = i + 1;
+                                mdata.taskno = param[i].id + '-(' + param[i].taskId + ')' + index;
+                                mdata.taskname = param[i].messageName;
+                                mdata.projectname = param[i].correlationProName + '-(' + param[i].correlationProId + ')';
+                                mdata.publisher = param[i].sendUserName + '-(' + param[i].sendUserid + ')';
                                 let startDateS = new Date(param[i].inserttime);
-                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
-                                mdata.publishdate=startOvwerS;
-                                mdata.taskdetail=param[i].messageDescribe;
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
+                                mdata.publishdate = startOvwerS;
+                                mdata.taskdetail = param[i].messageDescribe;
+
+                                mdata.messageType = param[i].messageType;
+                                mdata.correlationBugList = param[i].correlationBugList;
                                 paramReadydata.push(mdata);
                             }
                         }
-                        this.articlesReadytableData=paramReadydata;
+                        this.articlesReadytableData = paramReadydata;
                         //this.reload();
-                        this.atctiveName="first";
+                        this.atctiveName = 'first';
                     });
-                }else{
+                } else {
                     //已办消息的已接收消息
                     let userid = localStorage.getItem('ms_id');
-                    let paramdata={};
-                    paramdata.receiveUserid=userid;
-                    paramdata.state=1;
-                    this.$api.task.getMessagelist(paramdata).then((response)=>{
-                        let paramOKdata=[];
-                        let param=[];
-                        param=response.data;
-                        if(param.length > 0){
-                            for(var i=0;i<param.length;i++){
-                                let mdata={};
-                                let index=i+1;
-                                mdata.taskno=param[i].id+"-("+param[i].taskId+")"+index;
-                                mdata.taskname=param[i].messageName;                                
-                                mdata.projectname=param[i].correlationProName+"-("+param[i].correlationProId+")";
-                                mdata.publisher=param[i].sendUserName+"-("+param[i].sendUserid+")";
+                    let paramdata = {};
+                    paramdata.receiveUserid = userid;
+                    paramdata.state = 1;
+                    this.$api.task.getMessagelist(paramdata).then(response => {
+                        let paramOKdata = [];
+                        let param = [];
+                        param = response.data;
+                        if (param.length > 0) {
+                            for (var i = 0; i < param.length; i++) {
+                                let mdata = {};
+                                let index = i + 1;
+                                mdata.taskno = param[i].id + '-(' + param[i].taskId + ')' + index;
+                                mdata.taskname = param[i].messageName;
+                                mdata.projectname = param[i].correlationProName + '-(' + param[i].correlationProId + ')';
+                                mdata.publisher = param[i].sendUserName + '-(' + param[i].sendUserid + ')';
                                 let startDateS = new Date(param[i].inserttime);
-                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate())).toISOString().slice(0, 10);
-                                mdata.publishdate=startOvwerS;
-                                mdata.taskdetail=param[i].messageDescribe;
+                                let startOvwerS = new Date(Date.UTC(startDateS.getFullYear(), startDateS.getMonth(), startDateS.getDate()))
+                                    .toISOString()
+                                    .slice(0, 10);
+                                mdata.publishdate = startOvwerS;
+                                mdata.taskdetail = param[i].messageDescribe;
+                                mdata.messageType = param[i].messageType;
+                                mdata.correlationBugList = param[i].correlationBugList;
                                 paramOKdata.push(mdata);
                             }
                         }
-                        this.articlesDonetableData=paramOKdata;
+                        this.articlesDonetableData = paramOKdata;
                         //this.reload();
-                        this.atctiveName="second";
+                        this.atctiveName = 'second';
                     });
                 }
                 /*else{
@@ -296,97 +327,97 @@ export default {
         },
         //拒绝
         onRowRefuseButtonClick(row) {
-            let paramdata={};
-            let TID=row.taskno;
-            let taskid="";
-            if(TID.indexOf("-(")>-1){
-                paramdata.id=TID.split("-(")[0];
-                taskid=TID.split("-(")[1];
-                taskid=taskid.split(")")[0];
-                paramdata.taskId=taskid;
-            }else{
-                paramdata.id=row.taskno;
-                paramdata.taskId=taskid;
+            let paramdata = {};
+            let TID = row.taskno;
+            let taskid = '';
+            if (TID.indexOf('-(') > -1) {
+                paramdata.id = TID.split('-(')[0];
+                taskid = TID.split('-(')[1];
+                taskid = taskid.split(')')[0];
+                paramdata.taskId = taskid;
+            } else {
+                paramdata.id = row.taskno;
+                paramdata.taskId = taskid;
             }
-            paramdata.state=2;
-            paramdata.messageType=0;
-            let crueateid=localStorage.getItem('ms_id');
-            let crueatename=localStorage.getItem('ms_name');
-            let crueateusername=localStorage.getItem('ms_username');
-            var userS=row.publisher;
-            var userid ="";
-            var userename="";
-            if(userS.indexOf("-(")>-1){
-                userid=userS.split("-(")[1];
-                userid=userid.split(")")[0];
-                userename=userS.split("-(")[0];
-            }else{
-                userid=row.publisher;
-                userename=row.publisher;
+            paramdata.state = 2;
+            paramdata.messageType = 0;
+            let crueateid = localStorage.getItem('ms_id');
+            let crueatename = localStorage.getItem('ms_name');
+            let crueateusername = localStorage.getItem('ms_username');
+            var userS = row.publisher;
+            var userid = '';
+            var userename = '';
+            if (userS.indexOf('-(') > -1) {
+                userid = userS.split('-(')[1];
+                userid = userid.split(')')[0];
+                userename = userS.split('-(')[0];
+            } else {
+                userid = row.publisher;
+                userename = row.publisher;
             }
-            var dates=new Date();
-            let messageObject={};
-            messageObject.id="";
-            messageObject.taskId=taskid;
-            messageObject.messageName=crueatename+" 已经拒绝了任务: "+row.taskname;
-            messageObject.messageDescribe=row.taskdetail;
-            messageObject.sendUserid=crueateid;
-            messageObject.receiveUserid=userid;
-            messageObject.state=0;
-            messageObject.inserttime=dates;
-            messageObject.updatetime=dates;
-            messageObject.readTag=0;
-            messageObject.sendUserName=crueateusername;
-            messageObject.receiveUserName=userename;
-            messageObject.messageType=0;
-            this.$api.task.rejectOrconfirmMessage(paramdata).then(()=>{
-                this.$api.task.newMessage(messageObject).then(()=>{
+            var dates = new Date();
+            let messageObject = {};
+            messageObject.id = '';
+            messageObject.taskId = taskid;
+            messageObject.messageName = crueatename + ' 已经拒绝了任务: ' + row.taskname;
+            messageObject.messageDescribe = row.taskdetail;
+            messageObject.sendUserid = crueateid;
+            messageObject.receiveUserid = userid;
+            messageObject.state = 0;
+            messageObject.inserttime = dates;
+            messageObject.updatetime = dates;
+            messageObject.readTag = 0;
+            messageObject.sendUserName = crueateusername;
+            messageObject.receiveUserName = userename;
+            messageObject.messageType = 0;
+            this.$api.task.rejectOrconfirmMessage(paramdata).then(() => {
+                this.$api.task.newMessage(messageObject).then(() => {
                     this.$message.success('任务已拒绝.');
                     this.reload();
-                }); 
+                });
             });
         },
         //确认
         onRowAgreeButtonClick(row) {
-            let paramdata={};
-            let TID=row.taskno;
-            let taskid="";
-            if(TID.indexOf("-(")>-1){
-                paramdata.id=TID.split("-(")[0];
-                taskid=TID.split("-(")[1];
-                taskid=taskid.split(")")[0];
-                paramdata.taskId=taskid;
-            }else{
-                paramdata.id=row.taskno;
-                paramdata.taskId=taskid;
+            let paramdata = {};
+            let TID = row.taskno;
+            let taskid = '';
+            if (TID.indexOf('-(') > -1) {
+                paramdata.id = TID.split('-(')[0];
+                taskid = TID.split('-(')[1];
+                taskid = taskid.split(')')[0];
+                paramdata.taskId = taskid;
+            } else {
+                paramdata.id = row.taskno;
+                paramdata.taskId = taskid;
             }
-            let crueateid=localStorage.getItem('ms_id');
-            paramdata.state=1;
-            paramdata.messageType=0;
-            paramdata.receiveUserid=crueateid;
-            this.$api.task.rejectOrconfirmMessage(paramdata).then(()=>{
+            let crueateid = localStorage.getItem('ms_id');
+            paramdata.state = 1;
+            paramdata.messageType = 0;
+            paramdata.receiveUserid = crueateid;
+            this.$api.task.rejectOrconfirmMessage(paramdata).then(() => {
                 this.$message.success('任务已确认.');
                 this.reload();
             });
         },
         rendermessagesender(v) {
             if (v.row.publisher) {
-                var userid=v.row.publisher;
-                userid=userid.split("-(")[0];
+                var userid = v.row.publisher;
+                userid = userid.split('-(')[0];
                 return <div>{userid}</div>;
             }
         },
         rendermessagetaskid(v) {
             if (v.row.taskno) {
-                var uid=v.row.taskno;
-                if(uid.indexOf("-(")>-1){
-                    uid=uid.split("-(")[1];
-                    uid=uid.split(")")[1];
+                var uid = v.row.taskno;
+                if (uid.indexOf('-(') > -1) {
+                    uid = uid.split('-(')[1];
+                    uid = uid.split(')')[1];
                 }
                 return <div>{uid}</div>;
             }
         },
-        onRowProjectnameClick(row){
+        onRowProjectnameClick(row) {
             localStorage.setItem('list', JSON.stringify(true));
             localStorage.setItem('New', JSON.stringify(false));
             let projectS = row.projectname;
@@ -396,18 +427,25 @@ export default {
             // let projectObjectId = {};
             // projectObjectId.id = row.id;
             localStorage.setItem('pro_id', projectIdS);
-            let proName=projectS.split("-(")[0];
+            let proName = projectS.split('-(')[0];
             localStorage.setItem('pro_name', proName);
         },
-        rendermessageprojectid(V){
+        onRowBugClick(row) {
+            this.childTitle = '查看';
+            this.showChild = true;
+            this.showFrom = 4
+            this.tableSelect = row.correlationBugList;
+        },
+        rendermessageprojectid(V) {
             const { onRowProjectnameClick } = this;
-            const  ret =[];
-            let proIDStr="";
-            let proName="";
-            if(V.row.projectname){
-                proIDStr=V.row.projectname;
-                if(proIDStr.indexOf("-(")>-1){
-                    proName=proIDStr.split("-(")[0];
+            const { onRowBugClick } = this;
+            const ret = [];
+            let proIDStr = '';
+            let proName = '';
+            if (V.row.messageType == 0) {
+                proIDStr = V.row.projectname;
+                if (proIDStr.indexOf('-(') > -1) {
+                    proName = proIDStr.split('-(')[0];
                 }
                 ret.push(
                     <div>
@@ -416,24 +454,46 @@ export default {
                         </el-button>
                     </div>
                 );
+            } else {
+                proIDStr = V.row.projectname;
+                if (proIDStr.indexOf('-(') > -1) {
+                    proName = proIDStr.split('-(')[0];
+                }
+                ret.push(
+                    <div>
+                        <el-button type="text" icon="el-icon-link" onClick={() => onRowBugClick(V.row)}>
+                            bug信息
+                        </el-button>
+                    </div>
+                );
             }
-            return <div>{ret}</div>; 
+            return <div>{ret}</div>;
         },
-        renderControlColumn({row}){
+        renderControlColumn({ row }) {
             const { onRowRefuseButtonClick, onRowAgreeButtonClick } = this;
-            const  ret =[];
-            ret.push(
-                <div>
-                    <el-button type="text" icon="el-icon-edit" onClick={() => onRowAgreeButtonClick(row)}>
-                        确认
-                    </el-button>
-                    <el-button type="text" style="color:red" icon="el-icon-delete" onClick={() => onRowRefuseButtonClick(row)}>
-                        拒绝
-                    </el-button>
-                </div>
-            );
-             return <div>{ret}</div>;
+            const ret = [];
+            if (row.messageType == 0) {
+                ret.push(
+                    <div>
+                        <el-button type="text" icon="el-icon-edit" onClick={() => onRowAgreeButtonClick(row)}>
+                            确认
+                        </el-button>
+                        <el-button type="text" style="color:red" icon="el-icon-delete" onClick={() => onRowRefuseButtonClick(row)}>
+                            拒绝
+                        </el-button>
+                    </div>
+                );
+            } else {
+                ret.push(
+                    <div>
+                        <el-button type="text" icon="el-icon-edit" onClick={() => onRowAgreeButtonClick(row)}>
+                            确认
+                        </el-button>
+                    </div>
+                );
+            }
+            return <div>{ret}</div>;
         }
     }
-}
+};
 </script>

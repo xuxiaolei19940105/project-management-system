@@ -25,16 +25,24 @@ export default {
     },
     data() {
         return {
-            innerData:[]
+            innerData: []
         };
     },
     created() {
-        let roleId= localStorage.getItem('ms_roleId');
-        if(roleId ==='0' || roleId ==='1'){
-            this.innerData=new ITEM().ITEMAdmin;
-        }else{
-            this.innerData=new ITEM().ITEMother;
-        }
+        this.innerData = new ITEM().ITEMAdmin;
+        let roleList = JSON.parse(localStorage.getItem('ms_role'));
+        this.innerData[1].menuShow = roleList.includes('01');
+        this.innerData[1].subs[0].menuShow = roleList.includes('02');
+        this.innerData[1].subs[1].menuShow = roleList.includes('07');
+        this.innerData[2].menuShow = roleList.includes('12');
+        this.innerData[3].menuShow = roleList.includes('14');
+        this.innerData[4].menuShow = roleList.includes('17');
+        this.innerData[4].subs[0].menuShow = roleList.includes('18');
+        this.innerData[4].subs[1].menuShow = roleList.includes('25');
+        this.innerData[5].menuShow = roleList.includes('27');
+        this.innerData[5].subs[0].menuShow = roleList.includes('28');
+        this.innerData[5].subs[1].menuShow = roleList.includes('30');
+        this.innerData[5].subs[2].menuShow = roleList.includes('32');
     },
     props: ['onRoutes', 'collapse']
 };

@@ -1,8 +1,12 @@
 <template>
     <div>
         <el-card>
-            <div style="text-align:right;padding-bottom:10px;" v-if="showNewUser">
-                <el-button size="mini" @click="dialogNewUserVisible=true">新建人员</el-button>
+            <div style="text-align:right;padding-bottom:10px;">
+                <el-button
+                    size="mini"
+                    @click="dialogNewUserVisible=true"
+                    :disabled="!disabledCreat"
+                >新建人员</el-button>
             </div>
             <dytable
                 :columns="articlesReadyColumns"
@@ -26,7 +30,7 @@
             v-if="dialogNewUserVisible"
             :close-on-click-modal="false"
         >
-            <userinformation ref="sonNewuser" :rowdata="rowdata" :operationmode="operationmode"/>
+            <userinformation ref="sonNewuser" :rowdata="rowdata" :operationmode="operationmode" />
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogNewUserVisible=false">取 消</el-button>
                 <el-button type="primary" @click="getNewUserData">确 定</el-button>
@@ -44,6 +48,9 @@ export default {
     data() {
         const { renderControlColumn } = this;
         return {
+            //新建任务按钮权限
+            disabledCreat: false,
+
             articlesReadyColumns: [
                 {
                     key: 'employeeName',
@@ -87,10 +94,14 @@ export default {
     },
     created() {
         //新建人员权限控制
-        let roleId = localStorage.getItem('ms_roleId');
-        if (roleId === '0') {
-            this.showNewUser = true;
-        }
+        // let roleId = localStorage.getItem('ms_roleId');
+        // if (roleId === '0') {
+        //     this.showNewUser = true;
+        // }
+
+        let roleList = JSON.parse(localStorage.getItem('ms_role'));
+        this.disabledCreat = roleList.includes('13');
+
         //人员详情
         this.$api.task.getAllUser().then(response => {
             let responsevalue = response;
@@ -98,7 +109,7 @@ export default {
                 let tabledata = [];
                 let returndata = responsevalue.data;
                 for (var i = 0; i < returndata.length; i++) {
-                    if (returndata[i].authId === "0"|| returndata[i].authId === "3") {
+                    if (returndata[i].authId === '0' || returndata[i].authId === '3') {
                         //
                     } else {
                         let proObject = {};

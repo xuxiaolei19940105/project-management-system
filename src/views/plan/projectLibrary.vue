@@ -1,8 +1,8 @@
 <template>
     <div>
         <el-card v-loading="loading">
-            <div style="text-align:right;padding-bottom:10px;" v-if="showNewProject">
-                <el-button size="mini" @click="newprojectVisible">新建项目</el-button>
+            <div style="text-align:right;padding-bottom:10px;">
+                <el-button size="mini" @click="newprojectVisible" :disabled="!showNewProject">新建项目</el-button>
             </div>
             <div>
                 <el-table
@@ -50,11 +50,13 @@
                                 type="text"
                                 icon="el-icon-folder-opened"
                                 @click="onRowLookButtonClick(scope.row)"
+                                :disabled="!seeShow"
                             >查看</el-button>
                             <el-button
                                 type="text"
                                 icon="el-icon-edit"
                                 @click="onRowUpdateButtonClick(scope.row)"
+                                :disabled="!editShow"
                             >编辑</el-button>
                         </template>
                     </el-table-column>
@@ -118,6 +120,9 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            seeShow: false,
+            editShow: false,
+
             loading: false,
 
             //时间冲突
@@ -147,10 +152,11 @@ export default {
     },
     created() {
         //创建项目权限控制
-        let roleId = localStorage.getItem('ms_roleId');
-        if (roleId === '0' || roleId === '1') {
-            this.showNewProject = true;
-        }
+        let roleList = JSON.parse(localStorage.getItem('ms_role'));
+        this.showNewProject = roleList.includes('34');
+        this.seeShow = roleList.includes('08');
+        this.editShow = roleList.includes('09');
+
         //项目列表加载
         let userData = JSON.parse(localStorage.getItem('ms_data'));
         if (userData) {
@@ -193,6 +199,7 @@ export default {
             }
         });
     },
+    mounted() {},
     methods: {
         // 新建
         newprojectVisible() {
@@ -296,7 +303,6 @@ export default {
                 this.$message.error('请选择开发结束时间');
                 this.checkflag = false;
             } else if (this.$refs.sonEditproject.checkedDeveloperId == '') {
-                debugger;
                 this.$message.error('请选择开发人员');
                 this.checkflag = false;
             } else if (this.$refs.sonEditproject.projectForm.testerStartDate == '') {
@@ -340,7 +346,6 @@ export default {
                 projectObject.packageUserIdList = this.$refs.sonNewproject.checkedPackagerId;
                 var _this = this;
                 this.$api.task.getUniteWorkList(projectObject).then(response => {
-                    debugger;
                     if (response.data.length !== 0) {
                         for (let i = 0; i < response.data.length; i++) {
                             let startDateS = new Date(response.data[i].startTime);
@@ -509,7 +514,7 @@ export default {
     }
 };
 </script>
-<style lang="scss">
+<style scoped>
 .handle-box {
     margin-bottom: 20px;
 }
@@ -521,5 +526,17 @@ export default {
 .handle-input {
     width: 300px;
     display: inline-block;
+}
+/deep/.el-table__row td:nth-child(1) .cell {
+    margin-left: 20px;
+}
+/deep/.el-table__row--level-0 td:nth-child(1) .cell {
+    margin-left: 0;
+}
+/deep/.el-table__row--level-1 td:nth-child(1) .cell {
+    margin-left: 0;
+}
+/deep/.el-table__row--level-2 td:nth-child(1) .cell {
+    margin-left: 0;
 }
 </style>

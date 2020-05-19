@@ -247,7 +247,6 @@ export default {
             projectCondition.proState = this.search.state;
             if (projectCondition) {
                 this.$api.task.getProjectMessByCondition(projectCondition).then(response => {
-                    console.log(response);
                     let responsevalue = response;
                     if (responsevalue) {
                         this.initTable(responsevalue);
@@ -555,12 +554,15 @@ export default {
         renderControlColumn({ row }) {
             const { onRowLookButtonClick, onRowUpdateButtonClick } = this;
             const ret = [];
+            let roleList = JSON.parse(localStorage.getItem('ms_role'));
+            let seeShow = roleList.includes('03');
+            let editShow = roleList.includes('04');
             ret.push(
                 <div>
-                    <el-button type="text" icon="el-icon-folder-opened" onClick={() => onRowLookButtonClick(row)}>
+                    <el-button type="text" icon="el-icon-folder-opened" onClick={() => onRowLookButtonClick(row)} disabled={!seeShow}>
                         查看
                     </el-button>
-                    <el-button type="text" icon="el-icon-edit" onClick={() => onRowUpdateButtonClick(row)}>
+                    <el-button type="text" icon="el-icon-edit" onClick={() => onRowUpdateButtonClick(row)} disabled={!editShow}>
                         编辑
                     </el-button>
                 </div>

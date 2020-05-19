@@ -791,7 +791,6 @@ export default {
             if (this.projectForm.belongPro == '无') {
                 this.projectForm.level = 0;
             } else {
-                debugger;
                 this.projectForm.level = obj.level + 1;
             }
         }

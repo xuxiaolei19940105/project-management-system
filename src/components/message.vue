@@ -96,6 +96,10 @@ export default {
     mounted() {
         let disabled = localStorage.getItem('list');
         this.disabled = JSON.parse(disabled);
+
+        //新建任务按钮绑定角色
+        let roleList = JSON.parse(localStorage.getItem('ms_role'));
+        this.disabled = !(roleList.includes('06') || roleList.includes('11')) && !this.disabled;
     },
     methods: {
         Newmessagetask() {

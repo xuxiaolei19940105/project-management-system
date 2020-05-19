@@ -7,7 +7,7 @@
                     style="float: right; padding: 3px 0"
                     type="text"
                     @click="newdevelopList()"
-                    :disabled="disabled"
+                    :disabled="disabledCreatWord"
                 >新建任务</el-button>
             </div>
             <el-row>
@@ -110,6 +110,8 @@ export default {
     },
     data() {
         return {
+            //新建任务按钮权限
+            disabledCreatWord: false,
             //任务id
             workId: '',
 
@@ -175,6 +177,9 @@ export default {
             //按钮权限
             let disabled = localStorage.getItem('list');
             this.disabled = JSON.parse(disabled);
+            //新建任务按钮绑定角色
+            let roleList = JSON.parse(localStorage.getItem('ms_role'));
+             this.disabledCreatWord = !(roleList.includes('05') || roleList.includes('10')) && !this.disabled;
             let roleId = localStorage.getItem('ms_roleId');
             let username = localStorage.getItem('ms_name');
             if (roleId === '0' || roleId === '1') {
